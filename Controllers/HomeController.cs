@@ -18,12 +18,8 @@ namespace ETourClient.Controllers
             _logger = logger;
         }
 
+        // Home page, display static content
         public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult Privacy()
         {
             return View();
         }
