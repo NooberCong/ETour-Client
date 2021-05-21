@@ -10,7 +10,7 @@ namespace Client.Controllers
     {
         private static readonly int _historyPageSize = 5;
 
-        // Display user main screen, including user details and list of trips that user recently viewed
+        // Display user main screen, including user details and list of upcoming trips
         // View(userHomeViewModel)
         public IActionResult Index()
         {
