@@ -4,184 +4,197 @@
 }
 }
 
-<style>
-    .container {
-        margin: 10px auto;
-        padding-right: 15px;
-        padding-left: 15px;
-    }
+<style >
+    
+*
+{
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-sizing: border-box
+}
 
-    body {
-        background-color: #dadde6;
-        font-family: arial;
-        font-size: 14px;
-        line-height: 1.42857143;
-        color: #333;
-    }
+body
+{
+  background-color: #dadde6;
+  font-family: arial
+}
 
-    h1 {
-        text-transform: uppercase;
-        font-weight: 900;
-        border-left: 10px solid #fec500;
-        padding-left: 10px;
-        margin-bottom: 30px;
-        margin: .67em 0;
-        display: block;
-        margin-inline-start: 0px;
-        margin-inline-end: 0px;
-    }
+.fl-left{float: left}
 
-    .h1, h1 {
-        font-size: 36px;
-    }
+.fl-right{float: right}
 
-    .h1, .h2, .h3, h1, h2, h3 {
-        margin-top: 20px;
-        margin-bottom: 10px;
-    }
+.container
+{
+  width: 90%;
+  margin: 10px auto
+}
 
-    .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
-        font-family: inherit;
-        font-weight: 500;
-        line-height: 1.1;
-        color: inherit;
-    }
+h1
+{
+  text-transform: uppercase;
+  font-weight: 900;
+  border-left: 10px solid #fec500;
+  padding-left: 10px;
+  margin-bottom: 30px
+}
 
-    .card {
-        display: table-row;
-        width: 49%;
-        background-color: #fff;
-        color: #989898;
-        margin-bottom: 10px;
-        font-family: 'Oswald', sans-serif;
-        text-transform: uppercase;
-        border-radius: 4px;
-        position: relative;
-    }
+.row{overflow: hidden}
+
+.card
+{
+  display: table-row;
+  width: 40%;
+  background-color: #fff;
+  color: #989898;
+  margin-bottom: 10px;
+  font-family: 'Oswald', sans-serif;
+  text-transform: uppercase;
+  border-radius: 4px;
+  position: relative;
+  margin-left: 5%;
+}
 
 
-    .fl-left {
-        float: left;
-    }
+.date
+{
+  display: table-cell;
+  width: 25%;
+  position: relative;
+  text-align: center;
+  border-right: 2px dashed #dadde6
+}
 
-    .date:before, .date:after {
-        content: "";
-        display: block;
-        width: 30px;
-        height: 30px;
-        background-color: #DADDE6;
-        position: absolute;
-        top: -15px;
-        right: 78%;
-        z-index: 1;
-        border-radius: 50%;
-    }
+.date:before,
+.date:after
+{
+  content: "";
+  display: block;
+  width: 30px;
+  height: 30px;
+  background-color: #DADDE6;
+  position: absolute;
+  top: -15px ;
+  right: -15px;
+  z-index: 1;
+  border-radius: 50%
+}
 
-    .date:after {
-        top: auto;
-        bottom: -15px;
-    }
+.date:after
+{
+  top: auto;
+  bottom: -15px
+}
 
-    :after, :before {
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        box-sizing: border-box;
-    }
+.date time
+{
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%)
+}
 
-    :after, :before {
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        box-sizing: border-box;
-    }
+.date time span{display: block}
 
-    .date time span:first-child {
-        color: #2b2b2b;
-        font-weight: 600;
-        font-size: 250%;
-        display: block;
-        position: absolute;
-        top: 50%;
-        left: 7%;
-        -webkit-transform: translate(-50%, -50%);
-        -ms-transform: translate(-50%, -50%);
-        transform: translate(-50%, -50%);
-    }
+.date time span:first-child
+{
+  color: #2b2b2b;
+  font-weight: 600;
+  font-size: 250%
+}
+}
 
-    .date time span:last-child {
-        text-transform: uppercase;
-        font-weight: 600;
-        color: #2b2b2b;
-        font-weight: 90;
-        font-size: 100%;
-        display: block;
-        position: absolute;
-        top: 70%;
-        left: 7%;
-        -webkit-transform: translate(-50%, -50%);
-        -ms-transform: translate(-50%, -50%);
-        transform: translate(-50%, -50%);
-    }
+.date time span:last-child
+{
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-top: -10px
+}
 
-    .date time span {
-        display: block;
-    }
+.card-cont
+{
+  display: table-cell;
+  width: 75%;
+  font-size: 85%;
+  padding: 10px 10px 30px 50px
+}
 
-    .small, small {
-        font-size: 85%;
-    }
+.card-cont h3
+{
+  color: #3C3C3C;
+  font-size: 130%
+}
 
-    .card-cont {
-        display: table-cell;
-        width: 75%;
-        font-size: 85%;
-        padding: 30px 30px 60px 150px;
-    }
+.card-cont > div
+{
+  display: table-row
+}
 
-    .card + .card {
-        margin-left: 2%;
-    }
+.card-cont .even-date i,
+.card-cont .even-info i,
+.card-cont .even-date time,
+.card-cont .even-info p
+{
+  display: table-cell
+}
 
-    .small, small {
-        font-size: 85%;
-    }
+.card-cont .even-date i,
+.card-cont .even-info i
+{
+  padding: 5% 5% 0 0
+}
 
-    .card-cont h3 {
-        color: #3C3C3C;
-        font-size: 130%;
-    }
+.card-cont .even-info p
+{
+  padding: 30px 50px 0 0
+}
 
-    .card-cont > div {
-        display: table-row;
-    }
+.card-cont .even-date time span
+{
+  display: block
+}
 
-    .card-cont .even-date i, .card-cont .even-info i {
-        padding: 5% 5% 0 0;
-    }
+.card-cont a
+{
+  display: block;
+  text-decoration: none;
+  width: 80px;
+  height: 30px;
+  background-color: #D8DDE0;
+  color: #fff;
+  text-align: center;
+  line-height: 30px;
+  border-radius: 2px;
+  position: absolute;
+  right: 10px;
+  bottom: 10px
+}
 
-    .card-cont .even-date i, .card-cont .even-info i, .card-cont .even-date time, .card-cont .even-info p {
-        display: table-cell;
-    }
+.row:last-child .card:first-child .card-cont a
+{
+  background-color: #037FDD
+}
 
-        .card-cont .even-date time span {
-            display: block;
-        }
+.row:last-child .card:last-child .card-cont a
+{
+  background-color: #F8504C
+}
 
-    .card-cont a {
-        display: block;
-        text-decoration: none;
-        width: 80px;
-        height: 30px;
-        background-color: #D8DDE0;
-        color: #fff;
-        text-align: center;
-        line-height: 30px;
-        border-radius: 2px;
-        position: absolute;
-        right: 10px;
-        bottom: 4px;
-    }
+
+
+
+  .card + .card{margin-left: 0}
+
+  .card-cont .even-date,
+  .card-cont .even-info
+  {
+    font-size: 75%
+  }
+}
 </style>
-
 <section class="container">
     <h1>List of tickets</h1>
     <div class="row">
@@ -236,6 +249,7 @@
             </section>
         </article>
     </div>
+
     <div class="row">
         <article class="card fl-left">
             <section class="date">

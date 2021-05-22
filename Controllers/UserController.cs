@@ -30,7 +30,10 @@ namespace Client.Controllers
         {
             return View();
         }
-
+        public IActionResult TicketLists()
+        {
+            return View();
+        }
         // Action for editting user info, this action is called when a form is sent(POST) to the action
         // Param user represents the updated user instance, object is used as a placeholder class because User class is not written
         // Return View(userInfo) with update status (fail/sucess)
