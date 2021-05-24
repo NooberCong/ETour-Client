@@ -2,56 +2,240 @@
     ViewData["Title"] = "Tours";
 }
 
+<style>
+    .card-block {
+        font-size: 1em;
+        position: relative;
+        margin: 0;
+        padding: 1em;
+        border: none;
+        border-top: 1px solid rgba(34, 36, 38, .1);
+        box-shadow: none;
+    }
 
-<h1>You are in tour page</h1>
+    .card {
+        font-size: 1em;
+        overflow: hidden;
+        padding: 5;
+        border: none;
+        border-radius: .28571429rem;
+        box-shadow: 0 1px 3px 0 #d4d4d5, 0 0 0 1px #d4d4d5;
+        margin-top: 20px;
+    }
 
-<div class="container">
-    <section class="text-center">
-        <h2 class="mt-5 mb-5 text-left"> Tour List </h3>
-            <div class="row ">
-                <div class="col-lg-4 col-md-1 mb-4">
-                    <div class="card">
-                        <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
-                            <img src="~/images/phan_thiet.jpg" class="img-fluid" style="height:300px ; width:400px" />
+    .carousel-indicators li {
+        border-radius: 12px;
+        width: 12px;
+        height: 12px;
+        background-color: #404040;
+    }
+
+    .carousel-indicators li {
+        border-radius: 12px;
+        width: 12px;
+        height: 12px;
+        background-color: #404040;
+    }
+
+    .carousel-indicators .active {
+        background-color: white;
+        max-width: 12px;
+        margin: 0 3px;
+        height: 12px;
+    }
+
+    .carousel-control-prev-icon {
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E") !important;
+    }
+
+    .carousel-control-next-icon {
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E") !important;
+    }
+
+    .btn {
+        margin-top: auto;
+    }
+
+    .bg-light-blue {
+        background-color: #e9f7fe !important;
+        color: #3184ae;
+        padding: 7px 18px;
+        border-radius: 4px;
+    }
+
+    .bg-light-red {
+        background-color: #ffcccb !important;
+        color: #CC0000 !important;
+        padding: 7px 18px;
+        border-radius: 4px;
+    }
+
+    .bg-light-green {
+        background-color: rgba(40, 167, 69, 0.2) !important;
+        padding: 7px 18px;
+        border-radius: 4px;
+        color: #28a745 !important;
+    }
+
+    img.d-block {
+        width: 100%;
+        height: 17rem;
+    }
+</style>
+
+<!--Section: Block Content-->
+<section class="container my-5">
+    <h3>The best tours for you</h3>
+    <!-- Card Start -->
+    <div class="card">
+        <div class="row ">
+            <!-- Carousel start -->
+            <div class="col-md-5">
+                <div id="CarouselTest" class="carousel slide" data-ride="carousel">
+                    <ol class="carousel-indicators">
+                        <li data-target="#CarouselTest" data-slide-to="0" class="active"></li>
+                        <li data-target="#CarouselTest" data-slide-to="1"></li>
+                        <li data-target="#CarouselTest" data-slide-to="2"></li>
+
+                    </ol>
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img class="d-block" src="https://hcmuni.fpt.edu.vn/Data/Sites/1/media/2020-kim-vi/seo/campus/1-truong-dai-hoc-fpt-tphcm/truong-dai-hoc-fpt-tp-hcm-(1).jpg" alt="">
                         </div>
-                        <div class="card-body">
-                            <h5 class="card-title"> <a href="#">Thành phố Hồ Chí Minh - Phan Thiết</a></h5>
-                            <p class="card-text">Ngày khởi hành: 30/3/2021</p>
-                            <p class="card-text">Thời gian khởi hành: 9:30 A.M</p>
-                            <p class="card-text">Giá tiền: <b>350,000</b></p>
-                            <a href="#" class="btn btn-success"> Read More </a>
+                        <div class="carousel-item">
+                            <img class="d-block" src="https://ss-images.saostar.vn/wp700/2020/02/15/6994345/10campusdhfpttphcm.jpg" alt="">
                         </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-1 mb-4">
-                    <div class="card">
-                        <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
-                            <img src="~/images/da_lat.png" class="img-fluid" style="height:300px ; width:400px">
+                        <div class="carousel-item">
+                            <img class="d-block" src="https://t.vietgiaitri.com/2020/2/6/vong-quanh-campus-xin-so-cua-dh-fpt-tphcm-van-ngo-ngach-song-ao-co-so-vat-chat-chang-kem-canh-truong-quoc-te-db8.jpg" alt="">
                         </div>
-                        <div class="card-body">
-                            <h5 class="card-title"> <a href="#">Thành phố Hồ Chí Minh -Thành phố Đà Lạt</a></h5>
-                            <p class="card-text">Ngày khởi hành: 24/5/2021</p>
-                            <p class="card-text">Thời gian khởi hành: 5:30 A.M</p>
-                            <p class="card-text">Giá tiền: <b>600,000</b></p>
-                            <a href="#" class="btn btn-success"> Read More </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-1 mb-4">
-                    <div class="card">
-                        <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
-                            <img src="~/images/da_nang.jpg" class="img-fluid" style="height:300px ; width:400px">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title"> <a href="#">Thành phố Hồ Chí Minh -Thành phố Đà Nẵng</a></h5>
-                            <p class="card-text">Ngày khởi hành: 30/5/2021</p>
-                            <p class="card-text">Thời gian khởi hành: 6:45 P.M</p>
-                            <p class="card-text">Giá tiền: <b>2,000,000</b></p>
-                            <a href="#" class="btn btn-success"> Read More </a>
-                        </div>
+                        <a class="carousel-control-prev" href="#CarouselTest" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#CarouselTest" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
                     </div>
                 </div>
             </div>
+            <!-- End of carousel -->
+            <div class="col-md-7 px-3">
+                <div class="card-block px-6">
+                    <h4 class="card-title">Tour FPT Campus HCM</h4>
+                    <p class="card-text text-secondary">
+                        The Carousel code can be replaced with an img src, no problem. The added CSS brings shadow to the card and some adjustments to the prev/next buttons and the indicators is rounded now. As in Bootstrap 3
+                    </p>
+                    <div class="d-flex">
+                        <span class="bg-light-blue mr-2">Ha Noi <i class="fas fa-exchange-alt"></i> Ho Chi Minh</span>
+                        <span class="bg-light-green mr-2">New Addition</span>
+                        <span class="bg-light-red mr-2">Hot Trend</span>
+                    </div>
+                    <br>
+                    <a href="#" class="mt-auto btn btn-outline-primary  ">Read More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="row ">
+            <!-- Carousel start -->
+            <div class="col-md-5">
+                <div id="CarouselTest" class="carousel slide" data-ride="carousel">
+                    <ol class="carousel-indicators">
+                        <li data-target="#CarouselTest" data-slide-to="0" class="active"></li>
+                        <li data-target="#CarouselTest" data-slide-to="1"></li>
+                        <li data-target="#CarouselTest" data-slide-to="2"></li>
 
+                    </ol>
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img class="d-block" src="http://divui.com/blog/wp-content/uploads/2018/03/du-lich-da-lat-cuoi-tuan-cover.jpg" alt="">
+                        </div>
+                        <div class="carousel-item">
+                            <img class="d-block" src="https://saoviettravel.com.vn/wp-content/uploads/2014/07/tour-du-lich-sai-gon-da-lat-4-ngay-3-dem_saoviettravel.jpg" alt="">
+                        </div>
+                        <div class="carousel-item">
+                            <img class="d-block" src="https://ladalathotel.com.vn/wp-content/uploads/2021/01/cac-dia-diem-du-lich.jpg" alt="">
+                        </div>
+                        <a class="carousel-control-prev" href="#CarouselTest" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#CarouselTest" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- End of carousel -->
+            <div class="col-md-7 px-3">
+                <div class="card-block px-6">
+                    <h4 class="card-title">Tour TP HCM - Đà Lạt</h4>
+                    <p class="card-text text-secondary">
+                        The Carousel code can be replaced with an img src, no problem. The added CSS brings shadow to the card and some adjustments to the prev/next buttons and the indicators is rounded now. As in Bootstrap 3
+                    </p>
+                    <div class="d-flex">
+                        <span class="bg-light-blue mr-2">Tp Hcm <i class="fas fa-exchange-alt"></i> Tp Da Lat</span>
+                        <span class="bg-light-green mr-2">New Addition</span>
+                        <span class="bg-light-red mr-2">Hot Trend</span>
+                    </div>
+                    <br>
+                    <a href="#" class="mt-auto btn btn-outline-primary  ">Read More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="row ">
+            <!-- Carousel start -->
+            <div class="col-md-5">
+                <div id="CarouselTest" class="carousel slide" data-ride="carousel">
+                    <ol class="carousel-indicators">
+                        <li data-target="#CarouselTest" data-slide-to="0" class="active"></li>
+                        <li data-target="#CarouselTest" data-slide-to="1"></li>
+                        <li data-target="#CarouselTest" data-slide-to="2"></li>
+
+                    </ol>
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img class="d-block" src="https://znews-photo.zadn.vn/w660/Uploaded/neg_dfnvszp/2017_10_11/1_e.jpg" alt="">
+                        </div>
+                        <div class="carousel-item">
+                            <img class="d-block" src="https://media.gody.vn/images/hinh-tong-hop/Ta-Nang-Phan-Dung-kinh-nghiem-trekking-gody/3-2018/73708501-20180315100238-hinh-tong-hop-ta-nang-phan-dung-kinh-nghiem-trekking-gody.jpg" alt="">
+                        </div>
+                        <div class="carousel-item">
+                            <img class="d-block" src="https://www.dalattrip.com/dulich/media/2018/07/cung-duong-Ta-Nang-Phan-Dung.jpg" alt="">
+                        </div>
+                        <a class="carousel-control-prev" href="#CarouselTest" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#CarouselTest" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- End of carousel -->
+            <div class="col-md-7 px-3">
+                <div class="card-block px-6">
+                    <h4 class="card-title">Tour Tà Năng - Phan Dũng</h4>
+                    <p class="card-text text-secondary">
+                        The Carousel code can be replaced with an img src, no problem. The added CSS brings shadow to the card and some adjustments to the prev/next buttons and the indicators is rounded now. As in Bootstrap 3
+                    </p>
+                    <div class="d-flex">
+                        <span class="bg-light-blue mr-2">Ta Nang <i class="fas fa-exchange-alt"></i> Phan Dung</span>
+                        <span class="bg-light-green mr-2">New Addition</span>
+                        <span class="bg-light-red mr-2">Hot Trend</span>
+                    </div>
+                    <br>
+                    <a href="#" class="mt-auto btn btn-outline-primary  ">Read More</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
-</div>
+<!--Section: Block Content-->
