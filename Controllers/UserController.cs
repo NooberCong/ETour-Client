@@ -30,7 +30,7 @@ namespace Client.Controllers
         {
             return View();
         }
-        public IActionResult TicketLists()
+        public IActionResult UpcomingTrip()
         {
             return View();
         }
