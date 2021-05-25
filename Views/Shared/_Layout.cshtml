@@ -30,21 +30,21 @@
                         </li>
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-white" asp-area="" asp-controller="User" asp-action="Index">@User.Identity.Name</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white" asp-area="" asp-controller="Booking" asp-action="Index">Bookings</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white" asp-area="" asp-controller="Auth" asp-action="Logout">Log out</a>
-                            </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-controller="Booking" asp-action="Index">Bookings</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-controller="User" asp-action="Index">@User.Identity.Name</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-controller="Auth" asp-action="SignOut">Sign out</a>
+                        </li>
                         }
                         else
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-white" asp-area="" asp-controller="Auth" asp-action="Index">Sign in</a>
-                            </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-controller="Auth" asp-action="Index">Sign in</a>
+                        </li>
                         }
                     </ul>
                 </div>
