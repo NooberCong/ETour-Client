@@ -7,7 +7,7 @@
     3. [Requirement Specification](https://docs.google.com/document/d/1cTx8uCCb07HLOZkmZJ7bheEYuyOe3X-ngbSz3TiqzDo/edit)
     4. [Product Backlog](https://docs.google.com/spreadsheets/d/1KCh0IHx4Ok8Bf7TwpvkT0PkQzumL2766WhjGFniofNs/edit#gid=0)
 2. Diagrams
-    1.[Use Case Diagram](https://lucid.app/lucidchart/db1cbef1-f40d-43a4-a3b3-ee54f75ce431/edit?page=0_0#)
+    1. [Use Case Diagram](https://lucid.app/lucidchart/db1cbef1-f40d-43a4-a3b3-ee54f75ce431/edit?page=0_0#)
     2. [Class Diagram](https://lucid.app/lucidchart/1078a848-ee0b-440d-9177-f98ae5730026/edit)
     3. [Client Screen Flow](https://lucid.app/lucidchart/72010873-fe22-476a-8a28-9012d268fd30/edit)
     4. [Company Screen Flow](https://lucid.app/lucidchart/71e397ae-d6de-445e-84ea-7b170f070d7a/edit)
