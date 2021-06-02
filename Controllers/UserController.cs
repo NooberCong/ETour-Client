@@ -46,10 +46,10 @@ namespace Client.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(Customer cs)
+        public async Task<IActionResult> Index(Customer? cs)
         {
-            string customerID = User.Claims.First(c1 => c1.Type == ClaimTypes.NameIdentifier).Value;
-            Customer Customer = await _customerRepository.FindAsync(customerID);
+            
+            Customer Customer = await _customerRepository.FindAsync(cs.ID);
             Customer = cs;
             IEnumerable<Booking> bookingList = _bookingRepository.Queryable.Include(bk => bk.Trip).ThenInclude(tr => tr.Tour);
             await _unitOfWork.CommitAsync();
@@ -66,24 +66,13 @@ namespace Client.Controllers
             return View();
         }
 
-        // Display user info edit screen
-        // Return View(userInfo)
-   
-        // Action for editting user info, this action is called when a form is sent(POST) to the action
-        // Param user represents the updated user instance, object is used as a placeholder class because User class is not written
-        // Return View(userInfo) with update status (fail/sucess)
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+     
        
-
-        // Display trips that user has bought tickets for, including the option to review the trip (redirect to the tour details page)
-        // Parameter pageNumber specify which set of trip record to display according to pageSize
-        // Return View(tripHistoryList)
         public IActionResult OrderHistory()
         {
-            IEnumerable<Order> objList= _orderRepository.Queryable.Include(cu => cu.Customer);
+            IEnumerable<Order> OrderList= _orderRepository.Queryable.Include(cu => cu.Customer);
 
-            return View(objList);
+            return View(OrderList);
         }
 
         public class UserHomeViewModel
