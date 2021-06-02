@@ -1,10 +1,24 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Core.Entities;
+using Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Client.Controllers
 {
+    [Authorize]
     public class UserController : Controller
     {
-        private static readonly int _historyPageSize = 5;
+        private readonly ICustomerRepository _customerRepository;
+        private readonly IUnitOfWork _unitOfWork;
+
+        public UserController(ICustomerRepository customerRepository, IUnitOfWork unitOfWork)
+        {
+            _customerRepository = customerRepository;
+            _unitOfWork = unitOfWork;
+        }
 
         // Display user main screen, including user details and list of upcoming trips
         // View(userHomeViewModel)
@@ -22,8 +36,20 @@ namespace Client.Controllers
 
         // Display user info edit screen
         // Return View(userInfo)
-        public IActionResult UpdateInfo()
+        public async Task<IActionResult> UpdateInfo()
         {
+            // Lấy ID của ng dùng
+            string customerID = User.Claims.First(cl => cl.Type == ClaimTypes.NameIdentifier).Value;
+
+            // Vào database lấy các dữ liệu còn lại
+            Customer customer = await _customerRepository.FindAsync(customerID);
+
+            // Update dữ liệu, ví dụ name
+            customer.Name = "Lai Dinh Thuan";
+
+            // Lưu các thay đổi vào database
+            await _unitOfWork.CommitAsync();
+
             return View();
         }
       

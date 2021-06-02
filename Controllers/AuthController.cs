@@ -51,10 +51,6 @@ namespace Client.Controllers
             var result = await HttpContext.AuthenticateAsync(ExternalAuthenticationDefaults.AuthenticationScheme);
 
             var externalClaims = result.Principal.Claims.ToList();
-            foreach (var claim in externalClaims)
-            {
-                Console.WriteLine($"{claim.Type}:{claim.Value}");
-            }
 
             var subjectID = externalClaims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
 
@@ -92,7 +88,7 @@ namespace Client.Controllers
             return LocalRedirect(result.Properties.Items["returnUrl"]);
         }
 
-        public async Task<IActionResult> SignOut()
+        public async Task<IActionResult> SignOutAsync()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return LocalRedirect("/");
