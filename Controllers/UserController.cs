@@ -65,7 +65,7 @@ namespace Client.Controllers
         // Return View(tripHistoryList)
         public IActionResult OrderHistory()
         {
-            IEnumerable<Order> objList= _orderRepository.Queryable.Include(bk=> bk.Bookings).ThenInclude(or=>or.Order).ThenInclude(cu=>cu.Customer);
+            IEnumerable<Order> objList= _orderRepository.Queryable.Include(cu => cu.Customer);
 
             return View(objList);
         }
