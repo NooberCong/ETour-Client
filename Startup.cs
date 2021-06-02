@@ -46,7 +46,7 @@ namespace ETourClient
                     op.ClientSecret = Configuration["GoogleOAuth:ClientSecret"];
                     op.ClaimActions.MapJsonKey("image", "picture");
                 });
-            services.AddSignalR();
+            services.AddETourLogging();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
