@@ -11,25 +11,25 @@ namespace Client.Controllers
 {
     public class UserController : Controller
     {
-        private readonly IBookingRepository _booking;
-        private readonly ITripRepository _trip;
-        private readonly ITourRepository _tour;
-        private readonly ICustomerRepository _customer;
-        private readonly IOrderRepository _order;
+        private readonly IBookingRepository _bookingRepository;
+        private readonly ITripRepository _tripRepository;
+        private readonly ITourRepository _tourRepository;
+        private readonly ICustomerRepository _customerRepository;
+        private readonly IOrderRepository _orderRepository;
         public UserController(IOrderRepository order, ICustomerRepository customer,IBookingRepository booking, ITripRepository trip, ITourRepository tour)
         {
-            _order = order;
-            _booking=booking;
-            _trip = trip;
-            _tour = tour;
-            _customer = customer;
+            _orderRepository = order;
+            _bookingRepository=booking;
+            _tripRepository = trip;
+            _tourRepository = tour;
+            _customerRepository = customer;
         }
 
         // Display user main screen, including user details and list of upcoming trips
         // View(userHomeViewModel)
         public IActionResult Index()
         {
-            IEnumerable<Booking> objList = _booking.Queryable.Include(bk => bk.Trip).ThenInclude(tr => tr.Tour);
+            IEnumerable<Booking> objList = _bookingRepository.Queryable.Include(bk => bk.Trip).ThenInclude(tr => tr.Tour);
             return View(objList);
         }
 
@@ -65,7 +65,7 @@ namespace Client.Controllers
         // Return View(tripHistoryList)
         public IActionResult OrderHistory()
         {
-            IEnumerable<Order> objList= _order.Queryable.Include(bk=> bk.Bookings).ThenInclude(or=>or.Order).ThenInclude(cu=>cu.Customer);
+            IEnumerable<Order> objList= _orderRepository.Queryable.Include(bk=> bk.Bookings).ThenInclude(or=>or.Order).ThenInclude(cu=>cu.Customer);
 
             return View(objList);
         }
