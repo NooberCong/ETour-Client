@@ -1,38 +1,159 @@
-﻿@{
+﻿@model Client.Models.UserHomeModel
+@{
     ViewData["Title"] = "User Info";
 }
 <style>
-    .mb-1, .my-1 {
-        margin-bottom: .25rem !important;
+
+    .cardWrap {
+        width: 31em;
+        color: #fff;
+        font-family: sans-serif;
     }
 
-    .h4, h4 {
-        font-size: 1.5rem;
+    .card {
+        background: linear-gradient(to bottom, #e84c3d 0%, #e84c3d 26%, #ecedef 26%, #ecedef 100%);
+        height: 16em;
+        float: left;
+        position: relative;
+        padding: 1em;
+        margin-top: 10px;
     }
 
-    .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
-        margin-bottom: .5rem;
-        font-weight: 500;
-        line-height: 1.2;
+    .cardLeft {
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+        width: 19em;
     }
 
-    h4 {
-        display: block;
-        margin-block-start: 1.33em;
-        margin-block-end: 1.33em;
-        margin-inline-start: 0px;
-        margin-inline-end: 0px;
-        font-weight: bold;
+    .cardRight {
+        width: 10em;
+        border-left: 0.18em dashed #fff;
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
     }
 
-    .mb-3, .my-3 {
-        margin-bottom: 1rem !important;
+        .cardRight:before, .cardRight:after {
+            content: "";
+            position: absolute;
+            display: block;
+            width: 0.9em;
+            height: 0.9em;
+            background: #fff;
+            border-radius: 50%;
+            left: -0.5em;
+        }
+
+        .cardRight:before {
+            top: -0.4em;
+        }
+
+        .cardRight:after {
+            bottom: -0.4em;
+        }
+
+    h1 {
+        font-size: 1.1em;
+        margin-top: 0;
     }
 
-    .small, small {
-        font-size: 80%;
-        font-weight: 400;
+        h1 span {
+            font-weight: normal;
+        }
+
+    .title, .name, .seat, .time {
+        text-transform: uppercase;
+        font-weight: bolder;
     }
+
+        .title h2, .name h2, .seat h2, .time h2 {
+            font-size: 0.9em;
+            color: #525252;
+            margin-left: 17em;
+            font-weight: bold;
+        }
+
+        .title span, .name span, .seat span, .time span {
+            font-size: 1em;
+            color: #a2aeae;
+        }
+
+    .title {
+        margin: 2em 0 0 0;
+    }
+
+    .name, .time {
+        margin: 0.5em 0 0 0;
+    }
+
+
+
+    .seat, .time {
+        float: left;
+    }
+
+    .eye {
+        position: relative;
+        width: 2em;
+        height: 1.5em;
+        background: #fff;
+        margin: 0 auto;
+        border-radius: 1em/0.6em;
+        z-index: 1;
+    }
+
+        .eye:before, .eye:after {
+            content: "";
+            display: block;
+            position: absolute;
+            border-radius: 50%;
+        }
+
+        .eye:before {
+            width: 1em;
+            height: 1em;
+            background: #e84c3d;
+            z-index: 2;
+            left: 8px;
+            top: 4px;
+        }
+
+        .eye:after {
+            width: 0.5em;
+            height: 0.5em;
+            background: #fff;
+            z-index: 3;
+            left: 12px;
+            top: 8px;
+        }
+
+    .number {
+        text-align: center;
+        text-transform: uppercase;
+    }
+
+        .number h3 {
+            color: #e84c3d;
+            margin: 0.9em 0 0 0;
+            font-size: 2.5em;
+        }
+
+        .number span {
+            display: block;
+            color: #a2aeae;
+        }
+
+    .barcode {
+        height: 2em;
+        width: 0;
+        margin-right: 3em;
+        margin-left: 1.3em;
+        box-shadow: 1px 0 0 1px #343434, 5px 0 0 1px #343434, 10px 0 0 1px #343434, 11px 0 0 1px #343434, 15px 0 0 1px #343434, 18px 0 0 1px #343434, 22px 0 0 1px #343434, 23px 0 0 1px #343434, 26px 0 0 1px #343434, 30px 0 0 1px #343434, 35px 0 0 1px #343434, 37px 0 0 1px #343434, 41px 0 0 1px #343434, 44px 0 0 1px #343434, 47px 0 0 1px #343434, 51px 0 0 1px #343434, 56px 0 0 1px #343434, 59px 0 0 1px #343434, 64px 0 0 1px #343434, 68px 0 0 1px #343434, 72px 0 0 1px #343434, 74px 0 0 1px #343434, 77px 0 0 1px #343434, 81px 0 0 1px #343434;
+    }
+
+
+
+
+
 
     a:link {
         color: pink;
@@ -46,282 +167,82 @@
     a:hover {
         color: white;
     }
-
-    .card-cont {
-        background-color: #DADDE6;
-    }
-
-    .date time span:first-child {
-        color: #2b2b2b;
-        font-weight: 600;
-        font-size: 250%;
-    }
-
-    .date time span:last-child {
-        text-transform: uppercase;
-        font-weight: 600;
-        margin-top: -10px;
-    }
-
-    .date time span {
-        display: block;
-    }
-
-    .date time {
-        display: block;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        -webkit-transform: translate(-50%, -50%);
-        -ms-transform: translate(-50%, -50%);
-        transform: translate(-50%, -50%);
-    }
-
-        .date time span:last-child {
-            text-transform: uppercase;
-            font-weight: 600;
-            margin-top: -10px;
-        }
-
-    .date {
-        display: table-cell;
-        width: 15%;
-        position: relative;
-        text-align: center;
-        border-right: 2px dashed #dadde6;
-        background-color: #DADDE6;
-        border-right: 2px dashed white;
-    }
-
-    .card-cont {
-        display: table-cell;
-        width: 50%;
-        font-size: 85%;
-        padding: 10px 10px 30px 50px;
-    }
-
-    .card {
-        display: table-row;
-        width: 820%;
-        background-color: #fff;
-        color: #989898;
-        margin-bottom: 20px;
-        font-family: 'Oswald', sans-serif;
-        text-transform: uppercase;
-        border-radius: 4px;
-        position: relative;
-    }
-
-    .fl-left {
-        float: left;
-    }
-
-    .date:after {
-        bottom: -15px;
-        content: "";
-        display: block;
-        width: 30px;
-        height: 30px;
-        background-color: white;
-        position: absolute;
-        right: -17px;
-        z-index: 1;
-        border-radius: 50%;
-    }
-
-    .date:before {
-        content: "";
-        display: block;
-        width: 30px;
-        height: 30px;
-        background-color: white;
-        position: absolute;
-        top: -14px;
-        right: -17px;
-        z-index: 1;
-        border-radius: 50%;
-    }
 </style>
 
 <div class="container my-5">
     <div class="row justify-content-between">
-        <div class="row">
-            <div class="col-md-6">
-                <form>
-                    <div class="row align-items-center">
-                        <div class="col-md-12 text-center mb-5">
-                            <div class="avatar avatar-xl">
-                                <img src="https://scontent.fsgn5-5.fna.fbcdn.net/v/t1.6435-1/c44.44.992.992a/s200x200/95368735_10158240018321670_7935172930873327616_n.jpg?_nc_cat=1&ccb=1-3&_nc_sid=1eb0c7&_nc_ohc=q8WBEqnpe4cAX-_IBBW&_nc_ht=scontent.fsgn5-5.fna&tp=28&oh=194737ddfbf869d1cdcee092a23200d8&oe=60D179C6" alt="..." class="avatar-img rounded-circle">
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="firstname">Firstname</label>
-                            <input type="text" id="firstname" class="form-control" placeholder="Thuận">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="lastname">Lastname</label>
-                            <input type="text" id="lastname" class="form-control" placeholder="Lại Đình">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="inputEmail4">Email</label>
-                        <input type="email" class="form-control" id="inputEmail4" placeholder="laidinhthuan123@gmail.com">
-                    </div>
-                    <div class="form-group">
-                        <label for="inputAddress5">Address</label>
-                        <input type="text" class="form-control" id="inputAddress5" placeholder="Lô E2a-7, Đường D1, Khu Công Nghệ Cao, Long Thạnh Mỹ, Quận 9">
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="inputCompany5">Company</label>
-                            <input type="text" class="form-control" id="inputCompany5" placeholder="FPT University">
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="inputState5">State</label>
-                            <select id="inputState5" class="form-control">
-                                <option selected="">Choose...</option>
-                                <option>...</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-2">
-                            <label for="inputZip5">Zip</label>
-                            <input type="text" class="form-control" id="inputZip5" placeholder="70000">
-                        </div>
-                    </div>
-                    <hr class="my-4">
-
-
-
-                    <button type="submit" class="btn btn-primary">Save Change</button>
-
-
-                </form>
-            </div>
-            <div class="col-md-6">
-
-                <div class="d-flex justify-content-between mb-3">
-                    <h3>Upcoming trip</h3>
-                    <a class="btn btn-success" asp-controller="User" asp-action="TripHistory">Trip History</a>
+        <div class="col-md-5">
+            <form method="post">
+                <div class="form-group row justify-content-center">
+                    <input type="hidden" asp-for="Customer.ImgUrl" />
+                    <img class="img-fluid w-50 rounded" src="@Model.Customer.ImgUrl">
                 </div>
-
-                <section class="container">
-
-                    <div class="row">
-                        <article class="card fl-left">
-                            <section class="date">
-                                <time datetime="23th dec">
-                                    <span>23</span><span>dec</span>
-                                </time>
-                            </section>
-                            <section class="card-cont">
-
-                                <h3>Sydney</h3>
-                                <div class="even-date">
-                                    <i class="fa fa-calendar"></i>
-                                    <time>
-                                        <span>wednesday 28 december 2014</span>
-                                        <span>08:55pm to 12:00 am</span>
-                                    </time>
-                                </div>
-                                <div class="even-info">
-                                    <i class="fa fa-map-marker"></i>
-                                    <p>
-                                        nexen square for people australia, sydney
-                                    </p>
-                                </div>
-
-                            </section>
-                        </article>
-                        <article class="card fl-left">
-                            <section class="date">
-                                <time datetime="23th dec">
-                                    <span>23</span><span>dec</span>
-                                </time>
-                            </section>
-                            <section class="card-cont">
-
-                                <h3>Ho Chi Minh city</h3>
-                                <div class="even-date">
-                                    <i class="fa fa-calendar"></i>
-                                    <time>
-                                        <span>wednesday 28 december 2014</span>
-                                        <span>08:55pm to 12:00 am</span>
-                                    </time>
-                                </div>
-                                <div class="even-info">
-                                    <i class="fa fa-map-marker"></i>
-                                    <p>
-                                        nexen square for people australia, sydney
-                                    </p>
-                                </div>
-
-                            </section>
-                        </article>
-                    </div>
-
-                    <div class="row">
-                        <article class="card fl-left">
-                            <section class="date">
-                                <time datetime="23th dec">
-                                    <span>23</span><span>dec</span>
-                                </time>
-                            </section>
-                            <section class="card-cont">
-
-                                <h3>Ha Noi city</h3>
-                                <div class="even-date">
-                                    <i class="fa fa-calendar"></i>
-                                    <time>
-                                        <span>wednesday 28 december 2014</span>
-                                        <span>08:55pm to 12:00 am</span>
-                                    </time>
-                                </div>
-                                <div class="even-info">
-                                    <i class="fa fa-map-marker"></i>
-                                    <p>
-                                        nexen square for people australia, sydney
-                                    </p>
-                                </div>
-
-                            </section>
-                        </article>
-                        <article class="card fl-left">
-                            <section class="date">
-                                <time datetime="23th dec">
-                                    <span>23</span><span>dec</span>
-                                </time>
-                            </section>
-                            <section class="card-cont">
-
-                                <h3>Ba Na hill</h3>
-                                <div class="even-date">
-                                    <i class="fa fa-calendar"></i>
-                                    <time>
-                                        <span>wednesday 28 december 2014</span>
-                                        <span>08:55pm to 12:00 am</span>
-                                    </time>
-                                </div>
-                                <div class="even-info">
-                                    <i class="fa fa-map-marker"></i>
-                                    <p>
-                                        nexen square for people australia, sydney
-                                    </p>
-                                </div>
-
-                            </section>
-                        </article>
-                    </div>
+                <div class="form-group ">
+                    <label asp-for="Customer.Name"></label>
+                    <input class="form-control" asp-for="Customer.Name">
+                    <span asp-validation-for="Customer.Name"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Customer.Email"></label>
+                    <input class="form-control" asp-for="Customer.Email">
+                    <span asp-validation-for="Customer.Email"></span>
+                </div>
+                <hr class="my-4">
+                <button type="submit" class="btn btn-primary">
+                    Save User
+                </button>
+            </form>
+        </div>
 
 
+        <div class="col-md-5 col-offset-md-1">
 
-                </section>
+            <div class="d-flex">
+                <h3>Upcoming trip</h3>
+                <a class="btn btn-success ml-auto" asp-controller="User" asp-action="OrderHistory">Order History</a>
             </div>
+            @if (Model.Bookings.Count() > 0)
+            {
+                @foreach (var obj in Model.Bookings)
+                {<div class="row">
+                        <div class="cardWrap">
+                            <div class="card cardLeft">
+                                <h1>@obj.Trip.Tour.StartPlace - @obj.Trip.Tour.Destination</h1>
+                                <div class="title">
+                                    <span>tripid</span>
+                                    <h2>@obj.TripID</h2>
+                                </div>
+                                <div class="name">
+                                    <span>capacity</span>
+                                    <h2>@obj.Trip.Capacity</h2>
+                                </div>
+
+                                <div class="time">
+                                    <span>time</span>
+                                    <h2 style="margin-left:15em;">@obj.Trip.StartTime.Hour : @obj.Trip.StartTime.Minute</h2>
+                                </div>
+
+                            </div>
+                            <div class="card cardRight">
+                                <div class="eye"></div>
+                                <div class="number">
+                                    <h3>@obj.Trip.Price</h3>
+                                    <span>price</span>
+                                </div>
+                                <div class="barcode"></div>
+                            </div>
+
+                        </div>
+                    </div>}
+            }
+            else
+            {
+                {<p class="text-muted">You current have no active bookings</p>}
+            }
         </div>
     </div>
-</div>
 
+
+</div>
 
 

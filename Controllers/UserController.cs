@@ -1,32 +1,60 @@
-﻿using Core.Entities;
+﻿using Client.Models;
+using Core.Entities;
 using Core.Interfaces;
-using Microsoft.AspNetCore.Authorization;
+using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Client.Controllers
 {
-    [Authorize]
     public class UserController : Controller
     {
+        private readonly IBookingRepository _bookingRepository;
+        private readonly ITripRepository _tripRepository;
+        private readonly ITourRepository _tourRepository;
         private readonly ICustomerRepository _customerRepository;
+        private readonly IOrderRepository _orderRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public UserController(ICustomerRepository customerRepository, IUnitOfWork unitOfWork)
+        public UserController(IUnitOfWork unitOfWork, IOrderRepository orderRepository, ICustomerRepository customerRepository, IBookingRepository bookingRepository, ITripRepository tripRepository, ITourRepository tourRepository)
         {
-            _customerRepository = customerRepository;
             _unitOfWork = unitOfWork;
+            _orderRepository = orderRepository;
+            _bookingRepository = bookingRepository;
+            _tripRepository = tripRepository;
+            _tourRepository = tourRepository;
+            _customerRepository = customerRepository;
+
         }
 
         // Display user main screen, including user details and list of upcoming trips
         // View(userHomeViewModel)
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            string customerID = User.Claims.First(c1 => c1.Type == ClaimTypes.NameIdentifier).Value;
+            IEnumerable<Booking> bookingList = _bookingRepository.Queryable.Include(bk => bk.Trip).ThenInclude(tr => tr.Tour);
+            Customer customer = await _customerRepository.FindAsync(customerID);
+            return View(new UserHomeModel
+            {
+                Bookings = bookingList,
+                Customer = customer
+            });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Index(Customer customer)
+        {
+            string customerID = User.Claims.First(c1 => c1.Type == ClaimTypes.NameIdentifier).Value;
+            customer.ID = customerID;
+
+            await _customerRepository.UpdateAsync(customer);
+            await _unitOfWork.CommitAsync();
+            return RedirectToAction("Index");
+        }
         // Display list of tours that user followed
         // Return View(listFavoriteTours)
         public IActionResult Favourite()
@@ -34,40 +62,13 @@ namespace Client.Controllers
             return View();
         }
 
-        // Display user info edit screen
-        // Return View(userInfo)
-        public async Task<IActionResult> UpdateInfo()
+
+
+        public IActionResult OrderHistory()
         {
-            // Lấy ID của ng dùng
-            string customerID = User.Claims.First(cl => cl.Type == ClaimTypes.NameIdentifier).Value;
+            IEnumerable<Order> OrderList = _orderRepository.Queryable.Include(cu => cu.Customer);
 
-            // Vào database lấy các dữ liệu còn lại
-            Customer customer = await _customerRepository.FindAsync(customerID);
-
-            // Update dữ liệu, ví dụ name
-            customer.Name = "Lai Dinh Thuan";
-
-            // Lưu các thay đổi vào database
-            await _unitOfWork.CommitAsync();
-
-            return View();
-        }
-      
-        // Action for editting user info, this action is called when a form is sent(POST) to the action
-        // Param user represents the updated user instance, object is used as a placeholder class because User class is not written
-        // Return View(userInfo) with update status (fail/sucess)
-        [HttpPost]
-        public IActionResult UpdateInfo(object user)
-        {
-            return View();
-        }
-
-        // Display trips that user has bought tickets for, including the option to review the trip (redirect to the tour details page)
-        // Parameter pageNumber specify which set of trip record to display according to pageSize
-        // Return View(tripHistoryList)
-        public IActionResult TripHistory(int pageNumber=1)
-        {
-            return View();
+            return View(OrderList);
         }
 
         public class UserHomeViewModel

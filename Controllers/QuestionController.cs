@@ -19,7 +19,7 @@ namespace Client.Controllers
 
         // Display details of a specific question, including it's anwers
         // Return View(question)
-        public IActionResult Details(int? id)
+        public IActionResult Details(int id)
         {
             return View();
         }
