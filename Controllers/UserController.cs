@@ -20,15 +20,15 @@ namespace Client.Controllers
         private readonly IOrderRepository _orderRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public UserController(IUnitOfWork unitOfWork,IOrderRepository orderRepository, ICustomerRepository customerRepository,IBookingRepository bookingRepository, ITripRepository tripRepository, ITourRepository tourRepository)
+        public UserController(IUnitOfWork unitOfWork, IOrderRepository orderRepository, ICustomerRepository customerRepository, IBookingRepository bookingRepository, ITripRepository tripRepository, ITourRepository tourRepository)
         {
             _unitOfWork = unitOfWork;
             _orderRepository = orderRepository;
-            _bookingRepository=bookingRepository;
+            _bookingRepository = bookingRepository;
             _tripRepository = tripRepository;
             _tourRepository = tourRepository;
             _customerRepository = customerRepository;
-            
+
         }
 
         // Display user main screen, including user details and list of upcoming trips
@@ -42,22 +42,19 @@ namespace Client.Controllers
             {
                 booking = bookingList,
                 customer = customer
-            }) ;
+            });
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(Customer? cs)
+        public async Task<IActionResult> Index(Customer cs)
         {
-            
-            Customer Customer = await _customerRepository.FindAsync(cs.ID);
-            Customer = cs;
-            IEnumerable<Booking> bookingList = _bookingRepository.Queryable.Include(bk => bk.Trip).ThenInclude(tr => tr.Tour);
+            string customerID = User.Claims.First(c1 => c1.Type == ClaimTypes.NameIdentifier).Value;
+            cs.ID = customerID;
+
+           await _customerRepository.UpdateAsync(cs);
+
             await _unitOfWork.CommitAsync();
-            return View(new UserHomeModel
-            {
-                booking = bookingList,
-                customer = Customer
-            });
+            return RedirectToAction("Index");
         }
         // Display list of tours that user followed
         // Return View(listFavoriteTours)
@@ -66,11 +63,11 @@ namespace Client.Controllers
             return View();
         }
 
-     
-       
+
+
         public IActionResult OrderHistory()
         {
-            IEnumerable<Order> OrderList= _orderRepository.Queryable.Include(cu => cu.Customer);
+            IEnumerable<Order> OrderList = _orderRepository.Queryable.Include(cu => cu.Customer);
 
             return View(OrderList);
         }

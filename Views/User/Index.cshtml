@@ -26,7 +26,7 @@
     }
 
     .cardRight {
-        width:10em;
+        width: 10em;
         border-left: 0.18em dashed #fff;
         border-top-right-radius: 8px;
         border-bottom-right-radius: 8px;
@@ -66,28 +66,26 @@
     }
 
         .title h2, .name h2, .seat h2, .time h2 {
-            font-size:0.9em;
+            font-size: 0.9em;
             color: #525252;
             margin-left: 17em;
-            font-weight:bold;
+            font-weight: bold;
         }
 
         .title span, .name span, .seat span, .time span {
             font-size: 1em;
             color: #a2aeae;
-           
         }
 
     .title {
         margin: 2em 0 0 0;
-      
     }
 
     .name, .time {
         margin: 0.5em 0 0 0;
     }
 
-   
+
 
     .seat, .time {
         float: left;
@@ -147,15 +145,15 @@
     .barcode {
         height: 2em;
         width: 0;
-        margin-right:3em;
-        margin-left:1.3em;
+        margin-right: 3em;
+        margin-left: 1.3em;
         box-shadow: 1px 0 0 1px #343434, 5px 0 0 1px #343434, 10px 0 0 1px #343434, 11px 0 0 1px #343434, 15px 0 0 1px #343434, 18px 0 0 1px #343434, 22px 0 0 1px #343434, 23px 0 0 1px #343434, 26px 0 0 1px #343434, 30px 0 0 1px #343434, 35px 0 0 1px #343434, 37px 0 0 1px #343434, 41px 0 0 1px #343434, 44px 0 0 1px #343434, 47px 0 0 1px #343434, 51px 0 0 1px #343434, 56px 0 0 1px #343434, 59px 0 0 1px #343434, 64px 0 0 1px #343434, 68px 0 0 1px #343434, 72px 0 0 1px #343434, 74px 0 0 1px #343434, 77px 0 0 1px #343434, 81px 0 0 1px #343434;
     }
 
-   
-  
-   
-  
+
+
+
+
 
     a:link {
         color: pink;
@@ -169,20 +167,13 @@
     a:hover {
         color: white;
     }
-
-   
-   
-  
-    
 </style>
 
 <div class="container my-5">
     <div class="row justify-content-center">
         <div class="row">
             <div class="col-md-6">
-                <form method="post" asp-action="Index">
-                    <input asp-for="customer.ID" hidden />
-                    <input asp-for="customer.IsDeleted" hidden />
+                <form method="post">
                     <div class="row align-items-center">
                         <div class="col-md-12 text-center mb-5">
                             <div class="avatar avatar-xl">
@@ -203,19 +194,15 @@
                         <label asp-for="customer.Email" style="font-weight:bold"></label><br />
                         <input asp-for="customer.Email" style="width:30em;">
                     </div>
-
                     <hr class="my-4">
-
-
-
                     <button type="submit" class="btn btn-primary">Save Change</button>
 
 
                 </form>
             </div>
 
-           
-            <div class="col-md-6"  >
+
+            <div class="col-md-6">
 
                 <div class="row ">
                     <h3>Upcoming trip</h3>
@@ -223,37 +210,37 @@
                 </div>
                 @if (Model.booking.Count() > 0)
                 {
-                @foreach (var obj in Model.booking)
-                {   <div class="row">
-                    <div class="cardWrap">
-                        <div class="card cardLeft">
-                            <h1>@obj.Trip.Tour.StartPlace - @obj.Trip.Tour.Destination</h1>
-                            <div class="title">
-                                <span>tripid</span>
-                                <h2>@obj.TripID</h2>
-                            </div>
-                            <div class="name">
-                                <span>capacity</span>
-                                <h2>@obj.Trip.Capacity</h2>
-                            </div>
-                            
-                            <div class="time">
-                                <span>time</span>
-                                <h2 style="margin-left:15em;">@obj.Trip.StartTime.Hour : @obj.Trip.StartTime.Minute</h2>
-                            </div>
+                    @foreach (var obj in Model.booking)
+                    {<div class="row">
+                            <div class="cardWrap">
+                                <div class="card cardLeft">
+                                    <h1>@obj.Trip.Tour.StartPlace - @obj.Trip.Tour.Destination</h1>
+                                    <div class="title">
+                                        <span>tripid</span>
+                                        <h2>@obj.TripID</h2>
+                                    </div>
+                                    <div class="name">
+                                        <span>capacity</span>
+                                        <h2>@obj.Trip.Capacity</h2>
+                                    </div>
 
-                        </div>
-                        <div class="card cardRight">
-                            <div class="eye"></div>
-                            <div class="number">
-                                <h3>@obj.Trip.Price</h3>
-                                <span>price</span>
-                            </div>
-                            <div class="barcode"></div>
-                        </div>
+                                    <div class="time">
+                                        <span>time</span>
+                                        <h2 style="margin-left:15em;">@obj.Trip.StartTime.Hour : @obj.Trip.StartTime.Minute</h2>
+                                    </div>
 
-                    </div>
-                </div>} 
+                                </div>
+                                <div class="card cardRight">
+                                    <div class="eye"></div>
+                                    <div class="number">
+                                        <h3>@obj.Trip.Price</h3>
+                                        <span>price</span>
+                                    </div>
+                                    <div class="barcode"></div>
+                                </div>
+
+                            </div>
+                        </div>}
                 }
                 else
                 {<p>No Booking</p>}
