@@ -16,13 +16,13 @@ namespace Client.Controllers
         private readonly ITourRepository _tourRepository;
         private readonly ICustomerRepository _customerRepository;
         private readonly IOrderRepository _orderRepository;
-        public UserController(IOrderRepository order, ICustomerRepository customer,IBookingRepository booking, ITripRepository trip, ITourRepository tour)
+        public UserController(IOrderRepository orderRepository, ICustomerRepository customerRepository,IBookingRepository bookingRepository, ITripRepository tripRepository, ITourRepository tourRepository)
         {
-            _orderRepository = order;
-            _bookingRepository=booking;
-            _tripRepository = trip;
-            _tourRepository = tour;
-            _customerRepository = customer;
+            _orderRepository = orderRepository;
+            _bookingRepository=bookingRepository;
+            _tripRepository = tripRepository;
+            _tourRepository = tourRepository;
+            _customerRepository = customerRepository;
         }
 
         // Display user main screen, including user details and list of upcoming trips
