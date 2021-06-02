@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Core.Entities.Order>
+﻿
 @{
     ViewData["Title"] = "Order History";
 }
@@ -31,8 +31,9 @@
                 <tr>
                     <th>ID</th>
                     <th>Price</th>
+                    <th>Paid</th>
                     <th>Date</th>
-                    <th>Other info</th>
+                    <th>Order by</th>
                 </tr>
                 @if (Model.Count() > 0)
                 {
@@ -40,9 +41,14 @@
                     {
                         <tr>
                             <td>@obj.ID</td>
-                            <td>@obj.IsPaid</td>
-                            <td>23 December</td>
-                            <td>___</td>
+                            <td>@obj.TotalPaid</td>
+                            @if (@obj.IsPaid)
+                            {
+                            <td class="text-success">Paid</td>}
+                            else
+                            {<td class="text-danger">Not yet</td>}
+                            <td>@obj.DateOrdered</td>
+                            <td>@obj.Customer.Name</td>
                         </tr>
                     } }
                 else

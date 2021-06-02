@@ -15,8 +15,8 @@ namespace Client.Controllers
         private readonly ITripRepository _trip;
         private readonly ITourRepository _tour;
         private readonly ICustomerRepository _customer;
-        private readonly ETourDbContext _order;
-        public UserController(ETourDbContext order, ICustomerRepository customer,IBookingRepository booking, ITripRepository trip, ITourRepository tour)
+        private readonly IOrderRepository _order;
+        public UserController(IOrderRepository order, ICustomerRepository customer,IBookingRepository booking, ITripRepository trip, ITourRepository tour)
         {
             _order = order;
             _booking=booking;
@@ -65,7 +65,7 @@ namespace Client.Controllers
         // Return View(tripHistoryList)
         public IActionResult OrderHistory()
         {
-            IEnumerable<Order> objList= _order.Orders;
+            IEnumerable<Order> objList= _order.Queryable.Include(bk=> bk.Bookings).ThenInclude(or=>or.Order).ThenInclude(cu=>cu.Customer);
 
             return View(objList);
         }
