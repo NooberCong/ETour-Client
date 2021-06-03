@@ -47,6 +47,7 @@ namespace ETourClient
                     op.ClaimActions.MapJsonKey("image", "picture");
                 });
             services.AddETourLogging();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

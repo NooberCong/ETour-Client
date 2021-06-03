@@ -88,7 +88,7 @@ namespace Client.Controllers
             return LocalRedirect(result.Properties.Items["returnUrl"]);
         }
 
-        public async Task<IActionResult> SignOut()
+        public new async Task<IActionResult> SignOut()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return LocalRedirect("/");
