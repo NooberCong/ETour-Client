@@ -37,7 +37,9 @@ namespace Client.Controllers
         {
             string customerID = User.Claims.First(c1 => c1.Type == ClaimTypes.NameIdentifier).Value;
             IEnumerable<Booking> bookingList = _bookingRepository.Queryable.Include(bk => bk.Trip).ThenInclude(tr => tr.Tour);
+            
             Customer customer = await _customerRepository.FindAsync(customerID);
+
             return View(new UserHomeModel
             {
                 Bookings = bookingList,
@@ -50,7 +52,7 @@ namespace Client.Controllers
         {
             string customerID = User.Claims.First(c1 => c1.Type == ClaimTypes.NameIdentifier).Value;
             customer.ID = customerID;
-
+            
             await _customerRepository.UpdateAsync(customer);
             await _unitOfWork.CommitAsync();
             return RedirectToAction("Index");
@@ -62,13 +64,23 @@ namespace Client.Controllers
             return View();
         }
 
-
+       
 
         public IActionResult OrderHistory()
         {
             IEnumerable<Order> OrderList = _orderRepository.Queryable.Include(cu => cu.Customer);
 
             return View(OrderList);
+        }
+        public async Task<IActionResult> Cancel(int? id)
+        {
+
+
+            Trip Trips = await _tripRepository.FindAsync((int)id);
+            Trips.IsOpen = false;
+            await _tripRepository.UpdateAsync(Trips);
+            await _unitOfWork.CommitAsync();
+            return RedirectToAction("Index");
         }
 
         public class UserHomeViewModel
