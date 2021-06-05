@@ -174,7 +174,7 @@
         <div class="col-md-5">
             <form method="post">
                 <div class="form-group row justify-content-center">
-                    <input type="hidden" asp-for="Customer.ImgUrl" />
+                    <input type="hidden" asp-for="@Model.Customer.ImgUrl" />
                     <img class="img-fluid w-50 rounded" src="@Model.Customer.ImgUrl">
                 </div>
                 <div class="form-group ">
@@ -239,7 +239,7 @@
                                 </div>
                                 <div class="barcode"></div>
                                 <hr />
-                                <a class="btn btn-primary" asp-action="Cancel" asp-route-id="@obj.TripID">Cancel</a>
+                              
                             </div>
 
                         </div>

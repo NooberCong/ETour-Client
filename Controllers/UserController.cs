@@ -47,6 +47,7 @@ namespace Client.Controllers
             });
         }
 
+        //GET- main screen
         [HttpPost]
         public async Task<IActionResult> Index(Customer customer)
         {
@@ -57,35 +58,30 @@ namespace Client.Controllers
             await _unitOfWork.CommitAsync();
             return RedirectToAction("Index");
         }
-        // Display list of tours that user followed
-        // Return View(listFavoriteTours)
-        public IActionResult Favourite()
-        {
-            return View();
-        }
-
+       
        
 
+        //Display order history
         public IActionResult OrderHistory()
         {
             IEnumerable<Order> OrderList = _orderRepository.Queryable.Include(cu => cu.Customer);
 
             return View(OrderList);
         }
-        public async Task<IActionResult> Cancel(int? id)
+
+        //Search for order
+        [HttpPost]
+        public async Task<IActionResult> SearchOrder(int? id)
         {
-
-
-            Trip Trips = await _tripRepository.FindAsync((int)id);
-            Trips.IsOpen = false;
-            await _tripRepository.UpdateAsync(Trips);
-            await _unitOfWork.CommitAsync();
-            return RedirectToAction("Index");
+            if (id == null)
+            {
+                return NotFound();
+            }
+           Order order = await _orderRepository.FindAsync((int)id);
+           
+            
+            return View(order);
         }
 
-        public class UserHomeViewModel
-        {
-            // User details and Recently viewed trips go here
-        }
     }
 }
