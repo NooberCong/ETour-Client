@@ -174,7 +174,7 @@
         <div class="col-md-5">
             <form method="post">
                 <div class="form-group row justify-content-center">
-                    <input type="hidden" asp-for="Customer.ImgUrl" />
+                    <input type="hidden" asp-for="@Model.Customer.ImgUrl" />
                     <img class="img-fluid w-50 rounded" src="@Model.Customer.ImgUrl">
                 </div>
                 <div class="form-group ">
@@ -208,8 +208,11 @@
             </div>
             @if (Model.Bookings.Count() > 0)
             {
+
                 @foreach (var obj in Model.Bookings)
-                {<div class="row">
+                {@if (obj.Trip.IsOpen == true) { 
+                
+                    <div class="row">
                         <div class="cardWrap">
                             <div class="card cardLeft">
                                 <h1>@obj.Trip.Tour.StartPlace - @obj.Trip.Tour.Destination</h1>
@@ -236,12 +239,12 @@
                                 </div>
                                 <div class="barcode"></div>
                                 <hr />
-                                <a class="btn btn-warning">Cancel</a>
+                              
                             </div>
 
                         </div>
-                    </div>}
-            }
+                    </div>} }
+                }
             else
             {
                 {<p class="text-muted">You current have no active bookings</p>}
