@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Core.Entities.Order>
+﻿@*@model IEnumerable<Core.Entities.Order>
 @{
     ViewData["Title"] = "Order History";
 }
@@ -38,14 +38,14 @@
                 </tr>
                 @if (Model.Count() > 0)
                 {
-                    @foreach (var obj in Model)
+                    @foreach (var order in Model)
                     {
                         <tr>
-                            <td class="text-center">@obj.ID</td>
-                            <td class="text-center">@obj.TotalPaid</td>
+                            <td class="text-center">@order.ID</td>
+                            <td class="text-center">@order.TotalPaid</td>
 
-                            <td class="text-center">@obj.DatePaid.Day / @obj.DatePaid.Month / @obj.DatePaid.Year</td>
-                            <td class="text-center">@obj.DatePaid.Hour : @obj.DatePaid.Minute</td>
+                            <td class="text-center">@order.DatePaid.Day / @order.DatePaid.Month / @order.DatePaid.Year</td>
+                            <td class="text-center">@order.DatePaid.Hour : @order.DatePaid.Minute</td>
 
                         </tr>
                     } }
@@ -63,4 +63,4 @@
             </table>
         </div>
     </div>
-</div>
+</div>*@

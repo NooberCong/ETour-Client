@@ -10,14 +10,14 @@ namespace Client.Controllers
 {
     [Authorize]
 
-    
+
     public class BookingController : Controller
     {
         private readonly IBookingRepository _bookingRepository;
         private readonly IUnitOfWork _unitOfWork;
         // Display list of the tickets user had added to cart but not yet paid for
         // Return View(bookingList)
-        public BookingController(IUnitOfWork unitOfWork,IBookingRepository bookingrepository)
+        public BookingController(IUnitOfWork unitOfWork, IBookingRepository bookingrepository)
         {
             _bookingRepository = bookingrepository;
             _unitOfWork = unitOfWork;
@@ -49,12 +49,12 @@ namespace Client.Controllers
         }
 
 
-        public async Task<IActionResult> Remove(int n)
+        public async Task<IActionResult> Remove(int id)
         {
-            
-           Booking bookings = await _bookingRepository.FindAsync(n);
+
+            Booking bookings = await _bookingRepository.FindAsync(id);
             await _bookingRepository.DeleteAsync(bookings);
-           
+
             await _unitOfWork.CommitAsync();
             return RedirectToAction("Index");
         }

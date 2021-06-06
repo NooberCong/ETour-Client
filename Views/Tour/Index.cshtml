@@ -87,86 +87,64 @@
 <section class="container my-5">
     <h3>The best tours for you</h3>
     <!-- Card Start -->
-    @if (Model.Tours.Count() > 0)
+    @foreach (var tour in Model.Tours)
     {
-        @foreach (var tour in Model.Tours)
-        {
-            <div class="card" asp-controller="Tour">
-                <div class="row ">
-                    
+        <div class="card" asp-controller="Tour">
+            <div class="row ">
+                <!-- Carousel start -->
+                <div class="col-md-5">
 
-                        <!-- Carousel start -->
-                    <div class="col-md-5">
-                      
-                        <div id="CarouselTest" class="carousel slide" data-ride="carousel">
-                            <ol class="carousel-indicators">
-                                <li data-target="#CarouselTest" data-slide-to="0" class="active"></li>
-                                <li data-target="#CarouselTest" data-slide-to="1" ></li>
-                                <li data-target="#CarouselTest" data-slide-to="2" ></li>
+                    <div id="carousel-@tour.ID" class="carousel slide" data-ride="carousel">
+                        <ol class="carousel-indicators">
+                            @for (int i = 0; i < tour.ImageUrls.Count; i++)
+                            {
+                                <li data-target="#carousel-@tour.ID" data-slide-to="@i" class="@(i == 0? "active": "")"></li>
+                            }
+                        </ol>
+                        <div class="carousel-inner">
 
-                            </ol>
-                            <div class="carousel-inner">
+                            @for (int i = 0; i < tour.ImageUrls.Count; i++)
+                            {
+                                <div class="carousel-item @(i == 0? "active": "")">
+                                    <img class="d-block" src="@tour.ImageUrls[i]" alt="">
+                                </div>
+                            }
 
-                                @for (int i = 0; i < tour.ImageUrls.Count; i++)
-                                {
-                                    if (i == 0)
-                                    {
-                                        <div class="carousel-item active">
-                                            <img class="d-block" src="@tour.ImageUrls[i]" alt="">
-                                        </div>
-                                    }
-                                    else
-                                    {
-                                        <div class="carousel-item ">
-                                            <img class="d-block" src="@tour.ImageUrls[i]" alt="">
-                                        </div>}
-
-
-                                }
-
-                                <a class="carousel-control-prev" href="#CarouselTest" role="button" data-slide="prev">
-                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                    <span class="sr-only">Previous</span>
-                                </a>
-                                <a class="carousel-control-next" href="#CarouselTest" role="button" data-slide="next">
-                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                    <span class="sr-only">Next</span>
-                                </a>
-
-                            </div>
-                            
-                        </div>
-                       
-                    </div>
-                    <!-- End of carousel -->
-
-                    <div class="col-md-7 px-3">
-                        <div class="card-block px-6">
-
-                            <h4 class="card-title">@tour.Title</h4>
-                            <p class="card-text text-secondary">
-                                @tour.Description
-                            </p>
-                            <div class="d-flex">
-                                <span class="bg-light-blue mr-2">@tour.StartPlace <i class="fas fa-exchange-alt"></i> @tour.Destination</span>
-                                <span class="bg-light-green mr-2">New Addition</span>
-                                <span class="bg-light-red mr-2">Hot Trend</span>
-                            </div>
-                            <br>
-                            <a href="#" class="mt-auto btn btn-outline-primary  ">Read More</a>
-
+                            <a class="carousel-control-prev" href="#carousel-@tour.ID" role="button" data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            <a class="carousel-control-next" href="#carousel-@tour.ID" role="button" data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Next</span>
+                            </a>
                         </div>
                     </div>
-
-                    
                 </div>
+                <!-- End of carousel -->
 
-            </div>                    }
-        }
-else
+                <div class="col-md-7 px-3">
+                    <div class="card-block px-6">
+
+                        <h4 class="card-title">@tour.Title</h4>
+                        <p class="card-text text-secondary">
+                            @tour.Description
+                        </p>
+                        <div class="d-flex">
+                            <span class="bg-light-blue mr-2">@tour.StartPlace <i class="fas fa-exchange-alt"></i> @tour.Destination</span>
+                            <span class="bg-light-green mr-2">New Addition</span>
+                            <span class="bg-light-red mr-2">Hot Trend</span>
+                        </div>
+                        <br>
+                        <a href="#" class="mt-auto btn btn-outline-primary  ">Read More</a>
+                    </div>
+                </div>
+            </div>
+        </div>}
+
+    @if (!Model.Tours.Any())
     {
         {<p class="text-muted">There current have no tour</p>}
     }
-   
+
 </section>
-<!--Section: Block Content-->
