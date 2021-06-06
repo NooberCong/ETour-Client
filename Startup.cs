@@ -30,8 +30,7 @@ namespace ETourClient
 
             });
             services.AddControllersWithViews();
-            services.AddDatabase();
-            services.AddAzureStorage();
+            services.AddBaseDb();
             services.AddEmailService();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(op =>
