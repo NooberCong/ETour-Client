@@ -81,15 +81,32 @@
         width: 100%;
         height: 17rem;
     }
+
+    #parallax {
+        /* The image used */
+        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/images/forest.jpg");
+        /* Set a specific height */
+        min-height: 20rem;
+        /* Create the parallax scrolling effect */
+        background-attachment: fixed;
+        background-position: bottom;
+        background-repeat: no-repeat;
+        background-blend-mode: darken;
+        background-size: cover;
+    }
 </style>
 
+<div id="parallax" class="d-flex align-items-center justify-content-center">
+    <h1 class="display-3 text-white">Our Tours</h1>
+</div>
+
 <!--Section: Block Content-->
-<section class="container my-5">
-    <h3>The best tours for you</h3>
+<section class="container mb-5">
+    
     <!-- Card Start -->
     @foreach (var tour in Model.Tours)
     {
-        <div class="card" asp-controller="Tour">
+        <div class="card shadow" asp-controller="Tour">
             <div class="row ">
                 <!-- Carousel start -->
                 <div class="col-md-5">
@@ -136,7 +153,7 @@
                             <span class="bg-light-red mr-2">Hot Trend</span>
                         </div>
                         <br>
-                        <a href="#" class="mt-auto btn btn-outline-primary  ">Read More</a>
+                        <a href="#" class="btn btn-outline-primary">View trips</a>
                     </div>
                 </div>
             </div>
