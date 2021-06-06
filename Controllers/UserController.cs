@@ -37,7 +37,9 @@ namespace Client.Controllers
         {
             string customerID = User.Claims.First(c1 => c1.Type == ClaimTypes.NameIdentifier).Value;
             IEnumerable<Booking> bookingList = _bookingRepository.Queryable.Include(bk => bk.Trip).ThenInclude(tr => tr.Tour);
+            
             Customer customer = await _customerRepository.FindAsync(customerID);
+
             return View(new UserHomeModel
             {
                 Bookings = bookingList,
@@ -45,25 +47,21 @@ namespace Client.Controllers
             });
         }
 
+        //GET- main screen
         [HttpPost]
         public async Task<IActionResult> Index(Customer customer)
         {
             string customerID = User.Claims.First(c1 => c1.Type == ClaimTypes.NameIdentifier).Value;
             customer.ID = customerID;
-
+            
             await _customerRepository.UpdateAsync(customer);
             await _unitOfWork.CommitAsync();
             return RedirectToAction("Index");
         }
-        // Display list of tours that user followed
-        // Return View(listFavoriteTours)
-        public IActionResult Favourite()
-        {
-            return View();
-        }
+       
+       
 
-
-
+        //Display order history
         public IActionResult OrderHistory()
         {
             IEnumerable<Order> OrderList = _orderRepository.Queryable.Include(cu => cu.Customer);
@@ -71,9 +69,19 @@ namespace Client.Controllers
             return View(OrderList);
         }
 
-        public class UserHomeViewModel
+        //Search for order
+        [HttpPost]
+        public async Task<IActionResult> SearchOrder(int? id)
         {
-            // User details and Recently viewed trips go here
+            if (id == null)
+            {
+                return NotFound();
+            }
+           Order order = await _orderRepository.FindAsync((int)id);
+           
+            
+            return View(order);
         }
+
     }
 }

@@ -3,6 +3,7 @@
     ViewData["Title"] = "Order History";
 }
 
+<<<<<<< HEAD
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3">
     <h1 class="h2">Order history</h1>
 </div>
@@ -16,15 +17,14 @@
             <th class="text-center">Order Date</th>
             <th class="text-center">Time</th>
         </tr>
-        @foreach (var obj in Model)
+        @foreach (var order in Model)
         {
             <tr>
-                <td class="text-center">@obj.ID</td>
-                <td class="text-center">@obj.Total</td>
+                <td class="text-center">@order.ID</td>
+                <td class="text-center">@order.Total</td>
 
-                <td class="text-center">@obj.DateCompleted.Day / @obj.DateCompleted.Month / @obj.DateCompleted.Year</td>
-                <td class="text-center">@obj.DateCompleted.Hour : @obj.DateCompleted.Minute</td>
-
+                <td class="text-center">@order.DateCompleted.Day / @order.DateCompleted.Month / @order.DateCompleted.Year</td>
+                <td class="text-center">@order.DateCompleted.Hour : @order.DateCompleted.Minute</td>
             </tr>
         }
     </table>

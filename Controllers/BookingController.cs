@@ -1,16 +1,33 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Core.Entities;
+using Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Client.Controllers
 {
     [Authorize]
+
+    
     public class BookingController : Controller
     {
+        private readonly IBookingRepository _bookingRepository;
+        private readonly IUnitOfWork _unitOfWork;
         // Display list of the tickets user had added to cart but not yet paid for
         // Return View(bookingList)
+        public BookingController(IUnitOfWork unitOfWork,IBookingRepository bookingrepository)
+        {
+            _bookingRepository = bookingrepository;
+            _unitOfWork = unitOfWork;
+
+        }
         public IActionResult Index()
         {
-            return View();
+            IEnumerable<Booking> bookingList = _bookingRepository.Queryable.Include(bk => bk.Trip).ThenInclude(tr => tr.Tour);
+
+            return View(bookingList);
         }
 
         // Display a form for user to enter essential information to add a new booking to cart
@@ -30,6 +47,18 @@ namespace Client.Controllers
         {
             return View();
         }
+
+
+        public async Task<IActionResult> Remove(int n)
+        {
+            
+           Booking bookings = await _bookingRepository.FindAsync(n);
+            await _bookingRepository.DeleteAsync(bookings);
+           
+            await _unitOfWork.CommitAsync();
+            return RedirectToAction("Index");
+        }
+
 
         // Display payment details and a form for user to make payment
         // Return View(paymentModel)

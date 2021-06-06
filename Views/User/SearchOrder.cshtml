@@ -1,0 +1,66 @@
+﻿@model IEnumerable<Core.Entities.Order>
+@{
+    ViewData["Title"] = "Order History";
+}
+
+<style>
+
+    th {
+        color: #4d94ff;
+    }
+</style>
+
+<div class="container bootdey">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Order History</h1>
+        </div>
+        <div class="col-md-12">
+            <form asp-action="SearchOrder" method="post">
+                <input type="text" placeholder="Search by order ID" size="25%">
+                <input type="submit" value="search" />
+            </form>
+            <br />
+        </div>
+        <br />
+        <br />
+        <br />
+
+        <div class="col-md-12 justify-content-between">
+            <table class="table">
+                <tr>
+                    <th class="text-center">ID</th>
+                    <th class="text-center">Price</th>
+                    <th class="text-center">Order Date</th>
+                    <th class="text-center">Time</th>
+
+
+                </tr>
+                @if (Model.Count() > 0)
+                {
+                    @foreach (var obj in Model)
+                    {
+                        <tr>
+                            <td class="text-center">@obj.ID</td>
+                            <td class="text-center">@obj.TotalPaid</td>
+
+                            <td class="text-center">@obj.DatePaid.Day / @obj.DatePaid.Month / @obj.DatePaid.Year</td>
+                            <td class="text-center">@obj.DatePaid.Hour : @obj.DatePaid.Minute</td>
+
+                        </tr>
+                    } }
+                else
+                {
+                    <tr>
+                        @for (int i = 0; i < 5; i++)
+                        {
+                            <td class="text-center">No info</td>
+                        }
+
+                    </tr>
+                }
+
+            </table>
+        </div>
+    </div>
+</div>
