@@ -81,28 +81,15 @@
         width: 100%;
         height: 17rem;
     }
-
-    #parallax {
-        /* The image used */
-        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/images/forest.jpg");
-        /* Set a specific height */
-        min-height: 20rem;
-        /* Create the parallax scrolling effect */
-        background-attachment: fixed;
-        background-position: bottom;
-        background-repeat: no-repeat;
-        background-blend-mode: darken;
-        background-size: cover;
-    }
 </style>
 
-<div id="parallax" class="d-flex align-items-center justify-content-center">
+<div id="parallax" class="d-flex align-items-center justify-content-center" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/images/forest.jpg');">
     <h1 class="display-3 text-white">Our Tours</h1>
 </div>
 
 <!--Section: Block Content-->
 <section class="container mb-5">
-    
+
     <!-- Card Start -->
     @foreach (var tour in Model.Tours)
     {

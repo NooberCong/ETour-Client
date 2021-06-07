@@ -2,5 +2,135 @@
     ViewData["Title"] = "Trips";
 }
 
+<style>
+    .ratings i {
+        font-size: 16px;
+        color: #FFE234;
+    }
 
-<h1>You are in trips page</h1>
+    .strike-text {
+        color: red;
+        text-decoration: line-through;
+    }
+
+    @@media (max-width: 768px) {
+        .price-box {
+            border: none !important;
+        }
+    }
+
+    .bg-light-blue {
+        background-color: #e9f7fe !important;
+        color: #3184ae;
+        padding: 4px 8px;
+        border-radius: 4px;
+    }
+
+    .bg-light-danger {
+        background-color: #e9f7fe !important;
+        color: #3184ae;
+        padding: 4px 8px;
+        border-radius: 4px;
+    }
+</style>
+
+<div id="parallax" class="d-flex justify-content-center align-items-center" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/images/coast.jpg');">
+    <h1 class="display-3 text-white">Our Trips</h1>
+</div>
+
+<div class="overflow-hidden pb-5">
+    <div class="row p-0">
+        <section class="col-md-3">
+            <div class="mx-4 mt-3 ml-md-3 mr-md-0 p-3 bg-white shadow">
+                <h6>Custom Search</h6>
+                <hr>
+                <div class="form-group">
+                    <label for="kw">Keyword</label>
+                    <input id="kw" type="text" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="dd">Tour</label>
+                    <select id="dd" name="dd" class="selectpicker" data-live-search="true" aria-label="Select to add new trip">
+                        <option value="1">Tour Ha Noi</option>
+                        <option value="1">Tour Da Nang</option>
+                        <option value="1">Tour Phu Quoc</option>
+                        <option value="1">Tour Kien Giang</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Starts Before</label>
+                    <input class="form-control" type="date" name="name" value="" />
+                </div>
+                <div class="form-group">
+                    <label>Ends Before</label>
+                    <input class="form-control" type="date" name="name" value="" />
+                </div>
+                <div class="form-group">
+                    <label>Price Range (Sale)</label>
+                    <div class="form-check mb-1">
+                        <input class="form-check-input" id="p1" type="radio" value="1" />
+                        <label class="form-check-label" for="">$0 - $100</label>
+                    </div>
+                    <div class="form-check mb-1">
+                        <input class="form-check-input" id="p1" type="radio" value="1" />
+                        <label class="form-check-label" for="">$100 - $300</label>
+                    </div>
+                    <div class="form-check mb-1">
+                        <input class="form-check-input" id="p1" type="radio" value="1" />
+                        <label class="form-check-label" for="">$300 - $1000</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Min Ratings</label>
+                    <div class="form-check mb-1">
+                        <input class="form-check-input" id="p1" type="radio" value="1" />
+                        <label class="text-warning form-check-label" for=""><i class="fa fa-star"></i></label>
+                    </div>
+                    <div class="form-check mb-1">
+                        <input class="form-check-input" id="p1" type="radio" value="1" />
+                        <label class="text-warning form-check-label" for=""><i class="fa fa-star"></i><i class="fa fa-star"></i></label>
+                    </div>
+                    <div class="form-check mb-1">
+                        <input class="form-check-input" id="p1" type="radio" value="1" />
+                        <label class="text-warning form-check-label" for=""><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></label>
+                    </div>
+                    <div class="form-check mb-1">
+                        <input class="form-check-input" id="p1" type="radio" value="1" />
+                        <label class="text-warning form-check-label" for=""><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></label>
+                    </div>
+                    <div class="form-check mb-1">
+                        <input class="form-check-input" id="p1" type="radio" value="1" />
+                        <label class="text-warning form-check-label" for=""><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></label>
+                    </div>
+                </div>
+                <button class="btn btn-primary mt-3 w-100">Search</button>
+            </div>
+        </section>
+        <section class="col-md-9">
+            <div class="px-5 py-3">
+                <div class="row bg-white shadow pb-3 pb-md-0">
+                    <div class="col-md-4 m-0 p-0 pr-md-3"><img class="img-fluid img-responsive" src="~/images/beach.jpg" style="object-fit: cover; height: 100%; width: 100%"></div>
+                    <div class="col-md-5 mt-3 mt-md-1 p-md-0">
+                        <h5>Tour Campus FPT HCM</h5>
+                        <div class="d-flex flex-row">
+                            <div class="text-warning mr-2"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></div>4.5 of<span class="font-weight-bold ml-1">310 ratings</span> 
+                        </div>
+                        <div class="my-1 mr-3 ">Time frame: <span class="bg-light-blue">25/02/2021 - 30/02/2021</span></div>
+                        <div class="my-1 mr-3">Duration: 2 days</div>
+                        <div class="my-1 mr-3">Open slots: 7</div>
+                        <div class="my-1 mr-3">Start place: TP HCM</div>
+                        <div class="my-1 mr-3">Reward points: 10</div>
+                    </div>
+                    <div class="p-md-3 price-box align-items-center align-content-center col-md-3 border-left mt-1">
+                        <div class="d-flex flex-row align-items-center">
+                            <h4 class="mr-1">$13.99</h4><span class="strike-text">$20.99</span>
+                        </div>
+                        <h6 class="text-success">Free cancelation till 30/5/2020</h6>
+                        <div class="d-flex flex-column mt-4"><button class="btn btn-primary btn-sm" type="button">Details</button><button class="btn btn-outline-primary btn-sm mt-2" type="button">Add to cart</button></div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </div>
+</div>
