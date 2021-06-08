@@ -1,0 +1,36 @@
+﻿@model IEnumerable<Core.Entities.Booking>
+@{
+    ViewData["Title"] = "Booking History";
+}
+<style>
+  
+</style>
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3">
+    <h1 class="h2">Booking history</h1>
+</div>
+
+
+<div class="table-responsive">
+    <table class="table">
+        <tr>
+          
+            <th class="text-center">Last Updated</th>
+            <th class="text-center">Quantity</th>
+            <th class="text-center">Note</th>
+            <th class="text-center">Tour</th>
+            <th class="text-center">Action</th>
+
+        </tr>
+        @foreach (var bk in Model)
+        {
+            <tr>
+                
+                <td class="text-center">@bk.LastUpdated.Day / @bk.LastUpdated.Month / @bk.LastUpdated.Year</td>
+                <td class="text-center">@bk.Quantity</td>
+                <td class="text-center">@bk.Note</td>
+                <td class="text-center">@bk.Trip.Tour.StartPlace - @bk.Trip.Tour.Destination</td>
+                <td class="text-center"><a class="btn btn-link " asp-action="BookingDetail" asp-route-id="@bk.ID">Detail</a></td>
+            </tr>
+        }
+    </table>
+</div>

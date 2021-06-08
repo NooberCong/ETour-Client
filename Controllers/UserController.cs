@@ -61,27 +61,28 @@ namespace Client.Controllers
        
        
 
-        //Display order history
-        public IActionResult OrderHistory()
+        //Display booking history
+        public IActionResult BookingHistory()
         {
-            IEnumerable<Order> OrderList = _orderRepository.Queryable.Include(cu => cu.Customer);
+            IEnumerable<Booking> BookingList = _bookingRepository.Queryable.Include(bk=>bk.Trip).ThenInclude(t=>t.Tour);
 
-            return View(OrderList);
+            return View(BookingList);
         }
 
-        //Search for order
-        [HttpPost]
-        public async Task<IActionResult> SearchOrder(int? id)
+
+        //Display speccific booking detail
+        public async Task<IActionResult> BookingDetail(int id)
         {
-            if (id == null)
+            var booking = await _bookingRepository.Queryable.Include(bk => bk.Trip).ThenInclude(t => t.Tour).FirstOrDefaultAsync(bk=>bk.ID==id);
+        
+            if (booking == null)
             {
                 return NotFound();
             }
-           Order order = await _orderRepository.FindAsync((int)id);
-           
-            
-            return View(order);
+            return View(booking);
         }
+       
+       
 
     }
 }

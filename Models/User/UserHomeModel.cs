@@ -10,6 +10,8 @@ namespace Client.Models
     {
         public Customer Customer { get; set; }
         public IEnumerable<Booking> Bookings { get; set; }
+        public Trip Trips { get; set; }
+        public IEnumerable<Order> Orders { get; set; }
 
     }
 }
