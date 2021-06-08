@@ -10,7 +10,7 @@ namespace Client.Controllers
 {
     [Authorize]
 
-    
+
     public class BookingController : Controller
     {
         private readonly IETourLogger _eTourLogger;
