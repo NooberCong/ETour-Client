@@ -13,15 +13,16 @@ namespace Client.Controllers
 
     public class BookingController : Controller
     {
+        private readonly IETourLogger _eTourLogger;
         private readonly IBookingRepository _bookingRepository;
         private readonly IUnitOfWork _unitOfWork;
         // Display list of the tickets user had added to cart but not yet paid for
         // Return View(bookingList)
-        public BookingController(IUnitOfWork unitOfWork, IBookingRepository bookingrepository)
+        public BookingController(IUnitOfWork unitOfWork,IBookingRepository bookingrepository, IETourLogger eTourLogger)
         {
             _bookingRepository = bookingrepository;
             _unitOfWork = unitOfWork;
-
+            _eTourLogger = eTourLogger;
         }
         public IActionResult Index()
         {
@@ -48,16 +49,26 @@ namespace Client.Controllers
             return View();
         }
 
-
-        public async Task<IActionResult> Remove(int id)
+        [HttpPost]
+        public async Task<IActionResult> Remove(int id, string returnUrl)
         {
+            returnUrl ??= Url.Action("Index");
 
-            Booking bookings = await _bookingRepository.FindAsync(id);
-            await _bookingRepository.DeleteAsync(bookings);
+            Booking booking = await _bookingRepository.FindAsync(id);
 
+            if (booking == null)
+            {
+                return NotFound();
+            }
+
+            await _bookingRepository.DeleteAsync(booking);
+            await _eTourLogger.LogAsync(Log.LogType.Deletion, $"{User.Identity.Name} deleted booking {booking.ID}");
             await _unitOfWork.CommitAsync();
-            return RedirectToAction("Index");
+
+            TempData["StatusMessage"] = "Discount deleted successfully";
+            return LocalRedirect(returnUrl);
         }
+
 
 
         // Display payment details and a form for user to make payment
