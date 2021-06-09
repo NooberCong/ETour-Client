@@ -1,0 +1,905 @@
+﻿@model Trip
+
+@{
+    ViewData["Title"] = $"Trip - {Model.Tour.Title}";
+}
+
+<style>
+    .strike-text {
+        color: red;
+        text-decoration: line-through
+    }
+
+    .total-like {
+        border: 1px solid;
+        border-radius: 50px;
+        display: inline-block;
+        font-weight: 500;
+        height: 34px;
+        line-height: 33px;
+        padding: 0 13px;
+        vertical-align: top
+    }
+
+    .restaurant-detailed-ratings-and-reviews hr {
+        margin: 0 -24px
+    }
+
+    .graph-star-rating-header .star-rating {
+        font-size: 17px
+    }
+
+    .progress {
+        background: #f2f4f8 none repeat scroll 0 0;
+        border-radius: 0
+    }
+
+    .rating-list {
+        display: inline-flex;
+        margin-bottom: 15px;
+        width: 100%
+    }
+
+    .rating-list-left {
+        height: 16px;
+        line-height: 29px;
+        width: 10%
+    }
+
+    .rating-list-center {
+        width: 80%
+    }
+
+    .rating-list-right {
+        line-height: 29px;
+        text-align: right;
+        width: 10%
+    }
+
+    .restaurant-detailed-header-right .btn-success {
+        border-radius: 3px;
+        height: 45px;
+        margin: -18px 0 18px;
+        min-width: 130px;
+        padding: 7px
+    }
+
+    .text-black {
+        color: #000
+    }
+
+    .restaurant-detailed-header-left img {
+        width: 88px;
+        height: 88px;
+        border-radius: 3px;
+        object-fit: cover;
+        box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important
+    }
+
+    .reviews-members .media .mr-3 {
+        width: 56px;
+        height: 56px;
+        object-fit: cover
+    }
+
+    .rounded-pill {
+        border-radius: 50rem !important
+    }
+
+    .total-like {
+        border: 1px solid;
+        border-radius: 50px;
+        display: inline-block;
+        font-weight: 500;
+        height: 34px;
+        line-height: 33px;
+        padding: 0 13px;
+        vertical-align: top
+    }
+
+    .restaurant-detailed-ratings-and-reviews hr {
+        margin: 0 -24px
+    }
+
+    .graph-star-rating-header .star-rating {
+        font-size: 17px
+    }
+
+    .progress {
+        background: #f2f4f8 none repeat scroll 0 0;
+        border-radius: 0;
+        height: 30px
+    }
+
+    .rating-list {
+        display: inline-flex;
+        margin-bottom: 15px;
+        width: 100%
+    }
+
+    .rating-list-left {
+        height: 16px;
+        line-height: 29px;
+        width: 10%
+    }
+
+    .rating-list-center {
+        width: 80%
+    }
+
+    .rating-list-right {
+        line-height: 29px;
+        text-align: right;
+        width: 10%
+    }
+
+    .progress {
+        background: #f2f4f8 none repeat scroll 0 0;
+        border-radius: 0;
+        height: 30px
+    }
+</style>
+
+<div class="container my-5">
+    <!-- Section: Design block -->
+    <section class="">
+        <div class="row">
+            <div class="col-md-7 mb-4 mb-md-0">
+                <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                    <ol class="carousel-indicators">
+                        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                    </ol>
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="https://images.unsplash.com/photo-1614250720417-405a927d2911?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDl8RnpvM3p1T0hONnd8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60" class="d-block w-100" alt="...">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="https://images.unsplash.com/photo-1623163625015-a2ce39de9d10?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDExfEZ6bzN6dU9ITjZ3fHxlbnwwfHx8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60" class="d-block w-100" alt="...">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="https://images.unsplash.com/photo-1614314442865-ce2fb2ade429?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDE1fEZ6bzN6dU9ITjZ3fHxlbnwwfHx8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60" class="d-block w-100" alt="...">
+                        </div>
+                    </div>
+                    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+                <div class="mt-3 d-flex justify-content-between">
+                    <img src="https://images.unsplash.com/photo-1614250720417-405a927d2911?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDl8RnpvM3p1T0hONnd8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60" data-target="#carouselExampleIndicators" data-slide-to="0" class="active mt-2" style="width: 22%;" />
+                    <img src="https://images.unsplash.com/photo-1614250720417-405a927d2911?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDl8RnpvM3p1T0hONnd8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60" data-target="#carouselExampleIndicators" data-slide-to="1" class="mt-2" style="width: 22%;" />
+                    <img src="https://images.unsplash.com/photo-1614250720417-405a927d2911?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDl8RnpvM3p1T0hONnd8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60" data-target="#carouselExampleIndicators" data-slide-to="2" class="mt-2" style="width: 22%;" />
+                    <img src="https://images.unsplash.com/photo-1614250720417-405a927d2911?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDl8RnpvM3p1T0hONnd8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60" data-target="#carouselExampleIndicators" data-slide-to="2" class="mt-2" style="width: 22%;" />
+                </div>
+            </div>
+
+            <div class="col-md-5 mb-4 mb-md-0">
+                <!-- Details -->
+                <div>
+                    <h1 class="fw-bold mb-3 h3">Tour Campus FPT HCM</h1>
+
+                    <div class="d-flex text-warning">
+                        <ul class="d-flex mb-3 p-0 mr-3"
+                            style="list-style: none"
+                            data-mdb-toggle="rating"
+                            data-mdb-readonly="true"
+                            data-mdb-value="4">
+                            <li>
+                                <i class="fas fa-star fa-sm ps-0"
+                                   title="Bad"></i>
+                            </li>
+                            <li>
+                                <i class="fas fa-star fa-sm"
+                                   title="Poor"></i>
+                            </li>
+                            <li>
+                                <i class="fas fa-star fa-sm"></i>
+                            </li>
+                            <li>
+                                <i class="fas fa-star fa-sm"
+                                   title="Good"></i>
+                            </li>
+                            <li>
+                                <i class="fas fa-star fa-sm"
+                                   title="Excellent"></i>
+                            </li>
+                        </ul>
+                        <a href=""><strong class="me-2">4/5</strong>(123 reviews)</a>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex flex-row align-items-center">
+                            <h4 class="mr-1">$13.99</h4><span class="strike-text">$20.99</span>
+                        </div>
+                        <h6 class="text-success">Free cancelation till 30/5/2020</h6>
+                    </div>
+
+                    <p class="text-muted">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Ratione accusantium harum repellendus illo mollitia similique
+                        atque vitae repudiandae animi dolor? Rem eveniet saepe
+                        deserunt aliquam. Enim incidunt quas voluptatibus perferendis.
+                    </p>
+
+                    <div class="table-responsive">
+                        <table class="table table-sm table-borderless mb-0">
+                            <tbody>
+                                <tr>
+                                    <th class="w-25" scope="row">
+                                        <span>Start place</span>
+                                    </th>
+                                    <td>Innovation Building Q12</td>
+                                </tr>
+                                <tr>
+                                    <th class="w-25" scope="row">
+                                        <span>Destination</span>
+                                    </th>
+                                    <td>FPT Campus Q9</td>
+                                </tr>
+                                <tr>
+                                    <th class="w-25" scope="row">
+                                        <span>Tour type</span>
+                                    </th>
+                                    <td>Domestic</td>
+                                </tr>
+                                <tr>
+                                    <th class="w-25" scope="row">
+                                        <span>Time frame</span>
+                                    </th>
+                                    <td><span class="bg-light-primary">15/02/2020 - 20/03/2021</span></td>
+                                </tr>
+                                <tr>
+                                    <th class="w-25" scope="row">
+                                        <span>Vacancies</span>
+                                    </th>
+                                    <td class="text-danger">9 spots left (2 bookings an hour ago)</td>
+                                </tr>
+                                <tr>
+                                    <th class="w-25" scope="row">
+                                        <span>Reward</span>
+                                    </th>
+                                    <td class="text-success">25 points / successful booking</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="ml-3 btn-toolbar">
+                            <button type="button"
+                                    class="btn btn-primary btn-rounded me-2">
+                                <i class="fas fa-cart-plus me-2"></i>Add to cart
+                            </button>
+                            <button href="#!"
+                                    type="button"
+                                    class="btn btn-danger btn-floating ml-2"
+                                    data-mdb-toggle="tooltip"
+                                    title="Add to wishlist">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Details -->
+            </div>
+        </div>
+    </section>
+    <!-- Section: Design block -->
+
+</div>
+<!-- Container for demo purpose -->
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-3">
+            <!-- Tab navs -->
+            <div class="nav flex-column nav-pills text-center position-sticky"
+                 style="top: 50px;"
+                 id="v-pills-tab"
+                 role="tablist"
+                 aria-orientation="vertical">
+                <a class="nav-link active mb-1"
+                   id="v-pills-home-tab"
+                   data-toggle="pill"
+                   href="#v-pills-home"
+                   role="tab"
+                   aria-controls="v-pills-home"
+                   aria-selected="true">Intineraries</a>
+                <a class="nav-link mb-1"
+                   id="v-pills-profile-tab"
+                   data-toggle="pill"
+                   href="#v-pills-profile"
+                   role="tab"
+                   aria-controls="v-pills-profile"
+                   aria-selected="false">Reviews</a>
+                <a class="nav-link mb-1"
+                   id="v-pills-messages-tab"
+                   data-toggle="pill"
+                   href="#v-pills-messages"
+                   role="tab"
+                   aria-controls="v-pills-messages"
+                   aria-selected="false">Policies</a>
+            </div>
+            <!-- Tab navs -->
+        </div>
+
+        <div class="col-md-9">
+            <!-- Tab content -->
+            <div class="tab-content" id="v-pills-tabContent">
+                <div class="tab-pane fade show active"
+                     id="v-pills-home"
+                     role="tabpanel"
+                     aria-labelledby="v-pills-home-tab">
+                    <div class="container pb-2">
+                        <h2 class="font-weight-light text-center mt-0 pb-3">Trip Timeline</h2>
+                        <!-- timeline item 1 -->
+                        <div class="row">
+                            <!-- timeline item 1 left dot -->
+                            <div class="col-auto text-center flex-column d-none d-sm-flex">
+                                <div class="row h-50">
+                                    <div class="col">&nbsp;</div>
+                                    <div class="col">&nbsp;</div>
+                                </div>
+                                <h5 class="m-2">
+                                    <span class="badge badge-pill bg-success border">&nbsp;</span>
+                                </h5>
+                                <div class="row h-50">
+                                    <div class="col border-right">&nbsp;</div>
+                                    <div class="col">&nbsp;</div>
+                                </div>
+                            </div>
+                            <!-- timeline item 1 event content -->
+                            <div class="col py-2">
+                                <div class="card shadow">
+                                    <div class="card-body">
+                                        <div class="float-right text-muted">Mon, Jan 9th 2020 7:00 AM</div>
+                                        <h4 class="card-title">Day 1 Orientation</h4>
+                                        <p class="card-text">Welcome to the campus, introduction and get started with the tour.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/row-->
+                        <!-- timeline item 2 -->
+                        <div class="row">
+                            <div class="col-auto text-center flex-column d-none d-sm-flex">
+                                <div class="row h-50">
+                                    <div class="col border-right">&nbsp;</div>
+                                    <div class="col">&nbsp;</div>
+                                </div>
+                                <h5 class="m-2">
+                                    <span class="badge badge-pill bg-success">&nbsp;</span>
+                                </h5>
+                                <div class="row h-50">
+                                    <div class="col border-right">&nbsp;</div>
+                                    <div class="col">&nbsp;</div>
+                                </div>
+                            </div>
+                            <div class="col py-2">
+                                <div class="card shadow">
+                                    <div class="card-body">
+                                        <div class="float-right text-muted">Tue, Jan 10th 2019 8:30 AM</div>
+                                        <h4 class="card-title">Day 2 Sessions</h4>
+                                        <p class="card-text">Sign-up for the lessons and speakers that coincide with your course syllabus. Meet and greet with instructors.</p>
+                                        <button class="btn btn-sm btn-outline-secondary" type="button" data-target="#t2_details" data-toggle="collapse">Show Details ▼</button>
+                                        <div class="collapse border" id="t2_details">
+                                            <div class="p-2 text-monospace">
+                                                <div>08:30 - 09:00 Breakfast in CR 2A</div>
+                                                <div>09:00 - 10:30 Live sessions in CR 3</div>
+                                                <div>10:30 - 10:45 Break</div>
+                                                <div>10:45 - 12:00 Live sessions in CR 3</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/row-->
+                        <!-- timeline item 3 -->
+                        <div class="row">
+                            <div class="col-auto text-center flex-column d-none d-sm-flex">
+                                <div class="row h-50">
+                                    <div class="col border-right">&nbsp;</div>
+                                    <div class="col">&nbsp;</div>
+                                </div>
+                                <h5 class="m-2">
+                                    <span class="badge badge-pill bg-success border">&nbsp;</span>
+                                </h5>
+                                <div class="row h-50">
+                                    <div class="col border-right">&nbsp;</div>
+                                    <div class="col">&nbsp;</div>
+                                </div>
+                            </div>
+                            <div class="col py-2">
+                                <div class="card shadow">
+                                    <div class="card-body">
+                                        <div class="float-right text-muted">Wed, Jan 11th 2019 8:30 AM</div>
+                                        <h4 class="card-title">Day 3 Sessions</h4>
+                                        <p>
+                                            Shoreditch vegan artisan Helvetica. Tattooed Codeply Echo Park Godard kogi, next level irony ennui twee squid fap selvage. Meggings flannel Brooklyn literally small batch, mumblecore PBR try-hard kale chips. Brooklyn vinyl lumbersexual
+                                            bicycle rights, viral fap cronut leggings squid chillwave pickled gentrify mustache. 3 wolf moon hashtag church-key Odd Future. Austin messenger bag normcore, Helvetica Williamsburg sartorial tote bag distillery Portland before
+                                            they sold out gastropub taxidermy Vice.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/row-->
+                        <!-- timeline item 4 -->
+                        <div class="row">
+                            <div class="col-auto text-center flex-column d-none d-sm-flex">
+                                <div class="row h-50">
+                                    <div class="col border-right">&nbsp;</div>
+                                    <div class="col">&nbsp;</div>
+                                </div>
+                                <h5 class="m-2">
+                                    <span class="badge badge-pill bg-success border">&nbsp;</span>
+                                </h5>
+                                <div class="row h-50">
+                                    <div class="col">&nbsp;</div>
+                                    <div class="col">&nbsp;</div>
+                                </div>
+                            </div>
+                            <div class="col py-2">
+                                <div class="card shadow">
+                                    <div class="card-body">
+                                        <div class="float-right text-muted">Thu, Jan 12th 2019 11:30 AM</div>
+                                        <h4 class="card-title">Day 4 Wrap-up</h4>
+                                        <p>Join us for lunch in Bootsy's cafe across from the Campus Center.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--/row-->
+                    </div>
+                    <!--container-->
+                </div>
+                <div class="tab-pane fade"
+                     id="v-pills-profile"
+                     role="tabpanel"
+                     aria-labelledby="v-pills-profile-tab">
+                    <div class="container">
+
+                        <div class="bg-white rounded shadow-sm p-4 mb-4 clearfix graph-star-rating">
+                            <h5 class="mb-0 mb-4">Ratings and Reviews</h5>
+                            <div class="graph-star-rating-header">
+                                <div class="star-rating text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i> <b class="text-black ml-2">334</b>
+                                </div>
+                                <p class="text-black mb-4 mt-2">Rated 3.5 out of 5</p>
+                            </div>
+                            <div class="graph-star-rating-body">
+                                <div class="rating-list">
+                                    <div class="rating-list-left text-black">
+                                        5 Star
+                                    </div>
+                                    <div class="rating-list-center">
+                                        <div class="progress">
+                                            <div style="width: 56%" aria-valuemax="5" aria-valuemin="0" aria-valuenow="5" role="progressbar" class="progress-bar bg-primary">
+                                                <span class="sr-only">80% Complete (danger)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="rating-list-right text-black">56%</div>
+                                </div>
+                                <div class="rating-list">
+                                    <div class="rating-list-left text-black">
+                                        4 Star
+                                    </div>
+                                    <div class="rating-list-center">
+                                        <div class="progress">
+                                            <div style="width: 23%" aria-valuemax="5" aria-valuemin="0" aria-valuenow="5" role="progressbar" class="progress-bar bg-primary">
+                                                <span class="sr-only">80% Complete (danger)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="rating-list-right text-black">23%</div>
+                                </div>
+                                <div class="rating-list">
+                                    <div class="rating-list-left text-black">
+                                        3 Star
+                                    </div>
+                                    <div class="rating-list-center">
+                                        <div class="progress">
+                                            <div style="width: 11%" aria-valuemax="5" aria-valuemin="0" aria-valuenow="5" role="progressbar" class="progress-bar bg-primary">
+                                                <span class="sr-only">80% Complete (danger)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="rating-list-right text-black">11%</div>
+                                </div>
+                                <div class="rating-list">
+                                    <div class="rating-list-left text-black">
+                                        2 Star
+                                    </div>
+                                    <div class="rating-list-center">
+                                        <div class="progress">
+                                            <div style="width: 2%" aria-valuemax="5" aria-valuemin="0" aria-valuenow="5" role="progressbar" class="progress-bar bg-primary">
+                                                <span class="sr-only">80% Complete (danger)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="rating-list-right text-black">02%</div>
+                                </div>
+                            </div>
+                            <div class="graph-star-rating-footer text-center mt-3 mb-3">
+                                <button type="button" class="btn btn-outline-primary btn-sm">Rate and Review</button>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded shadow-sm p-4 mb-4 restaurant-detailed-ratings-and-reviews">
+                            <a href="#" class="btn btn-outline-primary btn-sm float-right">Top Rated</a>
+                            <h5 class="mb-1">All Ratings and Reviews</h5>
+                            <div class="reviews-members pt-4 pb-4">
+                                <div class="media">
+                                    <a href="#"><img alt="Generic placeholder image" src="http://bootdey.com/img/Content/avatar/avatar1.png" class="mr-3 rounded-pill"></a>
+                                    <div class="media-body">
+                                        <div class="reviews-members-header">
+                                            <span class="star-rating float-right text-warning">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                            </span>
+                                            <h6 class="mb-1"><a class="text-black" href="#">Singh Osahan</a></h6>
+                                            <p class="text-gray">Tue, 20 Mar 2020</p>
+                                        </div>
+                                        <div class="reviews-members-body">
+                                            <p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections </p>
+                                        </div>
+                                        <div class="reviews-members-footer">
+                                            <a class="total-like" href="#"><span data-feather="thumbs-down"></span> 88K</a> <a class="total-like" href="#"><span data-feather="thumbs-down"></span> 1K</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="reviews-members pt-4 pb-4">
+                                <div class="media">
+                                    <a href="#"><img alt="Generic placeholder image" src="http://bootdey.com/img/Content/avatar/avatar6.png" class="mr-3 rounded-pill"></a>
+                                    <div class="media-body">
+                                        <div class="reviews-members-header">
+                                            <span class="star-rating float-right text-warning">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                            </span>
+                                            <h6 class="mb-1"><a class="text-black" href="#">Gurdeep Singh</a></h6>
+                                            <p class="text-gray">Tue, 20 Mar 2020</p>
+                                        </div>
+                                        <div class="reviews-members-body">
+                                            <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</p>
+                                        </div>
+                                        <div class="reviews-members-footer">
+                                            <a class="total-like" href="#"><span data-feather="thumbs-down"></span> 88K</a> <a class="total-like" href="#"><span data-feather="thumbs-down"></span> 1K</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <a class="text-center w-100 d-block mt-4 font-weight-bold" href="#">See All Reviews</a>
+                        </div>
+                        <div class="bg-white rounded shadow-sm p-4 mb-5 rating-review-select-page">
+                            <h5 class="mb-4">Leave Comment</h5>
+                            <p class="mb-2">Rate the Place</p>
+                            <div class="mb-4">
+                                <span class="star-rating text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </span>
+                            </div>
+                            <form>
+                                <div class="form-group">
+                                    <label>Your Comment</label>
+                                    <textarea class="form-control"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-primary btn-sm" type="button"> Submit Comment </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade"
+                     id="v-pills-messages"
+                     role="tabpanel"
+                     aria-labelledby="v-pills-messages-tab">
+                    <div class="card shadow-sm">
+                        <div class="card-header"><h3>Trip policies</h3></div>
+                        <div class="card-body">
+                            <div style="text-align: justify;">
+                                <div>
+                                    <strong>Lưu ý:&nbsp;&nbsp;</strong>
+                                </div>
+                                <div>
+                                    - Hành trình có thể thay đổi thứ tự điểm đến tùy vào điều kiện thực tế.&nbsp;
+                                </div>
+                                <div>
+                                    - Lịch trình tham quan (tắm biển, ngắm hoa, trải nghiệm,...) rất dễ bị ảnh hưởng bởi thời tiết. Đây là trường hợp bất khả kháng mong Quý khách hiểu và thông cảm.
+                                </div>
+                                <div>
+                                    - Khách Sạn có thể ở xa trung tâm thành phố vào các mùa Cao Điểm.
+                                </div>
+                                <div>
+                                    &nbsp;
+                                </div>
+                                <div>
+                                    <strong>Giá tour bao gồm:&nbsp;</strong>
+                                </div>
+                                <div>
+                                    - Xe tham quan (15, 25, 35, 45 chỗ tùy theo số lượng khách) theo chương trình.
+                                </div>
+                                <div>
+                                    - Khách sạn 4 sao – 5 sao theo tiêu chuẩn 2 khách/phòng hoặc 3 khách/phòng&nbsp;
+                                </div>
+                                <div>
+                                    - Vé tham quan theo chương trình&nbsp;&nbsp;
+                                </div>
+                                <div>
+                                    - Hướng dẫn viên tiếng Việt nối tuyến
+                                </div>
+                                <div>
+                                    - Bảo hiểm du lịch với mức bồi thường cao nhất 120.000.000đ/vụ
+                                </div>
+                                <div>
+                                    - Nón Vietravel + Nước suối + Khăn lạnh&nbsp;
+                                </div>
+                                <div>
+                                    - Thuế VAT.
+                                </div>
+                                <div>
+                                    &nbsp;
+                                </div>
+                                <div>
+                                    <strong>Giá tour không bao gồm:&nbsp;</strong>
+                                </div>
+                                <div>
+                                    - Vé máy bay.
+                                </div>
+                                <div>
+                                    - Chi phí cá nhân: ăn uống ngoài chương trình, giặt ủi, chi phí hủy đổi hành trình và nâng hạng chuyến bay, hành lý quá cước, phụ thu phòng đơn,…
+                                </div>
+                                <div>
+                                    - Chi phí tham quan ngoài chương trình.
+                                </div>
+                                <div>
+                                    &nbsp;
+                                </div>
+                                <div>
+                                    <strong>Giá dành cho trẻ em</strong>
+                                </div>
+                                <div>
+                                    - Trẻ em dưới 5 tuổi:&nbsp; không thu phí dịch vụ, bố mẹ tự lo cho bé và thanh toán các chi phí phát sinh (đối với các dịch vụ tính phí theo chiều cao…). Hai người lớn chỉ được kèm 1 trẻ em dưới 5 tuổi, trẻ em thứ 2 sẽ đóng phí theo quy định dành cho độ tuổi từ 5 đến dưới 12 tuổi và phụ thu phòng đơn. Vé máy bay, tàu hỏa, phương tiện vận chuyển công cộng mua vé theo quy định của các đơn vị vận chuyển (nếu có)&nbsp;
+                                </div>
+                                <div>
+                                    - Trẻ em từ 5 tuổi đến dưới 12 tuổi:&nbsp; 50% giá tour người lớn đối với tuyến xe, 75% giá tour người lớn đối với tuyến có vé máy bay (không có chế độ giường riêng). Hai người lớn chỉ được kèm 1 trẻ em từ 5 - dưới 12 tuổi, trẻ em thứ hai trở lên phải mua 1 suất giường đơn.
+                                </div>
+                                <div>
+                                    Giá dành cho trẻ em có thể sẽ thay đổi vào thời điểm Quý khách xác nhận tham gia hành trình tour (*).
+                                </div>
+                                <div>
+                                    - Trẻ em từ 12 tuổi trở lên: mua một vé như người lớn.
+                                </div>
+                                <div>
+                                    &nbsp;
+                                </div>
+                                <div>
+                                    <strong>Điều kiện thanh toán:&nbsp;</strong>
+                                </div>
+                                <div>
+                                    - Khi đăng ký đặt cọc 50% số tiền tour
+                                </div>
+                                <div>
+                                    - Số tiền còn lại thanh toán hết trước ngày khởi hành 7-10 ngày (áp dụng tour ngày thường), trước ngày khởi hành 20-25 ngày (áp dụng tour lễ tết)
+                                </div>
+                                <div>
+                                    &nbsp;
+                                </div>
+                                <div>
+                                    <strong>Các điều kiện khi đăng ký tour:&nbsp;</strong>
+                                </div>
+                                <div>
+                                    - Đối với Khách Quốc tịch Việt Nam: Khi đi tour Trẻ em từ 14 tuổi trở lên và người lớn cần đem theo CMND/Passport (Hộ chiếu) bản chính còn hạn sử dụng, hình ảnh rõ (CMND có thời hạn sử dụng không quá 15 năm, tính từ ngày cấp)/ Giấy khai sinh bản chính (trẻ em dưới 14 tuổi), trẻ em trên 14 tuổi bắt buộc phải có CMND hoặc Passport làm thủ tục lên máy bay.&nbsp;&nbsp;
+                                </div>
+                                <div>
+                                    - Đối với khách Nước ngoài/Việt Kiều: Khi đi tour phải mang theo đầy đủ Passport (Hộ Chiếu) bản chính còn hạn sử dụng hoặc thẻ xanh kèm theo Visa và giấy tái xuất nhập Việt Nam làm thủ tục lên máy bay.&nbsp;&nbsp;
+                                </div>
+                                <div>
+                                    - Khi đăng ký tour Quý khách vui lòng mang theo CMND/Passport bản chính hoặc cung cấp tên chính xác đầy đủ, đúng từng ký tự trên CMND/ Passport (Hộ chiếu)/Giấy khai sinh (trẻ em dưới 14 tuổi) theo thứ tự: Họ/tên lót/tên. Quý khách khi đăng ký cung cấp tên theo giấy tờ tùy thân nào, khi đi tour phải mang theo giấy tờ tùy thân đó theo qui định hãng hàng không&nbsp;
+                                </div>
+                                <div>
+                                    - Trong trường hợp Quý khách cung cấp tên sai, đến trễ giờ bay, vui lòng chịu phí đổi vé hoặc mua lại vé mới theo quy định của Hãng Hàng Không (nếu chuyến bay còn chỗ).&nbsp;
+                                </div>
+                                <div>
+                                    - Trong trường hợp Quý khách bay hãng hàng không Vietjet và Jetstar, vé không hoàn, không dời, đổi, huỷ, sai tên mất 100% theo qui định hãng hàng không. Giá vé máy bay trẻ em bằng 100% người lớn.&nbsp;
+                                </div>
+                                <div>
+                                    - Trong trường hợp Quý khách bay hãng hàng không Vietnam Air. Vé máy bay khuyến mãi không hoàn, không đổi, hủy, sai tên mất 100% theo qui định hãng hàng không. vé Vietnam Airlines&nbsp; không bay chặng đi, tự động hủy chặng về. Giá vé máy bay trẻ em bằng 90% vé người lớn.&nbsp;
+                                </div>
+                                <div>
+                                    - Giá vé, giờ bay có thể thay đổi theo Hãng Hàng Không (Vietnam Airlines, Vietjet, Jetstar) không thể báo trước.&nbsp;
+                                </div>
+                                <div>
+                                    - Do các chuyến bay phụ thuộc vào các hãng Hàng Không nên trong một số trường hợp giờ bay có thể thay đổi mà không được báo trước. Tùy vào tình hình thực tế, Chương trình và điểm tham quan có thể linh động thay đổi thứ tự các điểm phù hợp điều kiện giờ bay và thời tiết thực tế. Vietravel sẽ không chịu trách nhiệm bảo đảm các điểm tham quan trong trường hợp:
+                                </div>
+                                <div>
+                                    + Xảy ra thiên tai: bão lụt, hạn hán, động đất, dịch bệnh,…
+                                </div>
+                                <div>
+                                    + Sự cố về an ninh: khủng bố, biểu tình
+                                </div>
+                                <div>
+                                    + Sự cố về hàng không: trục trặc kỹ thuật, an ninh, dời, hủy, hoãn chuyến bay.
+                                </div>
+                                <div>
+                                    - Nếu những trường hợp trên xảy ra, Vietravel sẽ xem xét để hoàn trả chi phí không tham quan cho khách trong điều kiện có thể (sau khi đã trừ lại các dịch vụ đã thực hiện….và không chịu trách nhiệm bồi thường thêm bất kỳ chi phí nào khác).
+                                </div>
+                                <div>
+                                    - Sau khi Quý khách đã làm thủ tục Hàng Không và nhận thẻ lên máy bay, đề nghị Quý khách giữ cẩn thận và lưu ý lên máy bay đúng giờ. Vietravel không chịu trách nhiệm trong trường hợp khách làm mất thẻ lên máy bay và không lên máy bay đúng theo giờ quy định của Hàng Không.
+                                </div>
+                                <div>
+                                    - Giờ nhận phòng khách sạn: sau 14:00 giờ và trả phòng trước 12:00 giờ&nbsp; &nbsp;
+                                </div>
+                                <div>
+                                    - Phòng khách sạn/resort có thể xảy ra trường hợp phòng không gần nhau, không cùng tầng, loại phòng một giường đôi hoặc hai giường đơn không theo yêu cầu, tùy tình hình thực tế từng khách sạn/Resort.&nbsp;
+                                </div>
+                                <div>
+                                    - Trường hợp quý khách tham gia tour 01 khách, bắt buộc đóng thêm tiền phụ thu phòng đơn để ở riêng 01 phòng. Trường hợp trong đoàn cũng có khách đi 01 mình, cùng giới tính và có nhu cầu muốn ghép cùng phòng với quý khách thì Vietravel sẽ hoàn lại tiền phụ thu phòng đơn cho quý khách.
+                                </div>
+                                <div>
+                                    - Trường hợp quý khách đi nhóm 03 khách, Vietravel sẽ cung cấp 01 phòng dành cho 03 khách là 01 giường lớn 1m6 và 01 giường phụ di động từ 0.8 - 1,2m (extrabed) hoặc 01 nệm đơn tùy từng khách sạn/Resort. Trong trường&nbsp; quý khách có nhu cầu ở riêng, vui lòng đóng thêm tiền phụ thu phòng đơn theo qui định&nbsp;
+                                </div>
+                                <div>
+                                    - Thông tin hành lý khi đi tour : Xách tay dưới 7kg/1khách - Kích thước không quá: 56cm x 36cm x 23 cm, chất lỏng với thể tích không quá 100ml. Ký gửi: 20kg/1khách - Kích thước không quá: 119cm x 119cm x 81cm. Các vật phẩm không được chấp nhận dưới dạng hành lý ký gởi hoặc vận chuyển trong hành lý theo qui định hàng không
+                                </div>
+                                <div>
+                                    - Thông tin tập trung : Tại sân bay Tân Sơn Nhất, Ga đi trong nước, trước giờ bay 2 tiếng (áp dụng ngày thường), trước 2 tiếng 30 phút (áp dụng lễ tết), tại cột số 4 Trong trường hợp bay hãng hàng không Vietjet, tại cột 10 trong trường hợp bay hãng hàng không Vietnam, Jetstar.&nbsp;
+                                </div>
+                                <div>
+                                    - Quý khách dưới 18 tuổi khi đi tour phải có Bố Mẹ hoặc người thân trên 18 tuổi đi cùng. Trường hợp đi một mình phải được Bố Mẹ ủy quyền (có xác nhận của chính quyền địa phương) cho Vietravel&nbsp;
+                                </div>
+                                <div>
+                                    - Khách nữ từ 55 tuổi trở lên và khách nam từ 60 trở lên: nên có người thân dưới 55 tuổi (đầy đủ sức khỏe) đi cùng. Riêng khách từ 70 tuổi trở lên: Bắt buộc phải có người thân dưới 55 tuổi (đầy đủ sức khỏe) đi cùng . Vì lý do an toàn Quý khách hạn chế và không nhận khách từ 80 tuổi trở lên. Khách trên 80 tuổi không có chế độ bảo hiểm.
+                                </div>
+                                <div>
+                                    - Quý khách đang mang thai vui lòng báo cho nhân viên bán tour ngay tại thời điểm đăng ký. Lưu ý phải có ý kiến của bác sĩ trước khi đi tour. Cam kết tự chịu trách nhiệm về sức khỏe của mình và thai nhi trong suốt thời gian tham gia chương trình du lịch.&nbsp;
+                                </div>
+                                <div>
+                                    - Đây là chương trình du lịch trọn gói, Vietravel không có trách nhiệm hoàn trả chi phí chênh lệch cho các khách hàng thuộc diện miễn giảm hoặc đối tượng ưu tiên như trẻ nhỏ, người lớn tuổi, người có công với cách mạng… Chính sách miễn giảm, ưu tiên (nếu có) chỉ dành cho khách lẻ của các điểm tham quan.
+                                </div>
+                                <div>
+                                    - Quý khách có nhu cầu cần xuất hóa đơn vui lòng cung cấp thông tin xuất hóa đơn cho nhân viên bán tour&nbsp; khi ngay khi đăng ký, không nhận xuất hóa đơn sau khi tour đã kết thúc.&nbsp;
+                                </div>
+                                <div>
+                                    - Quý khách vui lòng tham khảo kỹ các Điều Kiện Bán Vé trước khi đăng ký chuyến du lịch. Trong trường hợp không trực tiếp đăng ký, nhờ người thân đăng ký hộ vui lòng cập nhật thông tin từ người đăng ký.
+                                </div>
+                                <div>
+                                    &nbsp;
+                                </div>
+                                <div>
+                                    <strong>Các điều kiện chuyển và hủy tour&nbsp;</strong>
+                                </div>
+                                <div>
+                                    <strong>Lưu ý khi chuyển/huỷ tour:</strong>
+                                </div>
+                                <div>
+                                    -&nbsp; Sau khi đóng tiền, nếu Quý khách muốn chuyển/huỷ tour xin vui lòng mang Vé Du Lịch đến văn phòng đăng ký tour để làm thủ tục chuyển/huỷ tour và chịu mất phí theo quy định của Vietravel. Không giải quyết các trường hợp liên hệ chuyển/huỷ tour qua điện thoại.
+                                </div>
+                                <div>
+                                    &nbsp;
+                                </div>
+                                <div>
+                                    <strong>Các điều kiện huỷ tour: (đối với ngày thường):</strong>
+                                </div>
+                                <div>
+                                    -&nbsp; Được chuyển sang các tuyến du lịch khác trước ngày khởi hành 20 ngày: Không mất chi phí.
+                                </div>
+                                <div>
+                                    -&nbsp; Nếu hủy hoặc chuyển sang các chuyến du lịch khác ngay sau khi đăng ký từ 15-19 ngày trước ngày khởi hành: Chi phí hủy tour: 50% tiền cọc tour.
+                                </div>
+                                <div>
+                                    -&nbsp; Nếu hủy hoặc chuyển sang các chuyến du lịch khác từ 12-14 ngày trước ngày khởi hành: Chi phí hủy tour: 100% tiền cọc tour.
+                                </div>
+                                <div>
+                                    -&nbsp; Nếu hủy chuyến du lịch trong vòng từ 08-11 ngày trước ngày khởi hành: Chi phí hủy tour: 50% trên giá tour du lịch.
+                                </div>
+                                <div>
+                                    -&nbsp; Nếu hủy chuyến du lịch trong vòng từ 05-07 ngày trước ngày khởi hành: Chi phí hủy tour: 70% trên giá tour du lịch.
+                                </div>
+                                <div>
+                                    -&nbsp; Nếu hủy chuyến du lịch trong vòng từ 02-04 ngày trước ngày khởi hành: Chi phí hủy tour: 90% trên giá vé du lịch.
+                                </div>
+                                <div>
+                                    -&nbsp; Nếu hủy chuyến du lịch trong vòng 1 ngày trước ngày khởi hành : Chi phí hủy tour: 100% trên giá vé du lịch.
+                                </div>
+                                <div>
+                                    &nbsp;
+                                </div>
+                                <div>
+                                    <strong>Các điều kiện huỷ tour: (đối với ngày lễ, Tết. Áp dụng cho các tour có thời gian diễn ra rơi vào một trong các ngày Lễ, Tết theo qui định)&nbsp;</strong>
+                                </div>
+                                <div>
+                                    -&nbsp; Được chuyển sang các tuyến du lịch khác trước ngày khởi hành 30 ngày: Không mất chi phí.
+                                </div>
+                                <div>
+                                    -&nbsp; Nếu hủy hoặc chuyển sang các chuyến du lịch khác ngay sau khi đăng ký từ 25-29 ngày trước ngày khởi hành: Chi phí hủy tour: 50% tiền cọc tour.
+                                </div>
+                                <div>
+                                    - Nếu hủy hoặc chuyển sang các chuyến du lịch khác từ 20-24 ngày trước ngày khởi hành: Chi phí hủy tour: 100% tiền cọc tour.
+                                </div>
+                                <div>
+                                    -&nbsp; Nếu hủy chuyến du lịch trong vòng từ 17-19 ngày trước ngày khởi hành: Chi phí hủy tour: 50% trên giá tour du lịch.
+                                </div>
+                                <div>
+                                    -&nbsp; Nếu hủy chuyến du lịch trong vòng từ 08-16 ngày trước ngày khởi hành: Chi phí hủy tour: 70% trên giá tour du lịch.
+                                </div>
+                                <div>
+                                    -&nbsp; Nếu hủy chuyến du lịch trong vòng từ 02-07 ngày trước ngày khởi hành: Chi phí hủy tour: 90% trên giá vé du lịch.
+                                </div>
+                                <div>
+                                    -&nbsp; Nếu hủy chuyến du lịch trong vòng 1 ngày trước ngày khởi hành : Chi phí hủy tour: 100% trên giá vé du lịch.
+                                </div>
+                                <div>
+                                    &nbsp;
+                                </div>
+                                <div>
+                                    <strong>Thời gian hủy chuyến du lịch được tính cho ngày làm việc, không tính thứ 7, Chủ Nhật và các ngày Lễ, Tết.</strong>
+                                </div>
+                                <div>
+                                    &nbsp;
+                                </div>
+                            </div>
+                        </div>
+                        <div style="text-transform: uppercase;font-weight: 500;font-size: 16px;padding: 15px;">Thông tin:</div>
+                        <div class="sec-content attention">
+
+
+                            <div style="text-align: center;">
+                                <strong>Mọi chi tiết vui lòng liên hệ:</strong>
+                            </div>
+                            <div style="text-align: center;">
+                                <strong>KHỐI KHÁCH LẺ - DU LỊCH TRONG NƯỚC</strong>
+                            </div>
+                            <div style="text-align: center;">
+                                190 PASTEUR, PHƯỜNG 6, QUẬN 3, TP.HCM
+                            </div>
+                            <div style="text-align: center;">
+                                Điện thoại: (84-28) 3822 8898&nbsp;(ext: 1143 – 1469 – 1159 - 1151)
+                            </div>
+                            <div style="text-align: center;">
+                                Hotline: 0938 301 399
+                            </div>
+                            <div style="text-align: center;">
+                                Tổng đài tư vấn từ 8h - 18h:&nbsp; 1900 1839
+                            </div>
+                            <div style="text-align: center;">
+                                &nbsp;
+                            </div>
+                            <div style="text-align: center;">
+                                <strong>VIETRAVEL KÍNH CHÚC QUÝ KHÁCH MỘT CHUYẾN DU LỊCH VUI VẺ</strong>
+                            </div>
+                            <div>
+                                &nbsp;
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Tab content -->
+        </div>
+    </div>
+</div>

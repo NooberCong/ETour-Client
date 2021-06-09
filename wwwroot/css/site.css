@@ -83,3 +83,17 @@ html {
     right: 25px;
     display: none;
 }
+
+.bg-light-primary {
+    background-color: #e9f7fe !important;
+    color: #3184ae;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.bg-light-danger {
+    background-color: #ffcccb !important;
+    color: #d9534f;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
