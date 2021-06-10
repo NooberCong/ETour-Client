@@ -1,4 +1,5 @@
 using Client.AuthenticationSchemes;
+using Core.Services;
 using Infrastructure.Extentions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -46,6 +47,7 @@ namespace ETourClient
                     op.ClaimActions.MapJsonKey("image", "picture");
                 });
             services.AddETourLogging();
+            services.AddScoped<TripFilterService>();
 
         }
 

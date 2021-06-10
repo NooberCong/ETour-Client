@@ -132,7 +132,7 @@
 
                         <h4 class="card-title">@tour.Title</h4>
                         <p class="card-text text-secondary">
-                            @tour.Description
+                            @tour.Description.TruncateAtWord(150)
                         </p>
                         <div class="d-flex">
                             <span class="bg-light-blue mr-2">@tour.StartPlace <i class="fas fa-exchange-alt"></i> @tour.Destination</span>
@@ -140,7 +140,7 @@
                             <span class="bg-light-red mr-2">Hot Trend</span>
                         </div>
                         <br>
-                        <a href="#" class="btn btn-outline-primary">View trips</a>
+                        <a asp-controller="Trip" asp-action="Index" asp-route-FilterParams.TourID="@tour.ID" class="btn btn-outline-primary">View trips</a>
                     </div>
                 </div>
             </div>

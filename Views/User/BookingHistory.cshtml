@@ -26,7 +26,7 @@
             <tr>
                 
                 <td class="text-center">@bk.LastUpdated.Day / @bk.LastUpdated.Month / @bk.LastUpdated.Year</td>
-                <td class="text-center">@bk.Quantity</td>
+                <td class="text-center">@bk.CustomerInfos.Count</td>
                 <td class="text-center">@bk.Note</td>
                 <td class="text-center">@bk.Trip.Tour.StartPlace - @bk.Trip.Tour.Destination</td>
                 <td class="text-center"><a class="btn btn-link " asp-action="BookingDetail" asp-route-id="@bk.ID">Detail</a></td>
