@@ -48,7 +48,7 @@
                                                 <p class="mb-3 text-muted text-uppercase small">Tour Type: @b.Trip.Tour.Type</p>
                                             </div>
                                             <div>
-                                                <p class="text-right">Quantity: @b.Quantity</p>
+                                                <p class="text-right">Quantity: @b.CustomerInfos.Count</p>
                                                 <p class="text-right">@b.Trip.Price</p>
                                             </div>
                                         </div>
@@ -59,7 +59,7 @@
                                                 </form>
 
                                             </div>
-                                            <p class="mb-0 text-right"><span><strong>Total: @(b.Trip.Price * b.Quantity)</strong></span></p>
+                                            <p class="mb-0 text-right"><span><strong>Total: @(b.Trip.Price * b.CustomerInfos.Count)</strong></span></p>
                                         </div>
                                     </div>
 

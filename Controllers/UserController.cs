@@ -14,19 +14,13 @@ namespace Client.Controllers
     public class UserController : Controller
     {
         private readonly IBookingRepository _bookingRepository;
-        private readonly ITripRepository _tripRepository;
-        private readonly ITourRepository _tourRepository;
         private readonly ICustomerRepository _customerRepository;
-        private readonly IOrderRepository _orderRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public UserController(IUnitOfWork unitOfWork, IOrderRepository orderRepository, ICustomerRepository customerRepository, IBookingRepository bookingRepository, ITripRepository tripRepository, ITourRepository tourRepository)
+        public UserController(IUnitOfWork unitOfWork, ICustomerRepository customerRepository, IBookingRepository bookingRepository)
         {
             _unitOfWork = unitOfWork;
-            _orderRepository = orderRepository;
             _bookingRepository = bookingRepository;
-            _tripRepository = tripRepository;
-            _tourRepository = tourRepository;
             _customerRepository = customerRepository;
 
         }
@@ -37,7 +31,7 @@ namespace Client.Controllers
         {
             string customerID = User.Claims.First(c1 => c1.Type == ClaimTypes.NameIdentifier).Value;
             IEnumerable<Booking> bookingList = _bookingRepository.Queryable.Include(bk => bk.Trip).ThenInclude(tr => tr.Tour);
-            
+
             Customer customer = await _customerRepository.FindAsync(customerID);
 
             return View(new UserHomeModel
@@ -53,20 +47,20 @@ namespace Client.Controllers
         {
             string customerID = User.Claims.First(c1 => c1.Type == ClaimTypes.NameIdentifier).Value;
             customer.ID = customerID;
-            
+
             await _customerRepository.UpdateAsync(customer);
             await _unitOfWork.CommitAsync();
             return RedirectToAction("Index");
         }
-       
-       
 
-        //Display booking history
+
+
+        //Display order history
         public IActionResult BookingHistory()
         {
-            IEnumerable<Booking> BookingList = _bookingRepository.Queryable.Include(bk=>bk.Trip).ThenInclude(t=>t.Tour);
+            IEnumerable<Booking> bookings = _bookingRepository.Queryable.Include(bk => bk.Author);
 
-            return View(BookingList);
+            return View(bookings);
         }
 
 
