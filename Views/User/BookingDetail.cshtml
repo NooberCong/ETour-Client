@@ -1,232 +1,142 @@
 ﻿@model Core.Entities.Booking
 @{
-    ViewData["Title"] = "OrderDetail";
+    ViewData["Title"] = "Booking Detail";
 }
 <style>
-
-    * {
-        padding: 0;
-        margin: 0;
-        box-sizing: border-box;
-        font-family: 'Roboto', sans-serif
+    .frame-xnbooking{
+        background-color:#f2f2f2;
     }
-
-    
-
-    #order-heading {
-        background-color: #edf4f7;
-        position: relative;
-        border-top-left-radius: 25px;
-        max-width: 800px;
-        padding-top: 20px;
-        margin: 30px auto 0px
+    .frame-chitiet {
+        background-color: #f2f2f2;
     }
-
-        #order-heading .text-uppercase {
-            font-size: 0.9rem;
-            color: #777;
-            font-weight: 600
-        }
-
-        #order-heading .h4 {
-            font-weight: 600
-        }
-
-            #order-heading .h4 + div p {
-                font-size: 0.8rem;
-                color: #777
-            }
-
-    .close {
-        padding: 10px 15px;
-        background-color: #777;
-        border-radius: 50%;
-        position: absolute;
-        right: -15px;
-        top: -20px
+    .txt-rig{
+        margin-top:3%;
     }
-
-    .wrapper {
-        padding: 0px 50px 50px;
-        max-width: 800px;
-        margin: 0px auto 40px;
-        border-bottom-left-radius: 25px;
-        border-bottom-right-radius: 25px;
-        box-shadow: 20px 20px 50px grey;
+    .title{
+        color:#136CBF;
+        font-weight:bold;
     }
-
-    .table th {
-        border-top: none
-    }
-
-    .table thead tr.text-uppercase th {
-        font-size: 0.8rem;
-        padding-left: 0px;
-        padding-right: 0px
-    }
-
-    .table tbody tr th,
-    .table tbody tr td {
-        font-size: 0.9rem;
-        padding-left: 0px;
-        padding-right: 0px;
-        padding-bottom: 5px
-    }
-
-    .table-responsive {
-        height: 100px
-    }
-
-    .list div b {
-        font-size: 0.8rem
-    }
-
-    .list .order-item {
-        font-weight: 600;
-        color: #6db3ec
-    }
-
-    .list:hover {
-        background-color: #f4f4f4;
-        cursor: pointer;
-        border-radius: 5px
-    }
-
-    label {
-        margin-bottom: 0;
-        padding: 0;
-        font-weight: 900
-    }
-
-    button.btn {
-        font-size: 0.9rem;
-        background-color: #66cdaa
-    }
-
-        button.btn:hover {
-            background-color: #5cb99a
-        }
-
-    .price {
-        color: #5cb99a;
-        font-weight: 700
-    }
-
-    p.text-justify {
-        font-size: 0.9rem;
-        margin: 0
-    }
-
-    .row {
-        margin: 0px
-    }
-
-    .subscriptions {
-        border: 1px solid #ddd;
-        border-left: 5px solid #ffa500;
-        padding: 10px
-    }
-
-        .subscriptions div {
-            font-size: 0.9rem
-        }
-
-
-    body {
-        font-size: 0.85rem
-    }
-
-    .subscriptions div {
-        padding-left: 5px
-    }
-
-    img + label {
-        font-size: 0.75rem
-    }
+    div{
+        margin-bottom:1%;
+        margin-top:1%;
+       
     }
 </style>
+<div class="container my-4">
+    <div class="row">
+        <div class="col-6 ">
+            <div class="title">BOOKING CONFIRMATION</div>
+            <div class="frame-xnbooking p-3">
+                <div class="row mg-bot10 bor-bot">
+                    <div class="col-lg-3 col-md-2 col-sm-2 col-xs-12 " style="font-weight:bold;">Tour ID:</div>
+                    <div class="col-lg-9 col-md-10 col-sm-10 col-xs-12 font500">@Model.Trip.Tour.ID</div>
+                </div>
+                <div class="row mg-bot10 bor-bot">
+                    <div class="col-lg-3 col-md-2 col-sm-2 col-xs-12 mg-bot" style="font-weight:bold;">Tour Name:</div>
+                    <div class="col-lg-9 col-md-10 col-sm-10 col-xs-12 font500">
 
-<div class="d-flex flex-column justify-content-center align-items-center" id="order-heading">
-    <div class="text-uppercase">
-        <p>Booking detail</p>
-    </div>
-    <div class="h4"> @Model.LastUpdated.Day . @Model.LastUpdated.Month . @Model.LastUpdated.Year</div>
-    <div class="pt-1">
-        <p>Booking #@Model.ID is<b class="text-dark"> completed</b></p>
-    </div>
-    
-</div>
-<div class="wrapper bg-white">
-    <div class="table-responsive">
-        <table class="table table-borderless">
-            <thead>
-                <tr class="text-uppercase text-muted">
-                    <th scope="col">Tours</th>
-                   
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td></td>
-                  
-                </tr>
-            </tbody>
-        </table>
-    </div>
+                        @Model.Trip.Tour.Title
 
-   
-            <div class="d-flex justify-content-start align-items-center list py-1">
+                    </div>
+                </div>
 
-                <div class="mx-3"> @Model.Trip.Tour.ID</div>
-                <div class="order-item">@Model.Trip.Tour.Title</div>
-
-
+                <div class="row mg-bot10 bor-bot">
+                    <div class="col-lg-3 col-md-2 col-sm-2 col-xs-12 mg-bot" style="font-weight:bold;">Start time:</div>
+                    <div class="col-lg-9 col-md-10 col-sm-10 col-xs-12 font500">
+                        @Model.Trip.StartTime.Day / @Model.Trip.StartTime.Month / @Model.Trip.StartTime.Year
+                    </div>
+                </div>
+                <div class="row mg-bot10 bor-bot">
+                    <div class="col-lg-3 col-md-2 col-sm-2 col-xs-12 mg-bot" style="font-weight:bold;">End time:</div>
+                    <div class="col-lg-9 col-md-10 col-sm-10 col-xs-12 font500">
+                        @Model.Trip.EndTime.Day / @Model.Trip.EndTime.Month / @Model.Trip.EndTime.Year
+                    </div>
+                </div>
+                <div class="row bor-bot">
+                    <div class="col-lg-3 col-md-2 col-sm-2 col-xs-12 mg-bot" style="font-weight:bold;">Start place:</div>
+                    <div class="col-lg-9 col-md-10 col-sm-10 col-xs-12 font500">
+                        @Model.Trip.Tour.StartPlace
+                    </div>
+                </div>
+                <div class="row mg-bot10 bor-bot">
+                    <div class="col-lg-3 col-md-2 col-sm-2 col-xs-12 mg-bot" style="font-weight:bold;">Destination:</div>
+                    <div class="col-lg-9 col-md-10 col-sm-10 col-xs-12 font500">
+                       @Model.Trip.Tour.Destination
+                    </div>
+                </div>
+                <div></div>
             </div>
+        </div>
+        <div class=" col-6">
+            <div class="title">CUSTOMER INFORMATION</div>
+            <div class="frame-xnbooking p-3">
+                <div class="row mg-bot10 bor-bot">
+                    <div class="col-lg-3 col-md-2 col-sm-2 col-xs-12 mg-bot" style="font-weight:bold; m">Customer:</div>
+                    <div class="col-lg-9 col-md-10 col-sm-10 col-xs-12 font500">@Model.Order.Customer.Name </div>
+                </div>
 
-    <div class="pt-2 border-bottom mb-3"></div>
-    <div class="d-flex justify-content-start align-items-center pl-3">
-        <div class="text-muted">Payment Method</div>
-        <div class="ml-auto"> <img src="https://www.freepnglogos.com/uploads/mastercard-png/mastercard-logo-logok-15.png" alt="" width="30" height="30"> <label>Mastercard ******5342</label> </div>
-    </div>
+                <div class="row mg-bot10 bor-bot">
+                    <div class="col-lg-3 col-md-2 col-sm-2 col-xs-12 mg-bot" style="font-weight:bold;">Phone:</div>
+                    <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 font500 mg-bot">
+                        0905324660
+                    </div>
 
-   
-<div class="row border rounded p-1 my-3">
-    <div class="col-md-3 py-5">
-        <div class="d-flex flex-column align-items start">
-            <b>ID</b>
-            <p class="text-justify pt-2" style="margin-top:20%;">@Model.Trip.Tour.ID</p>
+                </div>
+                <div class="row mg-bot10 bor-bot">
+                    <div class="col-lg-3 col-md-2 col-sm-2 col-xs-12 mg-bot" style="font-weight:bold;">Email:</div>
+                    <div class="col-lg-9 col-md-10 col-sm-10 col-xs-12 font500">
+                        laidinhthuan123@gmail.com
+                    </div>
+                </div>
+                <div class="row mg-bot10 bor-bot">
+                    <div class="col-lg-3 col-md-2 col-sm-2 col-xs-12 mg-bot" style="font-weight:bold;">Quantity:</div>
+                    <div class="col-lg-9 col-md-10 col-sm-10 col-xs-12 font500 line-h">
+                       @Model.Quantity
+                    </div>
+                </div>
+                <div class="row mg-bot10 bor-bot">
+                    <div class="col-lg-3 col-md-2 col-sm-2 col-xs-12 mg-bot" style="font-weight:bold;">Points:</div>
+                    <div class="col-lg-9 col-md-10 col-sm-10 col-xs-12 font500">
+                        @Model.Order.Customer.Points
+                    </div>
+                </div>
+                <div class="row bor-bot">
+                    <div class="col-lg-3 col-md-2 col-sm-2 col-xs-12 mg-bot" style="font-weight:bold;">Note:</div>
+                    <div class="col-lg-9 col-md-10 col-sm-10 col-xs-12 font500 line-h">
+                        Booking from Toure.
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="col-md-3 py-5">
-        <div class="d-flex flex-column align-items start">
-            <b> Start Place</b>
-            <p class="text-justify pt-2" style="margin-top:20%;">@Model.Trip.Tour.StartPlace</p>
-           
+        <div class="col-12">
+            <div class="txt-rig title">BOOKING DETAIL</div>
+            <div class="frame-chitiet p-3">
+                <div class="row mg-bot10 bor-bot">
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 mg-bot"style="font-weight:bold;">Booking ID:</div>
+                    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 font500 line-h"><span class="font500">@Model.ID</span> (Please remember this Booking number)</div>
+                </div>
+                <div class="row mg-bot10 bor-bot">
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 mg-bot" style="font-weight:bold;">Total:</div>
+                    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 font500"><span class="font500">$@(Model.Trip.Price*Model.Quantity)</span></div>
+                </div>
+                <div class="row mg-bot10 bor-bot">
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 mg-bot" style="font-weight:bold;">Register day:</div>
+                    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 font500 line-h"><span class="font500">@Model.LastUpdated.Day / @Model.LastUpdated.Month / @Model.LastUpdated.Year </span></div>
+                </div>
+                
+                <div class="row mg-bot10 bor-bot">
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 mg-bot" style="font-weight:bold;">State:</div>
+                    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 font500 line-h">
+                        <span class="font500">
+                            Completed
+                        </span>
+                    </div>
+                </div>
+                <div class="row mg-bot10 bor-bot">
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 mg-bot" style="font-weight:bold;"><span class="hidden-md hidden-sm">Description:</span></div>
+                    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 font500 line-h">@Model.Trip.Tour.Description</div>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="col-md-3 py-5">
-        <div class="d-flex flex-column align-items start">
-            <b>Destination</b>
-            <p class="text-justify pt-2" style="margin-top:20%;">@Model.Trip.Tour.Destination</p>
-           
-        </div>
-    </div>
-    <div class="col-md-3 py-5">
-        <div class="d-flex flex-column align-items start">
-            <b style="margin-left:10%">Image</b>
-            <p class="text-justify pt-2"><img class="img-fluid w-50 h-50 rounded" style="object-fit: cover" src="@Model.Trip.Tour.ImageUrls[0]" /></p>
-          
-        </div>
-    </div>
-</div>  
-    <div class="pl-3 font-weight-bold">Related Subsriptions</div>
-    <div class="d-sm-flex justify-content-between rounded my-3 subscriptions">
-        <div> <b>#@Model.ID</b> </div>
-        <div>@Model.LastUpdated.Day . @Model.LastUpdated.Month . @Model.LastUpdated.Year</div>
-        <div>Status: Completed</div>
-       
-
-        <div> Total: <b> $@(Model.Trip.Price*Model.Quantity) </b> </div>
-      
     </div>
 </div>
