@@ -63,5 +63,20 @@ namespace Client.Controllers
             return View(bookings);
         }
 
+
+        //Display speccific booking detail
+        public async Task<IActionResult> BookingDetail(int id)
+        {
+            var booking = await _bookingRepository.Queryable.Include(bk => bk.Trip).ThenInclude(t => t.Tour).Include(bk=>bk.Order).ThenInclude(o=>o.Customer).FirstOrDefaultAsync(bk=>bk.ID==id);
+        
+            if (booking == null)
+            {
+                return NotFound();
+            }
+            return View(booking);
+        }
+       
+       
+
     }
 }
