@@ -37,6 +37,7 @@ namespace Client.Controllers
                 question = Question
             }) ;
         }
+        //ok
 
         // Display details of a specific question, including it's anwers
         // Return View(question)
