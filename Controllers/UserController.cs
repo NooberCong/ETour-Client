@@ -45,7 +45,7 @@ namespace Client.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(Customer customer)
         {
-            string customerID = User.Claims.First(c1 => c1.Type == ClaimTypes.NameIdentifier).Value;
+            string customerID = GetCustomerID();
             customer.ID = customerID;
 
             await _customerRepository.UpdateAsync(customer);
@@ -53,12 +53,22 @@ namespace Client.Controllers
             return RedirectToAction("Index");
         }
 
+        private string GetCustomerID()
+        {
+            return User.Claims.First(c1 => c1.Type == ClaimTypes.NameIdentifier).Value;
+        }
+
 
 
         //Display order history
         public IActionResult BookingHistory()
         {
-            IEnumerable<Booking> bookings = _bookingRepository.Queryable.Include(bk => bk.Author).Include(bk=>bk.CustomerInfos).Include(bk=>bk.Trip).ThenInclude(t=>t.Tour);
+            IEnumerable<Booking> bookings = _bookingRepository.Queryable
+                .Where(bk => bk.AuthorID == GetCustomerID())
+                .Include(bk => bk.Author)
+                .Include(bk => bk.CustomerInfos)
+                .Include(bk => bk.Trip).ThenInclude(t => t.Tour)
+                .AsEnumerable();
 
             return View(bookings);
         }
@@ -67,7 +77,11 @@ namespace Client.Controllers
         //Display speccific booking detail
         public async Task<IActionResult> BookingDetail(int id)
         {
-            var booking = await _bookingRepository.Queryable.Include(bk => bk.Trip).ThenInclude(t => t.Tour).Include(bk=>bk.Author).Include(bk=>bk.CustomerInfos).FirstOrDefaultAsync(bk=>bk.ID==id);
+            var booking = await _bookingRepository.Queryable
+                .Include(bk => bk.Author)
+                .Include(bk => bk.CustomerInfos)
+                .Include(bk => bk.Trip).ThenInclude(t => t.Tour)
+                .FirstOrDefaultAsync(bk=>bk.ID==id);
         
             if (booking == null)
             {
