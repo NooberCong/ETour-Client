@@ -46,6 +46,7 @@ namespace Client.Controllers
         {
             string customerID = User.Claims.First(c1 => c1.Type == ClaimTypes.NameIdentifier).Value;
             question.AuthorID = customerID;
+            question.LastUpdated = DateTime.Now;
             await _questionRepository.AddAsync(question);
             await _unitOfWork.CommitAsync();
             return RedirectToAction("Index");
