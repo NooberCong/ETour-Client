@@ -58,7 +58,7 @@ namespace Client.Controllers
         //Display order history
         public IActionResult BookingHistory()
         {
-            IEnumerable<Booking> bookings = _bookingRepository.Queryable.Include(bk => bk.Author);
+            IEnumerable<Booking> bookings = _bookingRepository.Queryable.Include(bk => bk.Author).Include(bk=>bk.CustomerInfos).Include(bk=>bk.Trip).ThenInclude(t=>t.Tour);
 
             return View(bookings);
         }
@@ -67,7 +67,7 @@ namespace Client.Controllers
         //Display speccific booking detail
         public async Task<IActionResult> BookingDetail(int id)
         {
-            var booking = await _bookingRepository.Queryable.Include(bk => bk.Trip).ThenInclude(t => t.Tour).Include(bk=>bk.Order).ThenInclude(o=>o.Customer).FirstOrDefaultAsync(bk=>bk.ID==id);
+            var booking = await _bookingRepository.Queryable.Include(bk => bk.Trip).ThenInclude(t => t.Tour).Include(bk=>bk.Author).Include(bk=>bk.CustomerInfos).FirstOrDefaultAsync(bk=>bk.ID==id);
         
             if (booking == null)
             {

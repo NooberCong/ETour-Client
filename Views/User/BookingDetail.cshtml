@@ -78,14 +78,14 @@
                 <div class="row mg-bot10 bor-bot">
                     <div class="col-lg-3 col-md-2 col-sm-2 col-xs-12 mg-bot" style="font-weight:bold;">Phone:</div>
                     <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 font500 mg-bot">
-                        0905324660
+                        @Model.Author.PhoneNumber
                     </div>
 
                 </div>
                 <div class="row mg-bot10 bor-bot">
                     <div class="col-lg-3 col-md-2 col-sm-2 col-xs-12 mg-bot" style="font-weight:bold;">Email:</div>
                     <div class="col-lg-9 col-md-10 col-sm-10 col-xs-12 font500">
-                        laidinhthuan123@gmail.com
+                        @Model.Author.Email
                     </div>
                 </div>
                 <div class="row mg-bot10 bor-bot">
@@ -97,7 +97,7 @@
                 <div class="row mg-bot10 bor-bot">
                     <div class="col-lg-3 col-md-2 col-sm-2 col-xs-12 mg-bot" style="font-weight:bold;">Points:</div>
                     <div class="col-lg-9 col-md-10 col-sm-10 col-xs-12 font500">
-                        @Model.Total
+                        @Model.Author.Points
                     </div>
                 </div>
                 <div class="row bor-bot">
@@ -117,7 +117,7 @@
                 </div>
                 <div class="row mg-bot10 bor-bot">
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 mg-bot" style="font-weight:bold;">Total:</div>
-                    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 font500"><span class="font500">$@(Model.Trip.Price*Model.Quantity)</span></div>
+                    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 font500"><span class="font500">$@(Model.Trip.Price*Model.Amount)</span></div>
                 </div>
                 <div class="row mg-bot10 bor-bot">
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 mg-bot" style="font-weight:bold;">Register day:</div>

@@ -39,8 +39,7 @@
             }
 
             <form asp-action="createQuestion" method="post">
-                
-                    <input type="hidden" asp-for="@Model.question.Author.ImgUrl" />
+                 
 
                     <label asp-for="@Model.question.Content" class="col-12 text-center mt-3" style="font-size:1.5em;"> <b>Question</b></label>
                     <textarea asp-for="@Model.question.Content" class="col-12 form-control" cols="4" rows="5" placeholder="Type your question here"></textarea>
