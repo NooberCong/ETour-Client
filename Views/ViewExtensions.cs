@@ -29,5 +29,10 @@ namespace Client.Views
         {
             return string.Concat(Enumerable.Repeat(input, times));
         }
+
+        public static string ToRangeString(this Tuple<DateTime, DateTime> range)
+        {
+            return $"{range.Item1.ToCustomDateString()} - {range.Item2.ToCustomDateString()}";
+        }
     }
 }
