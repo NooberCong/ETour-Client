@@ -1,0 +1,160 @@
+﻿@model Booking
+
+@{
+    ViewData["Title"] = $"Deposit - Booking No.{Model.ID}";
+}
+
+<div class="container mt-5 pb-5 mb-sm-4">
+    <partial name="_BookingProgress" model="Model.Status" />
+
+    <h3 class="mt-5">Pay Deposit to procceed with your booking</h3>
+    <p class="text text-muted">Your deposited will be used to make neccessary prepayments and bookings to create the best travel experience possible for you. It will be counted towards the final amount</p>
+    <h3 class="mt-5">Payment Information</h3>
+    <table class="mt-3 table table-borderless">
+        <tr>
+            <th>Tour</th>
+            <td>@Model.Trip.Tour.Title</td>
+        </tr>
+        <tr>
+            <th>Payment Category</th>
+            <td>Deposit</td>
+        </tr>
+        <tr>
+            <th>Amount</th>
+            <td>@Model.GetDeposit().ToCurrencyString()</td>
+        </tr>
+        <tr>
+            <th>Deadline</th>
+            <td>@DateTime.Now <span class="text-danger">*</span></td>
+        </tr>
+    </table>
+    <p class="text-danger ml-2">(*) Please complete the payment before the deadline or your booking will be canceled</p>
+    <h3 class="mt-5">Payment methods</h3>
+    <div class="container mt-3">
+        <div class="row">
+            <div class="card w-100">
+                <div class="card-header">
+                    <div class="bg-white shadow-sm pt-4 pl-2 pr-2 pb-2">
+                        <!-- Credit card form tabs -->
+                        <ul role="tablist" class="nav bg-light nav-pills rounded nav-fill mb-3">
+                            <li class="nav-item"> <a data-toggle="tab" href="#cash" role="tab" class="nav-link active "><i class="fas fa-wallet mr-2"></i> Cash </a> </li>
+                            <li class="nav-item"> <a data-toggle="tab" href="#bank" role="tab" class="nav-link "><i class="fas fa-university mr-2"></i> Bank Transfer </a> </li>
+                            <li class="nav-item"> <a data-toggle="tab" href="#qrcode" role="tab" class="nav-link "><i class="fas fa-qrcode"></i> QR Code </a> </li>
+                        </ul>
+                    </div> <!-- End -->
+                    <!-- Credit card form content -->
+                    <div class="tab-content">
+                        <!-- credit card info-->
+                        <div id="cash" class="tab-pane fade show active pt-3" role="tabpanel">
+                            <h6 class="pb-2">Step 1</h6>
+                            <p>Find and go to the nearest Toure office</p>
+                            <h6 class="pb-2">Step 2</h6>
+                            <p>Ask the support staff for deposit payment</p>
+                            <h6 class="pb-2">Step 4</h6>
+                            <p>Pay the specified amount</p>
+                            <h6 class="pb-2">Step 5</h6>
+                            <p>Check to see that the payment was successful and the status of your booking has been updated</p>
+                        </div>
+                        <!-- bank info -->
+                        <div id="bank" class="tab-pane fade pt-3" role="tabpanel">
+                            <div class="alert alert-warning">
+                                <strong><i class="fas fa-exclamation-triangle"></i> Attention</strong>
+                                <p>
+                                    Please write the <strong>transfer message</strong> using the following format:
+                                </p>
+                                <p>
+                                    BookingNo_PhoneNumber_Deposit
+                                    <br />
+                                    Ex: HN203_0857604406_Deposit
+                                </p>
+                                <p>
+                                    Where BookingNo is the ID of your booking, PhoneNumber is your phone number
+                                </p>
+                            </div>
+                            <h5 class="my-3">Please transfer to one of the accounts below</h5>
+                            <table class="table table-bordered table-striped">
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Bank</strong></td>
+                                        <td><strong>Account Owner</strong></td>
+                                        <td><strong>Account Number</strong></td>
+                                        <td><strong>Branch</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong style="color: red;">VIETCOMBANK</strong> - NGÂN HÀNG THƯƠNG MẠI CỔ PHẦN NGOẠI THƯƠNG VIỆT NAM</td>
+                                        <td>Anonymous</td>
+                                        <td>0071000939534</td>
+                                        <td>CN HỒ CHÍ MINH</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong style="color: red;">BIDV</strong> - NGÂN HÀNG ĐẦU TƯ VÀ PHÁT TRIỂN VIỆT NAM</td>
+                                        <td>Anonymous</td>
+                                        <td>31010001745233</td>
+                                        <td>CN HỒ CHÍ MINH</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong style="color: red;">ACB</strong> - NGÂN HÀNG THƯƠNG MẠI CỔ PHẦN Á CHÂU</td>
+                                        <td>Anonymous</td>
+                                        <td>177563039</td>
+                                        <td>PGD TRƯƠNG ĐỊNH</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong style="color: red;">VIETINBANK</strong> - NGÂN HÀNG TMCP CÔNG THƯƠNG VIỆT NAM</td>
+                                        <td>Anonymous</td>
+                                        <td>102868874881</td>
+                                        <td>CN THỦ THIÊM</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong style="color: red;">AGRIBANK</strong> - NGÂN HÀNG NÔNG NGHIỆP VÀ PHÁT TRIỂN NÔNG THÔN VIỆT NAM</td>
+                                        <td>Anonymous</td>
+                                        <td>6280205595686</td>
+                                        <td>CN ĐÔNG SÀI GÒN</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong style="color: red;">TECHCOMBANK</strong> - NGÂN HÀNG THƯƠNG MẠI CỔ PHẦN KỸ THƯƠNG VIỆT NAM</td>
+                                        <td>Anonymous</td>
+                                        <td>19033684408018</td>
+                                        <td>CN GIA ĐỊNH</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- bank transfer info -->
+                        <div id="qrcode" class="tab-pane fade pt-3" role="tabpanel">
+                            <form asp-action="GenerateDepositQRCode" asp-route-id="@Model.ID" method="post">
+                                <h5 class="mb-3">Select payment provider</h5>
+                                <div class="form-group">
+                                    <input checked id="zalopay" type="radio" name="provider" value="@((int)Booking.BookingPaymentProvider.Zalo_Pay)" />
+                                    <label for="zalopay">
+                                        Pay with Zalo Pay<img class="img-fluid ml-2" height="25" width="25" src="https://1.bp.blogspot.com/-gd31Y8LLTXc/XY0WhpfUF9I/AAAAAAADDzo/44-B6-qh8o0yyMwo-J2cHKyWz2SbfJGKACLcBGAsYHQ/s1600/logo.png" alt="zalopay logo" />
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <input id="momo" type="radio" name="provider" value="@((int)Booking.BookingPaymentProvider.MoMo)  />
+                                    <label for="momo">
+                                        Pay with MoMo<img class="img-fluid ml-2" height="25" width="25" src="https://static.mservice.io/img/logo-momo.png" alt="zalopay logo" />
+                                    </label>
+                                </div><div class="form-group">
+                                    <input id="momo" type="radio" name="provider" value="@((int)Booking.BookingPaymentProvider.Google_Pay)  />
+                                    <label for="momo">
+                                        Pay with Google Pay<img class="img-fluid ml-2" height="25" width="25" src="https://1000logos.net/wp-content/uploads/2020/04/Google-Pay-Logo.png" alt="zalopay logo" />
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <p><button class="btn btn-primary ">Proceed Payment</button> </p>
+                                </div>
+                            </form>
+                        </div> <!-- End -->
+                        <div class="alert alert-info">
+                            <strong><i class="far fa-lightbulb"></i> Tip</strong>
+                            <p>
+                                On successful deposit, the status of this booking will be changed to <strong>processing</strong>, please be patient while our staffs meticulously plan out your one-of-a-lifetime trip
+                            </p>
+                        </div>
+                    </div>
+                    <!-- End -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

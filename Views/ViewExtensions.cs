@@ -10,6 +10,11 @@ namespace Client.Views
             return dateTime.ToString("dd/MM/yyyy");
         }
 
+        public static string ToLongCustomDateString(this DateTime dateTime)
+        {
+            return dateTime.ToString("dd/MM/yyyy HH:mm:ss");
+        }
+
         public static string ToCurrencyString(this decimal value)
         {
             return value.ToString("C");
