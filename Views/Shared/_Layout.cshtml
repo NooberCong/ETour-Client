@@ -33,19 +33,19 @@
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Blog" asp-action="Index">Blog</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Question" asp-action="Index">Questions</a>
-                        </li>
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-white" asp-area="" asp-controller="Booking" asp-action="Index">Bookings</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white" asp-area="" asp-controller="User" asp-action="Index">@User.Identity.Name</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white" asp-area="" asp-controller="Auth" asp-action="SignOut">Sign out</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    @User.Identity.Name
+                                </a>
+                                <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
+                                    <a class="nav-link" asp-area="" asp-controller="Customer" asp-action="Index">Profile</a>
+                                    <a class="nav-link" asp-area="" asp-controller="Booking" asp-action="Index">Bookings</a>
+                                    <a class="nav-link" asp-area="" asp-controller="Question" asp-action="Index">Questions</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="nav-link" asp-area="" asp-controller="Auth" asp-action="SignOut">Sign out</a>
+                                </div>
                             </li>
                         }
                         else

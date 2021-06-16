@@ -225,10 +225,10 @@
                     </div>
                     <div class="row mt-4">
                         <div class="ml-3 btn-toolbar">
-                            <button type="button"
-                                    class="btn btn-primary btn-rounded me-2">
+                            <a asp-controller="Booking" asp-action="New" asp-route-tripID="@Model.ID"
+                               class="btn btn-primary btn-rounded me-2">
                                 <i class="fas fa-cart-plus me-2"></i> Book now
-                            </button>
+                            </a>
                             <button href="#!"
                                     type="button"
                                     class="btn btn-danger btn-floating ml-2"

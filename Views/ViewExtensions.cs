@@ -10,6 +10,11 @@ namespace Client.Views
             return dateTime.ToString("dd/MM/yyyy");
         }
 
+        public static string ToLongCustomDateString(this DateTime dateTime)
+        {
+            return dateTime.ToString("dd/MM/yyyy HH:mm:ss");
+        }
+
         public static string ToCurrencyString(this decimal value)
         {
             return value.ToString("C");
@@ -28,6 +33,11 @@ namespace Client.Views
         public static string Repeat(this string input, int times)
         {
             return string.Concat(Enumerable.Repeat(input, times));
+        }
+
+        public static string ToRangeString(this Tuple<DateTime, DateTime> range)
+        {
+            return $"{range.Item1.ToCustomDateString()} - {range.Item2.ToCustomDateString()}";
         }
     }
 }

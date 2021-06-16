@@ -33,6 +33,7 @@ namespace ETourClient
             services.AddControllersWithViews();
             services.AddBaseDb();
             services.AddEmailService();
+            services.AddPaymentHandlers();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(op =>
                 {

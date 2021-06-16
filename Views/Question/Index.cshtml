@@ -1,4 +1,4 @@
-﻿@model Client.Models.QuestionHomeModel
+﻿@model QuestionListModel
 @{
     ViewData["Title"] = "Questions";
 }
@@ -9,50 +9,45 @@
 <div class="container">
     <div class="main-body p-0">
         <div class="inner-wrapper">
-            
+
             <div class="inner-main col-12">
-               @if (Model.questions.Count() > 0)
-               {
-                   foreach (var q in Model.questions)
-                   {
-                <div class="inner-main-body  collapse forum-content show">
-                    <div class="card mb-3 border-dark">
-                        <div class="card-body ">
-                            <div class="media forum-item">
-                                <a href="#" data-toggle="collapse" data-target=".forum-content"><img src="@q.Author.ImgUrl" class="mr-3 rounded-circle" width="50" alt="User" /></a>
-                                <div class="media-body">
-                                    <h6>@q.Author.Name</h6>
-                                    <p class="text-secondary">
-                                        @q.Content
-                                    </p>
-                                    <p class="text-muted"><span class="text-secondary font-weight-bold">@q.LastUpdated.Day/@q.LastUpdated.Month/@q.LastUpdated.Year at @q.LastUpdated.Hour:@q.LastUpdated.Minute    </span></p>
+                @if (Model.Questions.Count() > 0)
+                {
+                    foreach (var q in Model.Questions)
+                    {
+                        <div class="inner-main-body  collapse forum-content show">
+                            <div class="card ">
+                                <div class="card-body ">
+                                    <div class="media forum-item">
+                                        <a href="#" data-toggle="collapse" data-target=".forum-content"><img src="@q.Author.ImgUrl" class="mr-3 rounded-circle" width="50" alt="User" /></a>
+                                        <div class="media-body">
+                                            <h6>@q.Author.Name</h6>
+                                            <p class="text-secondary">
+                                                @q.Content
+                                            </p>
+                                            <p class="text-muted"><span class="text-secondary font-weight-bold">@q.LastUpdated.Day/@q.LastUpdated.Month/@q.LastUpdated.Year at @q.LastUpdated.Hour:@q.LastUpdated.Minute    </span></p>
+                                        </div>
+
+                                    </div>
                                 </div>
-                                
                             </div>
-                        </div>
-                    </div>
-                </div>}
-               }
-            else
-            {
-            <div>Have any question? Please type below</div>
-            }
+                        </div>}
+                }
+                else
+                {
+                    <div>Have any question? Please type below</div>
+                }
 
-            <form asp-action="createQuestion" method="post">
-                 
+                <form asp-action="Create" method="post">
+                    <label asp-for="@Model.Question_.Content" class="col-12 text-center mt-3" style="font-size:1.5em;"> <b>Question</b></label>
+                    <textarea asp-for="@Model.Question_.Content" class="col-12 form-control" cols="4" rows="5" placeholder="Type your question here"></textarea>
 
-                    <label asp-for="@Model.question.Content" class="col-12 text-center mt-3" style="font-size:1.5em;"> <b>Question</b></label>
-                    <textarea asp-for="@Model.question.Content" class="col-12 form-control" cols="4" rows="5" placeholder="Type your question here"></textarea>
-                       
                     <div class="d-flex">
-                                <div class="text-info"></div>
-                                <button type="submit" class="btn btn-primary ml-auto mt-3 mb-3">Send</button>
-                            </div>
-            </form>
-
+                        <div class="text-info"></div>
+                        <button type="submit" class="btn btn-primary ml-auto mt-3 mb-3">Send</button>
+                    </div>
+                </form>
+            </div>
         </div>
-
-       
     </div>
-</div>
 </div>

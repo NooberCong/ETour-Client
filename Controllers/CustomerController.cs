@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace Client.Controllers
 {
-    public class UserController : Controller
+    public class CustomerController : BaseController
     {
         private readonly IBookingRepository _bookingRepository;
         private readonly ICustomerRepository _customerRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public UserController(IUnitOfWork unitOfWork, ICustomerRepository customerRepository, IBookingRepository bookingRepository)
+        public CustomerController(IUnitOfWork unitOfWork, ICustomerRepository customerRepository, IBookingRepository bookingRepository)
         {
             _unitOfWork = unitOfWork;
             _bookingRepository = bookingRepository;
@@ -29,12 +29,11 @@ namespace Client.Controllers
         // View(userHomeViewModel)
         public async Task<IActionResult> Index()
         {
-            string customerID = User.Claims.First(c1 => c1.Type == ClaimTypes.NameIdentifier).Value;
             IEnumerable<Booking> bookingList = _bookingRepository.Queryable.Include(bk => bk.Trip).ThenInclude(tr => tr.Tour);
 
-            Customer customer = await _customerRepository.FindAsync(customerID);
+            Customer customer = await _customerRepository.FindAsync(UserID);
 
-            return View(new UserHomeModel
+            return View(new CustomerHomeModel
             {
                 Bookings = bookingList,
                 Customer = customer
@@ -45,17 +44,26 @@ namespace Client.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(Customer customer)
         {
-            string customerID = GetCustomerID();
-            customer.ID = customerID;
 
-            await _customerRepository.UpdateAsync(customer);
+            if (!ModelState.IsValid)
+            {
+                return View(
+                new CustomerHomeModel
+                {
+                    Bookings = _bookingRepository.Queryable.Include(bk => bk.Trip).ThenInclude(tr => tr.Tour),
+                    Customer = customer
+                });
+            }
+
+            var existingUser = await _customerRepository.FindAsync(UserID);
+
+            existingUser.Name = customer.Name;
+            existingUser.PhoneNumber = customer.PhoneNumber;
+            existingUser.Address = customer.Address;
+
+            await _customerRepository.UpdateAsync(existingUser);
             await _unitOfWork.CommitAsync();
             return RedirectToAction("Index");
-        }
-
-        private string GetCustomerID()
-        {
-            return User.Claims.First(c1 => c1.Type == ClaimTypes.NameIdentifier).Value;
         }
 
 
@@ -64,7 +72,7 @@ namespace Client.Controllers
         public IActionResult BookingHistory()
         {
             IEnumerable<Booking> bookings = _bookingRepository.Queryable
-                .Where(bk => bk.AuthorID == GetCustomerID())
+                .Where(bk => bk.AuthorID == UserID)
                 .Include(bk => bk.Author)
                 .Include(bk => bk.CustomerInfos)
                 .Include(bk => bk.Trip).ThenInclude(t => t.Tour)
@@ -81,16 +89,16 @@ namespace Client.Controllers
                 .Include(bk => bk.Author)
                 .Include(bk => bk.CustomerInfos)
                 .Include(bk => bk.Trip).ThenInclude(t => t.Tour)
-                .FirstOrDefaultAsync(bk=>bk.ID==id);
-        
+                .FirstOrDefaultAsync(bk => bk.ID == id);
+
             if (booking == null)
             {
                 return NotFound();
             }
             return View(booking);
         }
-       
-       
+
+
 
     }
 }

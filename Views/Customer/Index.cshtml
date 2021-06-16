@@ -1,4 +1,4 @@
-﻿@model Client.Models.UserHomeModel
+﻿@model Client.Models.CustomerHomeModel
 @{
     ViewData["Title"] = "User Info";
 }
@@ -187,11 +187,19 @@
                     <input class="form-control" asp-for="Customer.Email" readonly>
                     <span asp-validation-for="Customer.Email"></span>
                 </div>
+                <div class="form-group">
+                    <label asp-for="Customer.PhoneNumber"></label>
+                    <input class="form-control" asp-for="Customer.PhoneNumber">
+                    <span asp-validation-for="Customer.PhoneNumber"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Customer.Address"></label>
+                    <input class="form-control" asp-for="Customer.Address">
+                </div>
                 <div class="form-group d-flex">
                     <div>
                         <label asp-for="Customer.Points"></label>
                         <input class="form-control" asp-for="Customer.Points" readonly>
-                        <span asp-validation-for="Customer.Points"></span>
                     </div>
                     <div class="ml-2">
                         <label asp-for="Customer.DOB">Date of birth</label>
@@ -201,7 +209,7 @@
                 </div>
                 <hr class="my-4">
                 <button type="submit" class="btn btn-primary">
-                    Save User
+                    Update Information
                 </button>
             </form>
         </div>
@@ -217,41 +225,42 @@
             {
 
                 @foreach (var obj in Model.Bookings)
-                {@if (obj.Trip.IsOpen == true) { 
-                
-                    <div class="row">
-                        <div class="cardWrap">
-                            <div class="card cardLeft">
-                                <h1>@obj.Trip.Tour.StartPlace - @obj.Trip.Tour.Destination</h1>
-                                <div class="title">
-                                    <span>tripid</span>
-                                    <h2>@obj.TripID</h2>
-                                </div>
-                                <div class="name">
-                                    <span>capacity</span>
-                                    <h2>@obj.Trip.Capacity</h2>
-                                </div>
+                {@if (obj.Trip.IsOpen == true)
+                    {
 
-                                <div class="time">
-                                    <span>time</span>
-                                    <h2 style="margin-left:15em;">@obj.Trip.StartTime.Hour : @obj.Trip.StartTime.Minute</h2>
+                        <div class="row">
+                            <div class="cardWrap">
+                                <div class="card cardLeft">
+                                    <h1>@obj.Trip.Tour.StartPlace - @obj.Trip.Tour.Destination</h1>
+                                    <div class="title">
+                                        <span>tripid</span>
+                                        <h2>@obj.TripID</h2>
+                                    </div>
+                                    <div class="name">
+                                        <span>capacity</span>
+                                        <h2>@obj.Trip.Capacity</h2>
+                                    </div>
+
+                                    <div class="time">
+                                        <span>time</span>
+                                        <h2 style="margin-left:15em;">@obj.Trip.StartTime.Hour : @obj.Trip.StartTime.Minute</h2>
+                                    </div>
+
+                                </div>
+                                <div class="card cardRight">
+                                    <div class="eye"></div>
+                                    <div class="number">
+                                        <h3>@obj.Trip.Price</h3>
+                                        <span>price</span>
+                                    </div>
+                                    <div class="barcode"></div>
+                                    <hr />
+
                                 </div>
 
                             </div>
-                            <div class="card cardRight">
-                                <div class="eye"></div>
-                                <div class="number">
-                                    <h3>@obj.Trip.Price</h3>
-                                    <span>price</span>
-                                </div>
-                                <div class="barcode"></div>
-                                <hr />
-                              
-                            </div>
-
-                        </div>
-                    </div>} }
-                }
+                        </div>}}
+            }
             else
             {
                 {<p class="text-muted">You current have no active bookings</p>}

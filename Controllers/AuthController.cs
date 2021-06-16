@@ -54,11 +54,7 @@ namespace Client.Controllers
 
             var subjectID = externalClaims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
 
-            Console.WriteLine($"Subject id: {subjectID}");
-
             Customer customer = await _customerRepository.FindAsync(subjectID);
-
-            Console.WriteLine($"Customer: {customer}");
 
             if (customer == null)
             {
