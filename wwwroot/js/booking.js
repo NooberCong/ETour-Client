@@ -79,18 +79,13 @@ function onDobUpdated(ageGroup, input) {
     let dobRange = document.getElementById(`Range_${ageGroup}`).innerHTML.split(" - ");
     let from = moment(dobRange[0], "DD/MM/YYYY").toDate();
     let to = moment(dobRange[1], "DD/MM/YYYY").toDate();
-    console.log(from);
-    console.log(to);
 
     let inputDate = moment(input.value).toDate();
-    console.log(inputDate);
 
     if (inputDate < from || inputDate > to) {
         alert(`Invalid date of birth for age group ${ageGroup}`);
         input.value = null;
     }
-
-    input.classList.add("is-valid");
 }
 
 function addCustomerInfoEntry(ageGroup) {

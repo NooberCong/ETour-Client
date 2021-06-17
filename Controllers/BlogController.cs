@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Client.Models;
+using Core.Interfaces;
+using Infrastructure.InterfaceImpls;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,14 +12,26 @@ namespace Client.Controllers
 {
     public class BlogController : Controller
     {
-        private static readonly int _pageSize = 6;
+        private readonly IPostRepository<Post,Employee> _blogRepository;
+
+        public BlogController(IPostRepository<Post, Employee> blogRepository)
+        {
+            _blogRepository = blogRepository;
+           
+        }
 
         // Display list of blog posts
         // Parameter pageNumber specify which set of tours to display according to pageSize
         // Returns View(postList)
-        public IActionResult Index(int pageNumber = 1)
+        public IActionResult Index()
         {
-            return View();
+
+            IEnumerable<Post> BlogList = _blogRepository.Queryable.Include(p => p.Author)
+               .Where(post =>  !post.IsSoftDeleted).AsEnumerable();
+            return View(new BlogListModel
+            {
+                Posts = BlogList
+            }) ;
         }
 
         // Display detail of a blog post
