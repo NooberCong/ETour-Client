@@ -1,6 +1,7 @@
 using Client.AuthenticationSchemes;
 using Core.Services;
 using Infrastructure.Extentions;
+using Infrastructure.Hubs;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -49,6 +50,7 @@ namespace ETourClient
                 });
             services.AddETourLogging();
             services.AddScoped<TripFilterService>();
+            services.AddSignalR();
 
         }
 
@@ -77,6 +79,7 @@ namespace ETourClient
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapHub<QAHub>("/qa");
             });
 
         }

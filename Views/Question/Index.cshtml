@@ -38,16 +38,48 @@
                     <div>Have any question? Please type below</div>
                 }
 
-                <form asp-action="Create" method="post">
+                <form asp-action="Create" method="post" id="submitForm" >
                     <label asp-for="@Model.Question_.Content" class="col-12 text-center mt-3" style="font-size:1.5em;"> <b>Question</b></label>
-                    <textarea asp-for="@Model.Question_.Content" class="col-12 form-control" cols="4" rows="5" placeholder="Type your question here"></textarea>
+                    <textarea asp-for="@Model.Question_.Content" class="col-12 form-control" cols="4" rows="5" placeholder="Type your question here" id="areaText"></textarea>
 
                     <div class="d-flex">
                         <div class="text-info"></div>
-                        <button type="submit" class="btn btn-primary ml-auto mt-3 mb-3">Send</button>
+                        <button type="submit" onclick="submitQuestion()" class="btn btn-primary ml-auto mt-3 mb-3" id="submit-button">Send</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<script src="https://unpkg.com/@@aspnet/signalr@1.0.2/dist/browser/signalr.js"></script>
+<script src="https://unpkg.com/@@microsoft/signalr@6.0.0-preview.4.21253.5/dist/browser/signalr.min.js"></script>
+
+<script>
+    
+        var connection = new signalR.HubConnectionBuilder()
+            .withUrl("https://localhost:44360/")
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+
+    function submitQuestion() {
+        
+        var questionForm = document.getElementById("submitForm");
+        var text = document.getElementById("areaText").textContent;
+        var date = 0;
+        questionForm.addEventListener("submit", function (e) {
+            connection.invoke("sendQuestions",
+                text,
+                date
+
+            );
+        });
+    }
+
+    connection.on("ReceiveQuestions", inra);
+
+    function inra(content, date) {
+        alert("đmmmm");
+    }
+</script>
