@@ -14,12 +14,13 @@ namespace Client.Controllers
         private readonly ITripRepository _tripRepository;
         private readonly ITourRepository _tourRepository;
         private readonly TripFilterService _tripFilterService;
-
-        public TripController(ITripRepository tripRepository, ITourRepository tourRepository, TripFilterService tripFilterService)
+        private readonly ITourReviewRepository _tourReviewRepository;
+        public TripController(ITourReviewRepository tourReviewRepository, ITripRepository tripRepository, ITourRepository tourRepository, TripFilterService tripFilterService)
         {
             _tripRepository = tripRepository;
             _tourRepository = tourRepository;
             _tripFilterService = tripFilterService;
+            _tourReviewRepository = tourReviewRepository;
         }
 
         private static readonly int _pageSize = 7;

@@ -9,7 +9,7 @@ namespace Client.Models
     public class QuestionListModel
     {
       public  IEnumerable<Question> Questions { get; set; }
-      public Question Question_ { get; set; }
+      public Question _Question { get; set; }
       public Customer Customer { get; set; }
     }
 }
