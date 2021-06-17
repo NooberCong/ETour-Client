@@ -80,22 +80,7 @@ namespace Client.Controllers
         }
 
 
-        //Display speccific booking detail
-        public async Task<IActionResult> BookingDetail(int id)
-        {
-            var booking = await _bookingRepository.Queryable
-                .Include(bk => bk.Author)
-                .Include(bk => bk.CustomerInfos)
-                .Include(bk => bk.Trip).ThenInclude(t => t.Tour)
-                .FirstOrDefaultAsync(bk => bk.ID == id);
-
-            if (booking == null)
-            {
-                return NotFound();
-            }
-            return View(booking);
-        }
-
+      
 
 
     }

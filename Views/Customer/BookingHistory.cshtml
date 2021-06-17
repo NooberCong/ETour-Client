@@ -29,7 +29,7 @@
                 <td class="text-center">@bk.CustomerInfos.Count</td>
                 <td class="text-center">@bk.Note</td>
                 <td class="text-center">@bk.Trip.Tour.StartPlace - @bk.Trip.Tour.Destination</td>
-                <td class="text-center"><a class="btn btn-link " asp-action="BookingDetail" asp-route-id="@bk.ID">Detail</a></td>
+                <td class="text-center"><a class="btn btn-link " asp-controller="Booking" asp-action="Detail" asp-route-id="@bk.ID">Detail</a></td>
             </tr>
         }
     </table>
