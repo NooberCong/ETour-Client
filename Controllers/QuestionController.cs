@@ -36,11 +36,12 @@ namespace Client.Controllers
         // Display details of a specific question, including it's anwers
         // Return View(question)
         [HttpPost]
-        public async Task<IActionResult> Create(Question question)
+        public async Task<IActionResult> Create(Question _Question)
         {
-            question.AuthorID = UserID;
-            question.LastUpdated = DateTime.Now;
-            await _questionRepository.AddAsync(question);
+            _Question.AuthorID = UserID;
+            _Question.LastUpdated = DateTime.Now;
+            
+            await _questionRepository.AddAsync(_Question);
             await _unitOfWork.CommitAsync();
             return RedirectToAction("Index");
 

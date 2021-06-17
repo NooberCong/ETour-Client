@@ -4,156 +4,6 @@
 }
 <style>
 
-    .cardWrap {
-        width: 31em;
-        color: #fff;
-        font-family: sans-serif;
-    }
-
-    .card {
-        background: linear-gradient(to bottom, #e84c3d 0%, #e84c3d 26%, #ecedef 26%, #ecedef 100%);
-        height: 16em;
-        float: left;
-        position: relative;
-        padding: 1em;
-        margin-top: 10px;
-    }
-
-    .cardLeft {
-        border-top-left-radius: 8px;
-        border-bottom-left-radius: 8px;
-        width: 19em;
-    }
-
-    .cardRight {
-        width: 10em;
-        border-left: 0.18em dashed #fff;
-        border-top-right-radius: 8px;
-        border-bottom-right-radius: 8px;
-    }
-
-        .cardRight:before, .cardRight:after {
-            content: "";
-            position: absolute;
-            display: block;
-            width: 0.9em;
-            height: 0.9em;
-            background: #fff;
-            border-radius: 50%;
-            left: -0.5em;
-        }
-
-        .cardRight:before {
-            top: -0.4em;
-        }
-
-        .cardRight:after {
-            bottom: -0.4em;
-        }
-
-    h1 {
-        font-size: 1.1em;
-        margin-top: 0;
-    }
-
-        h1 span {
-            font-weight: normal;
-        }
-
-    .title, .name, .seat, .time {
-        text-transform: uppercase;
-        font-weight: bolder;
-    }
-
-        .title h2, .name h2, .seat h2, .time h2 {
-            font-size: 0.9em;
-            color: #525252;
-            margin-left: 17em;
-            font-weight: bold;
-        }
-
-        .title span, .name span, .seat span, .time span {
-            font-size: 1em;
-            color: #a2aeae;
-        }
-
-    .title {
-        margin: 2em 0 0 0;
-    }
-
-    .name, .time {
-        margin: 0.5em 0 0 0;
-    }
-
-
-
-    .seat, .time {
-        float: left;
-    }
-
-    .eye {
-        position: relative;
-        width: 2em;
-        height: 1.5em;
-        background: #fff;
-        margin: 0 auto;
-        border-radius: 1em/0.6em;
-        z-index: 1;
-    }
-
-        .eye:before, .eye:after {
-            content: "";
-            display: block;
-            position: absolute;
-            border-radius: 50%;
-        }
-
-        .eye:before {
-            width: 1em;
-            height: 1em;
-            background: #e84c3d;
-            z-index: 2;
-            left: 8px;
-            top: 4px;
-        }
-
-        .eye:after {
-            width: 0.5em;
-            height: 0.5em;
-            background: #fff;
-            z-index: 3;
-            left: 12px;
-            top: 8px;
-        }
-
-    .number {
-        text-align: center;
-        text-transform: uppercase;
-    }
-
-        .number h3 {
-            color: #e84c3d;
-            margin: 0.9em 0 0 0;
-            font-size: 2.5em;
-        }
-
-        .number span {
-            display: block;
-            color: #a2aeae;
-        }
-
-    .barcode {
-        height: 2em;
-        width: 0;
-        margin-right: 3em;
-        margin-left: 1.3em;
-        box-shadow: 1px 0 0 1px #343434, 5px 0 0 1px #343434, 10px 0 0 1px #343434, 11px 0 0 1px #343434, 15px 0 0 1px #343434, 18px 0 0 1px #343434, 22px 0 0 1px #343434, 23px 0 0 1px #343434, 26px 0 0 1px #343434, 30px 0 0 1px #343434, 35px 0 0 1px #343434, 37px 0 0 1px #343434, 41px 0 0 1px #343434, 44px 0 0 1px #343434, 47px 0 0 1px #343434, 51px 0 0 1px #343434, 56px 0 0 1px #343434, 59px 0 0 1px #343434, 64px 0 0 1px #343434, 68px 0 0 1px #343434, 72px 0 0 1px #343434, 74px 0 0 1px #343434, 77px 0 0 1px #343434, 81px 0 0 1px #343434;
-    }
-
-
-
-
-
 
     a:link {
         color: pink;
@@ -171,7 +21,7 @@
 
 <div class="container my-5">
     <div class="row justify-content-between">
-        <div class="col-md-5">
+        <div class="col-4">
             <form method="post">
                 <div class="form-group row justify-content-center">
                     <input type="hidden" asp-for="@Model.Customer.ImgUrl" />
@@ -182,19 +32,20 @@
                     <input class="form-control" asp-for="Customer.Name">
                     <span asp-validation-for="Customer.Name"></span>
                 </div>
-                <div class="form-group">
-                    <label asp-for="Customer.Email"></label>
-                    <input class="form-control" asp-for="Customer.Email" readonly>
-                    <span asp-validation-for="Customer.Email"></span>
-                </div>
+
                 <div class="form-group">
                     <label asp-for="Customer.PhoneNumber"></label>
-                    <input class="form-control" asp-for="Customer.PhoneNumber" readonly>
+                    <input class="form-control" asp-for="Customer.PhoneNumber">
                     <span asp-validation-for="Customer.PhoneNumber"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="Customer.Address"></label>
-                    <input class="form-control" asp-for="Customer.Address" disabled>
+                    <input class="form-control" asp-for="Customer.Address">
+                </div>
+                <div class="form-group">
+                    <label asp-for="Customer.Email"></label>
+                    <input class="form-control" asp-for="Customer.Email" readonly>
+                    <span asp-validation-for="Customer.Email"></span>
                 </div>
                 <div class="form-group d-flex">
                     <div>
@@ -215,57 +66,71 @@
         </div>
 
 
-        <div class="col-md-5 col-offset-md-1">
+        <div class="col-8 col-offset-md-1">
 
             <div class="d-flex">
                 <h3>Upcoming trip</h3>
-                <a class="btn btn-success ml-auto" asp-controller="User" asp-action="BookingHistory">Booking History</a>
+                
             </div>
-            @if (Model.Bookings.Count() > 0)
-            {
 
-                @foreach (var obj in Model.Bookings)
-                {@if (obj.Trip.IsOpen == true)
-                    {
+           
+                <!-- Card -->
+                <div class="card wish-list mt-3">
+                    <div class="card-body">
 
-                        <div class="row">
-                            <div class="cardWrap">
-                                <div class="card cardLeft">
-                                    <h1>@obj.Trip.Tour.StartPlace - @obj.Trip.Tour.Destination</h1>
-                                    <div class="title">
-                                        <span>tripid</span>
-                                        <h2>@obj.TripID</h2>
-                                    </div>
-                                    <div class="name">
-                                        <span>capacity</span>
-                                        <h2>@obj.Trip.Capacity</h2>
+
+                        @if (Model.Bookings.Count() > 0)
+                        {
+                            @foreach (var b in Model.Bookings)
+                            {<div class="row mb-4">
+                                    <div class="col-md-5 col-xl-4">
+                                        <img class="img-fluid w-100 h-100 rounded" style="object-fit: cover" src="@b.Trip.Tour.ImageUrls[0]" alt="Sample">
                                     </div>
 
-                                    <div class="time">
-                                        <span>time</span>
-                                        <h2 style="margin-left:15em;">@obj.Trip.StartTime.Hour : @obj.Trip.StartTime.Minute</h2>
-                                    </div>
 
+                                    <div class="col-md-7 col-xl-8">
+                                        <div>
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <h5>Tour @b.Trip.Tour.StartPlace - @b.Trip.Tour.Destination </h5>
+                                                    <p class="mb-2 text-muted text-uppercase small">
+                                                        Time frame: <span class="bg-light-blue text-center">@b.Trip.StartTime.Day.@b.Trip.StartTime.Month.@b.Trip.StartTime.Year - @b.Trip.EndTime.Day.@b.Trip.EndTime.Month.@b.Trip.EndTime.Year</span>
+                                                    </p>
+                                                    <p class="mb-2 text-muted text-uppercase small">Duration: @(b.Trip.EndTime.Day-b.Trip.StartTime.Day) days</p>
+                                                    <p class="mb-3 text-muted text-uppercase small">Tour Type: @b.Trip.Tour.Type</p>
+                                                </div>
+                                                <div>
+                                                    <p class="text-right">Quantity: @(b.Amount)</p>
+                                                    <p class="text-right">@b.Trip.Price</p>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <form class="d-inline" asp-controller="Booking" asp-action="Remove" asp-route-id="@b.ID" asp-route-returnUrl="@(Context.Request.Path + Context.Request.QueryString)" method="post">
+                                                        <a style="cursor: pointer" onclick="targetForm = this.parentNode;" class="text-danger" data-toggle="modal" data-target="#delete-modal"><span data-feather="trash" />Cancel</a>
+                                                    </form>
+
+                                                </div>
+                                                <p class="mb-0 text-right"><span><strong>Total: @(b.Trip.Price * (b.CustomerInfos.Count+1))</strong></span></p>
+                                            </div>
+                                        </div>
+
+                                    </div>
                                 </div>
-                                <div class="card cardRight">
-                                    <div class="eye"></div>
-                                    <div class="number">
-                                        <h3>@obj.Trip.Price</h3>
-                                        <span>price</span>
-                                    </div>
-                                    <div class="barcode"></div>
-                                    <hr />
+                            }
+                        }
 
-                                </div>
 
-                            </div>
-                        </div>}}
-            }
-            else
-            {
-                {<p class="text-muted">You current have no active bookings</p>}
-            }
-        </div>
+                        <p class="text-primary mb-0">
+                            <i class="fas fa-info-circle mr-1"></i> Do not delay the purchase, adding
+                            items to your cart does not mean booking them.
+                        </p>
+
+                    </div>
+                </div>
+
+            </div>
+      
     </div>
 
 

@@ -9,5 +9,6 @@ namespace Client.Models
         public IEnumerable<Tour> Tours { get; set; }
         public TripFilterParams FilterParams { get; set; }
         public IEnumerable<Trip> Trips { get; set; }
+        public IEnumerable<TourReview> Reviews { get; set; }
     }
 }
