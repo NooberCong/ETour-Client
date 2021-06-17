@@ -313,6 +313,27 @@
                                             <div class="float-right text-muted">@itin.StartTime</div>
                                             <h4 class="card-title">@itin.Title</h4>
                                             @Html.Raw(itin.Detail)
+                                            <a class="btn btn-outline-primary" data-toggle="collapse" href="#detail-@itin.ID">Itinerary Summary</a>
+                                            <div id="detail-@itin.ID" class="collapse table-responsive mt-3">
+                                                <table class="table">
+                                                    <tr>
+                                                        <th>@Html.DisplayNameFor(_ => itin.Accommodation)</th>
+                                                        <td>@Html.DisplayFor(_ => itin.Accommodation)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>@Html.DisplayNameFor(_ => itin.Meal)</th>
+                                                        <td>@Html.DisplayFor(_ => itin.Meal)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>@Html.DisplayNameFor(_ => itin.Transport)</th>
+                                                        <td>@Html.DisplayFor(_ => itin.Transport)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>@Html.DisplayNameFor(_ => itin.Activity)</th>
+                                                        <td>@Html.DisplayFor(_ => itin.Activity)</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

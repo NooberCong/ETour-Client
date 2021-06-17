@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Client.Controllers
@@ -90,6 +89,15 @@ namespace Client.Controllers
                 return NotFound();
             }
 
+            var ageGroups = customerDobs.Select(dob => CustomerInfo.AgeGroupFor(dob)).ToArray();
+            var salePrices = trip.GetSalePricesFor(ageGroups);
+            booking.Total = salePrices.Sum();
+
+            if (booking.TicketCount > trip.Vacancies)
+            {
+                ModelState.AddModelError(string.Empty, "There was not enough vacancies for your booking request");
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(new BookingFormModel
@@ -99,9 +107,10 @@ namespace Client.Controllers
                     CustomerNames = customerNames,
                     CustomerSexes = customerSexes,
                     CustomerDobs = customerDobs,
-                    CustomerAgeGroups = customerDobs.Select(dob => CustomerInfo.AgeGroupFor(dob)).ToArray(),
+                    CustomerAgeGroups = ageGroups,
+                    SalePrices = salePrices,
                     Trip = trip,
-                    Total = customerDobs.Select(dob => trip.GetSalePriceFor(CustomerInfo.AgeGroupFor(dob))).Sum(),
+                    Total = booking.Total,
                 });
             }
 
@@ -118,10 +127,11 @@ namespace Client.Controllers
                     DOB = customerDobs[i],
                     AgeGroup = ageGroup
                 });
-
-                booking.Total += trip.GetSalePriceFor(ageGroup);
             }
+
             booking.Status = Booking.BookingStatus.AwaitingDeposit;
+            booking.PaymentDeadline = DateTime.Now.AddDays(2);
+            booking.TicketCount = booking.CustomerInfos.Count;
 
             await _bookingRepository.AddAsync(booking);
             await _unitOfWork.CommitAsync();
@@ -148,10 +158,11 @@ namespace Client.Controllers
             return booking.Status switch
             {
                 Booking.BookingStatus.AwaitingDeposit => View("Views/Booking/Deposit.cshtml", booking),
-                Booking.BookingStatus.Processing => throw new NotImplementedException(),
-                Booking.BookingStatus.AwaitingPayment => throw new NotImplementedException(),
-                Booking.BookingStatus.Completed => throw new NotImplementedException(),
-                Booking.BookingStatus.Canceled => throw new NotImplementedException(),
+                Booking.BookingStatus.Processing => View("Views/Booking/Processing.cshtml", booking),
+                Booking.BookingStatus.AwaitingPayment => View("Views/Booking/Payment.cshtml", booking),
+                Booking.BookingStatus.Completed => View("Views/Booking/Completed.cshtml", booking),
+                Booking.BookingStatus.Canceled => View("Views/Booking/Canceled.cshtml", booking),
+                _ => throw new InvalidOperationException(),
             };
         }
 
@@ -163,6 +174,12 @@ namespace Client.Controllers
                             .ThenInclude(tr => tr.Tour)
                             .Include(bk => bk.Author)
                             .FirstOrDefaultAsync(bk => bk.ID == id);
+
+            if (booking == null || booking.Status != Booking.BookingStatus.AwaitingDeposit && booking.Status != Booking.BookingStatus.AwaitingPayment)
+            {
+                return NotFound();
+            }
+
             string paymentUrl = "";
             string viewName = "";
 
@@ -180,8 +197,6 @@ namespace Client.Controllers
                     break;
             }
 
-            Console.WriteLine($"PaymentUrl: {paymentUrl}");
-
             QRCodeData _qrCodeData = new QRCodeGenerator().CreateQrCode(paymentUrl, QRCodeGenerator.ECCLevel.Q);
             QRCode qrCode = new QRCode(_qrCodeData);
             Bitmap qrCodeImage = qrCode.GetGraphic(20);
@@ -189,7 +204,8 @@ namespace Client.Controllers
             return View(viewName, new QRPaymentModel
             {
                 QRImageSource = string.Format($"data:image/png;base64,{Convert.ToBase64String(BitmapToBytesCode(qrCodeImage))}"),
-                TotalAmount = booking.GetDeposit()
+                TotalAmount = booking.GetDeposit(),
+                BookingID = booking.ID
             });
         }
 
@@ -201,6 +217,59 @@ namespace Client.Controllers
                 image.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
                 return stream.ToArray();
             }
+        }
+
+        public async Task<IActionResult> CustomerInfos(int adult, int youth, int children, int baby, int tripID)
+        {
+
+            var trip = await _tripRepository.Queryable
+                .Include(tr => tr.TripDiscounts)
+                .ThenInclude(td => td.Discount)
+                .Include(tr => tr.Bookings)
+                .FirstOrDefaultAsync(tr => tr.ID == tripID);
+
+            if (trip == null || adult <= 0 || adult + youth + children + baby > trip.Vacancies)
+            {
+                return BadRequest();
+            }
+
+            List<CustomerInfo.CustomerAgeGroup> ageGroups = new();
+
+            ageGroups.AddRange(Enumerable.Repeat(CustomerInfo.CustomerAgeGroup.Adult, adult));
+            ageGroups.AddRange(Enumerable.Repeat(CustomerInfo.CustomerAgeGroup.Youth, youth));
+            ageGroups.AddRange(Enumerable.Repeat(CustomerInfo.CustomerAgeGroup.Children, children));
+            ageGroups.AddRange(Enumerable.Repeat(CustomerInfo.CustomerAgeGroup.Baby, baby));
+
+            return View(new CustomerInfosModel
+            {
+                AgeGroups = ageGroups,
+                SalePrices = trip.GetSalePricesFor(ageGroups)
+            });
+        }
+
+        public async Task<IActionResult> ZaloPayConfirm(int id)
+        {
+            var booking = await _bookingRepository.Queryable
+                .Include(bk => bk.Trip)
+                .FirstOrDefaultAsync(bk => bk.ID == id);
+
+            if (booking == null || booking.Status != Booking.BookingStatus.AwaitingDeposit && booking.Status != Booking.BookingStatus.AwaitingPayment)
+            {
+                return NotFound();
+            }
+
+            if (booking.Status == Booking.BookingStatus.AwaitingDeposit)
+            {
+                booking.ChangeStatus(Booking.BookingStatus.Processing);
+            } else
+            {
+                booking.ChangeStatus(Booking.BookingStatus.Completed);
+            }
+
+            await _bookingRepository.UpdateAsync(booking);
+            await _unitOfWork.CommitAsync();
+
+            return RedirectToAction("Detail", new { id = id });
         }
     }
 }

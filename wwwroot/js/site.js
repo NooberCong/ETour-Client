@@ -18,3 +18,14 @@ $(document).ready(function () {
         return false;
     });
 });
+
+function createSpinnerFor(element) {
+    let spinner = document.createElement("div");
+    spinner.classList.add("spinner-grow", "text-center", "text-primary", ...element.classList);
+    spinner.setAttribute("role", "status");
+    let spinnerSize = Math.min(element.clientWidth, element.clientHeight);
+    spinner.style.width = `${spinnerSize}px`;
+    spinner.style.height = `${spinnerSize}px`;
+    spinner.innerHTML = '<span class="sr-only">Loading...</span>'
+    return spinner;
+}

@@ -1,0 +1,40 @@
+﻿@model CustomerInfosModel
+
+@{
+    Layout = null;
+}
+
+@for (int i = 1; i <= Model.AgeGroups.Count(); i++)
+{
+    <div>
+        <h6 class="mb-3">Customer No.@(i)</h6>
+        <div class="row">
+            <div class="form-group col-md-3 mb-3">
+                <label for="Name_@(i)">Name</label>
+                <input name="@nameof(BookingFormModel.CustomerNames)" id="Name_@(i)" class="form-control" required>
+            </div>
+            <div class="form-group col-md-3 mb-3">
+                <label for="Sex_@(i)">Sex</label>
+                <select id="Sex_@(i)" name="@nameof(BookingFormModel.CustomerSexes)" class="form-control">
+                    @foreach (CustomerInfo.CustomerSex sex in Enum.GetValues(typeof(CustomerInfo.CustomerSex)))
+                    {
+                        <option value="@((int)sex)">@sex</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group col-md-3 mb-3">
+                <label for="DOB_@(i)">Date of birth</label>
+                <input onfocusout="onDobUpdated('@Model.AgeGroups[i - 1]', this)" id="DOB_@(i)" name="@nameof(BookingFormModel.CustomerDobs)" class="form-control" type="date" required />
+            </div>
+            <div class="form-group col-md-3 mb-3">
+                <label for="AG_@(i)">Age Group</label>
+                <select disabled id="AG_@(i)" name="@nameof(BookingFormModel.CustomerAgeGroups)" class="form-control">
+                    <option selected value="@((int)Model.AgeGroups[i - 1])">@Model.AgeGroups[i - 1]</option>
+                </select>
+            </div>
+        </div>
+        <p class="text-right">Price: <span class="Price_Item text-danger font-weight-bold">@Model.SalePrices[i - 1].ToCurrencyString()</span></p>
+        <hr />
+    </div>
+}
+<h4 class="text-right">Total: <span class="text-danger font-weight-bold">@Model.SalePrices.Sum().ToCurrencyString()</span></h4>

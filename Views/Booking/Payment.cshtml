@@ -1,14 +1,14 @@
 ﻿@model Booking
 
 @{
-    ViewData["Title"] = $"Deposit - Booking No.{Model.ID}";
+    ViewData["Title"] = $"Payment - Booking No.{Model.ID}";
 }
 
 <div class="container mt-5 pb-5 mb-sm-4">
     <partial name="_BookingProgress" model="Model.Status" />
 
-    <h3 class="mt-5">Pay Deposit to procceed with your booking</h3>
-    <p class="text text-muted">Your deposited will be used to make neccessary prepayments and bookings to create the best travel experience possible for you. It will be counted towards the final amount</p>
+    <h3 class="mt-5">Pay the remaining fee to procceed with your booking</h3>
+    <p class="text text-muted">The remaining fees will be added together with the deposit fee to cover the whole booking price</p>
     <h3 class="mt-5">Payment Information</h3>
     <table class="mt-3 table table-borderless">
         <tr>
@@ -48,7 +48,7 @@
                         <div class="alert alert-info">
                             <strong><i class="far fa-lightbulb"></i> Tip</strong>
                             <p>
-                                On successful deposit, the status of this booking will be changed to <strong>processing</strong>, please be patient while our staffs meticulously plan out your one-of-a-lifetime trip
+                                On successful payment, the status of this booking will be changed to <strong>completed</strong>, we wish you a happy trip
                             </p>
                         </div>
                     </div>

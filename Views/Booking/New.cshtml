@@ -45,10 +45,11 @@
                     <td id="Price_Adult">@Model.Trip.GetSalePriceFor(CustomerInfo.CustomerAgeGroup.Adult).ToCurrencyString()</td>
                     <td id="Price_Youth">@Model.Trip.GetSalePriceFor(CustomerInfo.CustomerAgeGroup.Youth).ToCurrencyString()</td>
                     <td id="Price_Children">@Model.Trip.GetSalePriceFor(CustomerInfo.CustomerAgeGroup.Children).ToCurrencyString()</td>
-                    <td id="Price_Baby">@Model.Trip.GetSalePriceFor(CustomerInfo.CustomerAgeGroup.Baby).ToCurrencyString()</td>
+                    <td id="Price_Baby">@Model.Trip.GetSalePriceFor(CustomerInfo.CustomerAgeGroup.Baby).ToCurrencyString() <span class="text-danger">*</span></td>
                 </tr>
             </tbody>
         </table>
+        <span class="text-danger">(*) Each adult is entitled to one free baby ticket. From the second baby, the price will be that of children</span>
         <div class="mt-5 alert alert-warning" role="alert">
             <p class="ml-3 font-weight-bold">Age Groups <i class="fas fa-info-circle"></i></p>
             <div class="row m-0">
@@ -67,7 +68,7 @@
 </div>
 <form method="post" onsubmit="if(document.getElementById('agree').checked) { return true; } else { alert('Please indicate that you have read and agree to the Terms and Conditions and Privacy Policy'); return false; }">
     <h3 class="my-5 text-center">Contact information</h3>
-    <input type="hidden" asp-for="Booking.TripID" value="@Model.Trip.ID" />
+    <input id="tripID" type="hidden" asp-for="Booking.TripID" value="@Model.Trip.ID" />
     <div class="container order-md-1">
         <div class="row">
             <div class="col-md-6 mb-3">
@@ -122,7 +123,7 @@
                 </div>
                 <div>
                     <label>Total</label>
-                    <input id="NoTotal" disabled type="number" class="form-control" value="1">
+                    <input id="NoTotal" asp-for="Booking.TicketCount" readonly type="number" class="form-control" value="1">
                 </div>
             </div>
             <div class="col-12 mb-3 form-group">
@@ -131,79 +132,73 @@
             </div>
         </div>
     </div>
-
     <h3 class="text-center my-5">Customer List</h3>
-
-
-    <div class="container">
-        <div id="customerInfosContainer">
-            @if (!Model.CustomerNames.Any())
-            {<div class="Adult">
-                    <h6 class="mb-3">Customer No.1</h6>
+    <div id="customerinfos-container" class="container">
+        @if (!Model.CustomerNames.Any())
+        {
+            <div>
+                <h6 class="mb-3">Customer No.1</h6>
+                <div class="row">
+                    <div class="form-group col-md-3 mb-3">
+                        <label for="Name_1">Name</label>
+                        <input asp-for="CustomerNames" value="" id="Name_1" class="form-control" required>
+                    </div>
+                    <div class="form-group col-md-3 mb-3">
+                        <label for="Sex_1">Sex</label>
+                        <select id="Sex_1" name="@(nameof(Model.CustomerSexes))" asp-items="@Html.GetEnumSelectList<CustomerInfo.CustomerSex>()" class="form-control" required></select>
+                    </div>
+                    <div class="form-group col-md-3 mb-3">
+                        <label for="DOB_1">Date of birth</label>
+                        <input onfocusout="onDobUpdated('Adult', this)" id="DOB_1" asp-for="CustomerDobs" class="form-control" type="date" required />
+                    </div>
+                    <div class="form-group col-md-3 mb-3">
+                        <label for="AG_1">Age Group</label>
+                        <select disabled id="AG_1" name="@(nameof(Model.CustomerAgeGroups))" class="form-control" asp-items="@Html.GetEnumSelectList<CustomerInfo.CustomerAgeGroup>()">
+                        </select>
+                    </div>
+                </div>
+                <p class="text-right">Price: <span class="Price_Item text-danger font-weight-bold">@Model.Trip.GetSalePriceFor(CustomerInfo.CustomerAgeGroup.Adult).ToCurrencyString()</span></p>
+                <hr />
+            </div>
+        }
+        else
+        {
+            @for (int i = 1; i <= Model.CustomerNames.Length; i++)
+            {
+                <div>
+                    <h6 class="mb-3">Customer No.@i</h6>
                     <div class="row">
                         <div class="form-group col-md-3 mb-3">
-                            <label for="Name_1">Name</label>
-                            <input value="@Model.Customer.Name" asp-for="CustomerNames" id="Name_1" class="form-control" required>
+                            <label for="Name_@i">Name</label>
+                            <input value="@Model.CustomerNames[i - 1]" asp-for="CustomerNames" id="Name_@i" class="form-control" required>
                         </div>
                         <div class="form-group col-md-3 mb-3">
-                            <label for="Sex_1">Sex</label>
-                            <select id="Sex_1" name="@(nameof(Model.CustomerSexes))" asp-items="@Html.GetEnumSelectList<CustomerInfo.CustomerSex>()" class="form-control" required></select>
+                            <label for="Sex_@i">Sex</label>
+                            <select id="Sex_@i" name="@(nameof(Model.CustomerSexes))" class="form-control" required>
+                                @foreach (CustomerInfo.CustomerSex sex in Enum.GetValues(typeof(CustomerInfo.CustomerSex)))
+                                {
+                                    <option selected="@(Model.CustomerSexes[i - 1] == sex)" value="@((int)sex)">@sex</option>
+                                }
+                            </select>
                         </div>
                         <div class="form-group col-md-3 mb-3">
-                            <label for="DOB_1">Date of birth</label>
-                            <input onfocusout="onDobUpdated('Adult', this)" value="@Model.Customer.DOB" id="DOB_1" asp-for="CustomerDobs" class="form-control" type="date" required />
+                            <label for="DOB_@i">Date of birth</label>
+                            <input onfocusout="onDobUpdated('@Model.CustomerAgeGroups[i - 1]', this)" id="DOB_@i" asp-for="CustomerDobs" class="form-control" type="date" required />
                         </div>
                         <div class="form-group col-md-3 mb-3">
-                            <label for="AG_1">Age Group</label>
-                            <select disabled id="AG_1" name="@(nameof(Model.CustomerAgeGroups))" class="form-control" asp-items="@Html.GetEnumSelectList<CustomerInfo.CustomerAgeGroup>()">
+                            <label for="AG_@i">Age Group</label>
+                            <select disabled id="AG_@i" name="@(nameof(Model.CustomerAgeGroups))" class="form-control">
+                                <option value="@((int)Model.CustomerAgeGroups[i - 1])">@Model.CustomerAgeGroups[i - 1]</option>
                             </select>
                         </div>
                     </div>
-                    <p class="text-right">Price: <span class="Price_Item text-danger font-weight-bold">@Model.Trip.GetSalePriceFor(CustomerInfo.CustomerAgeGroup.Adult).ToCurrencyString()</span></p>
+                    <p class="text-right">Price: <span class="Price_Item text-danger font-weight-bold">@Model.SalePrices[i - 1].ToCurrencyString()</span></p>
                     <hr />
                 </div>
             }
-            else
-            {
-                @for (int i = 0; i < Model.CustomerNames.Length; i++)
-                {
-                    <div>
-                        <h6 class="mb-3">Customer No.@(i + 1)</h6>
-                        <div class="row">
-                            <div class="form-group col-md-3 mb-3">
-                                <label for="Name_@(i + 1)">Name</label>
-                                <input value="@Model.CustomerNames[i]" asp-for="CustomerNames" id="Name_@(i + 1)" class="form-control" required>
-                            </div>
-                            <div class="form-group col-md-3 mb-3">
-                                <label for="Sex_@(i + 1)">Sex</label>
-                                <select id="Sex_@(i + 1)" name="CustomerSexes" class="form-control">
-                                    @foreach (CustomerInfo.CustomerSex sex in Enum.GetValues(typeof(CustomerInfo.CustomerSex)))
-                                    {
-                                        <option selected="@(sex == Model.CustomerSexes[i])" value="@((int)sex)">@sex</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="form-group col-md-3 mb-3">
-                                <label for="DOB_@(i + 1)">Date of birth</label>
-                                <input onfocusout="onDobUpdated('Adult', this)" value="@Model.CustomerDobs[i]" id="DOB_@(i + 1)" asp-for="CustomerDobs" class="form-control" type="date" required />
-                            </div>
-                            <div class="form-group col-md-3 mb-3">
-                                <label for="AG_@(i + 1)">Age Group</label>
-                                <select disabled id="AG_@(i + 1)" name="CustomerAgeGroups" class="form-control">
-                                    @foreach (CustomerInfo.CustomerAgeGroup ag in Enum.GetValues(typeof(CustomerInfo.CustomerAgeGroup)))
-                                    {
-                                        <option selected="@(ag == Model.CustomerAgeGroups[i])" value="@((int)ag)">@ag</option>
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                        <p class="text-right">Price: <span class="Price_Item text-danger font-weight-bold">@Model.Trip.GetSalePrice().ToCurrencyString()</span></p>
-                        <hr />
-                    </div>
-                }
-            }
-        </div>
-        <h4 class="text-right">Total: <span id="Price_Total" class="text-danger font-weight-bold">@Model.Total.ToCurrencyString()</span></h4>
+        }
+
+        <h4 class="text-right">Total: <span class="text-danger font-weight-bold">@Model.Total.ToCurrencyString()</span></h4>
     </div>
 
     <h3 class="text-center my-5">Terms and Conditions</h3>

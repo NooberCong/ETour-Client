@@ -1,12 +1,10 @@
 ﻿using Client.Models;
 using Core.Entities;
 using Core.Interfaces;
-using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Client.Controllers

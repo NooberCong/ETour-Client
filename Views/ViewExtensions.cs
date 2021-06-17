@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Entities;
+using System;
 using System.Linq;
 
 namespace Client.Views
@@ -38,6 +39,18 @@ namespace Client.Views
         public static string ToRangeString(this Tuple<DateTime, DateTime> range)
         {
             return $"{range.Item1.ToCustomDateString()} - {range.Item2.ToCustomDateString()}";
+        }
+        public static string Badge(this Booking.BookingStatus status)
+        {
+            return status switch
+            {
+                Booking.BookingStatus.AwaitingDeposit => "badge badge-warning",
+                Booking.BookingStatus.Processing => "badge badge-primary",
+                Booking.BookingStatus.AwaitingPayment => "badge badge-warning",
+                Booking.BookingStatus.Completed => "badge badge-sucess",
+                Booking.BookingStatus.Canceled => "badge badge-danger",
+                _ => ""
+            };
         }
     }
 }

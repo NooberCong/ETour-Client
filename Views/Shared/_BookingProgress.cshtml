@@ -111,7 +111,7 @@
         </div>
         <div class="md-step @(Model == Booking.BookingStatus.AwaitingDeposit? "active": "")">
             <div class="md-step-circle"><i class="fas fa-hand-holding-usd"></i></div>
-            <div class="md-step-title">Pay Deposit</div>
+            <div class="md-step-title">Deposit</div>
             <div class="md-step-bar-left"></div>
             <div class="md-step-bar-right"></div>
         </div>
@@ -133,5 +133,14 @@
             <div class="md-step-bar-left"></div>
             <div class="md-step-bar-right"></div>
         </div>
+        @if (Model == Booking.BookingStatus.Canceled)
+        {
+            <div class="md-step active">
+                <div class="md-step-circle"><i class="fas fa-times"></i></div>
+                <div class="md-step-title">Canceled</div>
+                <div class="md-step-bar-left"></div>
+                <div class="md-step-bar-right"></div>
+            </div>
+        }
     </div>
 </div>
