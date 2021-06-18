@@ -1,4 +1,6 @@
 ﻿using Client.Models;
+using Core.Entities;
+using Core.Helpers;
 using Core.Interfaces;
 using Core.Services;
 using Core.Value_Objects;
@@ -11,6 +13,8 @@ namespace Client.Controllers
 {
     public class TripController : Controller
     {
+        private static readonly int _pageSize = 10;
+
         private readonly ITripRepository _tripRepository;
         private readonly ITourRepository _tourRepository;
         private readonly TripFilterService _tripFilterService;
@@ -22,8 +26,6 @@ namespace Client.Controllers
             _tripFilterService = tripFilterService;
             _tourReviewRepository = tourReviewRepository;
         }
-
-        private static readonly int _pageSize = 7;
 
         // Display list of trips
         // Parameter filterParams contains info about trip filters (price, starting time, end time, tour)
@@ -47,7 +49,7 @@ namespace Client.Controllers
 
             return View(new TripListModel
             {
-                Trips = filteredTrips,
+                Trips = PaginatedList<Trip>.Create(filteredTrips.AsQueryable(), pageNumber, _pageSize),
                 Tours = tours
             });
         }

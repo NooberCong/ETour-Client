@@ -148,7 +148,16 @@
 
     @if (!Model.Tours.Any())
     {
-        {<p class="text-muted">There current have no tour</p>}
+        <div class="w-100 d-flex justify-content-center my-5">
+            <img class="w-50" src="~/images/empty.svg" alt="completed booking illustration" />
+        </div>
+        <p class="text-center text-muted mt-5">Sorry, we could not find any tours for you</p>
+    }
+    @if (Model.Tours.Any())
+    {
+        <div class="my-5">
+            <partial name="_Pagination" model="Model.Tours.PaginationInfo" />
+        </div>
     }
 
 </section>
