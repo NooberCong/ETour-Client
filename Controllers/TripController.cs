@@ -40,7 +40,7 @@ namespace Client.Controllers
                 .ThenInclude(bk => bk.CustomerInfos)
                 .ToListAsync();
 
-            var filteredTrips = trips.Where(_tripFilterService.BuildFilterPredicate(filterParams));
+            var filteredTrips = _tripFilterService.ApplyFilter(trips.Where(tr=>tr.Vacancies>0), filterParams);
 
             var tours = _tourRepository.QueryFiltered(tour => tour.IsOpen);
 
