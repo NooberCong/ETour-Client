@@ -1,0 +1,72 @@
+﻿@model Post
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container py-5">
+    <figure class="mb-5"><img class="img-fluid rounded w-100" src="@Model.CoverImgUrl" alt="coverImg" /></figure>
+    <!-- Post content-->
+    <h1 class=" display-4">@Model.Title</h1>
+    <div class="text-muted d-flex justify-content-sm-between mt-3 mb-5">
+        <div>
+            <p class="pb-1">Written by @Model.Author.FullName on @Model.LastUpdated</p>
+        </div>
+        <div>
+            <i class="fas fa-tag mr-2"></i>
+            @for (int i = 0; i < Model.Tags.Count; i++)
+            {
+                <a href="#!" class="text-reset">@Model.Tags[i]</a>
+                @if (i != Model.Tags.Count - 1)
+                {
+                    <span>,&nbsp;</span>
+                }
+            }
+        </div>
+    </div>
+    <section class="mb-3 overflow-hidden">
+        @Html.Raw(Model.Content)
+    </section>
+    <!-- Comments section-->
+    <section>
+        <div class="card bg-light">
+            <div class="card-body">
+                <!-- Comment form-->
+                <h4 class="mb-4">Comments<span class="font-weight-normal ml-3">4</span></h4>
+                <!-- Comment with nested comments-->
+                <div class="d-flex mb-4">
+                    <!-- Parent comment-->
+                    <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+                    <div class="ms-3">
+                        <div class="fw-bold">Commenter Name</div>
+                        If you're going to lead a space frontier, it has to be government; it'll never be private enterprise. Because the space frontier is dangerous, and it's expensive, and it has unquantified risks.
+                        <!-- Child comment 1-->
+                        <div class="d-flex mt-4">
+                            <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+                            <div class="ms-3">
+                                <div class="fw-bold">Commenter Name</div>
+                                And under those conditions, you cannot establish a capital-market evaluation of that enterprise. You can't get investors.
+                            </div>
+                        </div>
+                        <!-- Child comment 2-->
+                        <div class="d-flex mt-4">
+                            <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+                            <div class="ms-3">
+                                <div class="fw-bold">Commenter Name</div>
+                                When you put money directly to a problem, it makes a good headline.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Single comment-->
+                <div class="d-flex">
+                    <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+                    <div class="ms-3">
+                        <div class="fw-bold">Commenter Name</div>
+                        When I look at the universe and all the ways the universe wants to kill us, I find it hard to reconcile that with statements of beneficence.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
