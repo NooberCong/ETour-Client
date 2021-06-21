@@ -38,7 +38,7 @@
                     <div>Have any question? Please type below</div>
                 }
 
-                <form asp-action="Create" method="post" id="submitForm" >
+                <form asp-action="Create" method="post" id="submitForm">
                     <label asp-for="@Model.Question_.Content" class="col-12 text-center mt-3" style="font-size:1.5em;"> <b>Question</b></label>
                     <textarea asp-for="@Model.Question_.Content" class="col-12 form-control" cols="4" rows="5" placeholder="Type your question here" id="areaText"></textarea>
 
@@ -56,15 +56,17 @@
 <script src="https://unpkg.com/@@microsoft/signalr@6.0.0-preview.4.21253.5/dist/browser/signalr.min.js"></script>
 
 <script>
-    
-        var connection = new signalR.HubConnectionBuilder()
-            .withUrl("https://localhost:44360/qa")
-            .configureLogging(signalR.LogLevel.Information)
-            .build();
+
+    var connection = new signalR.HubConnectionBuilder()
+        .withUrl("https://localhost:44360/qa")
+        .configureLogging(signalR.LogLevel.Information)
+        .build();
+
+    connection.start().then(() => console.log("Connect to server success")).catch(err => console.log(`Connect to server failed, error: ${err}`));
 
 
     function submitQuestion() {
-        
+
         var questionForm = document.getElementById("submitForm");
         var text = document.getElementById("areaText").textContent;
         var date = 0;
