@@ -142,9 +142,6 @@ function toggleApplyPoints(input, value) {
 
 function showCancelForm(input, bookingID) {
     let cancelBookingContainer = $('#cancel-booking-container');
-    console.log(input);
-    console.log(input.clientHeight);
-    console.log(input.clientWidth);
     let cloneElement = $(input).clone();
     let loadingElement;
     if (input.tagName == 'button') {
@@ -152,7 +149,6 @@ function showCancelForm(input, bookingID) {
     } else {
         loadingElement = createSpinnerFor(input);
     }
-    console.log(loadingElement);
     $(input).replaceWith(loadingElement);
 
     $.ajax({

@@ -21,12 +21,9 @@
                     <th scope="col" class="text-center no-ordering">Action</th>
                 </tr>
             </thead>
-            @if (Model.Questions.Count() > 0)
-            {
-                <tbody>
-                    @foreach (var q in Model.Questions)
-                    {
-
+            <tbody>
+                @foreach (var q in Model.Questions)
+                {
                     <tr>
                         <td class="text-center">@q.Title</td>
                         <td class="text-center">@q.LastUpdated</td>
@@ -37,14 +34,8 @@
                             <a class="text-danger mr-3 mb-3 mb-md-0" asp-action="Edit" asp-route-id="@q.ID" asp-route-returnUrl="@(Context.Request.Path + Context.Request.QueryString)"><i class="far fa-times-circle"></i></a>
                         </td>
                     </tr>
-
-                    }
-                </tbody>
-            }
-            else
-            {
-                <tr class="text-capitalize">Have any question? Please type below</tr>
-            }
+                }
+            </tbody>
         </table>
     </div>
     <h3 class="my-5">Type your question here</h3>
