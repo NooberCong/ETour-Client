@@ -4,7 +4,6 @@ using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Client.Controllers
@@ -38,9 +37,8 @@ namespace Client.Controllers
             });
         }
 
-        //GET- main screen
         [HttpPost]
-        public async Task<IActionResult> Index(Customer customer)
+        public async Task<IActionResult> Update(Customer customer)
         {
 
             if (!ModelState.IsValid)
@@ -58,30 +56,11 @@ namespace Client.Controllers
             existingUser.Name = customer.Name;
             existingUser.PhoneNumber = customer.PhoneNumber;
             existingUser.Address = customer.Address;
+            existingUser.DOB = customer.DOB;
 
             await _customerRepository.UpdateAsync(existingUser);
             await _unitOfWork.CommitAsync();
             return RedirectToAction("Index");
         }
-
-
-
-        //Display order history
-        public IActionResult BookingHistory()
-        {
-            IEnumerable<Booking> bookings = _bookingRepository.Queryable
-                .Where(bk => bk.AuthorID == UserID)
-                .Include(bk => bk.Author)
-                .Include(bk => bk.CustomerInfos)
-                .Include(bk => bk.Trip).ThenInclude(t => t.Tour)
-                .AsEnumerable();
-
-            return View(bookings);
-        }
-
-
-      
-
-
     }
 }

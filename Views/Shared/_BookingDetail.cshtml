@@ -79,11 +79,19 @@
                     </tr>
                     <tr>
                         <th>Total</th>
-                        <td>@Model.Total.ToCurrencyString()</td>
+                        <td>
+                            @Model.Total.ToCurrencyString()
+                            @if (Model.PointsApplied.HasValue && Model.PointsApplied > 0)
+                            {<span class="text-success">(Original: @((Model.Total + Model.PointsApplied.Value).ToCurrencyString()), -$@Model.PointsApplied.00 using points)</span>}
+                        </td>
                     </tr>
                     <tr>
                         <th>Deposit</th>
-                        <td>@Model.GetDeposit().ToCurrencyString()</td>
+                        <td>@Model.Deposit?.ToCurrencyString()</td>
+                    </tr>
+                    <tr>
+                        <th>Refund</th>
+                        <td>@Model.Refunded?.ToCurrencyString()</td>
                     </tr>
                     <tr>
                         <th>Date Booked</th>

@@ -18,5 +18,7 @@ namespace Client.Models
         public CustomerInfo.CustomerAgeGroup[] CustomerAgeGroups { get; set; } = new CustomerInfo.CustomerAgeGroup[] { };
         public decimal[] SalePrices { get; set; }
         public decimal Total { get; set; }
+        public bool ApplyPoints { get; set; }
+        public decimal ApplyAmount { get; set; }
     }
 }

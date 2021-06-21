@@ -51,6 +51,7 @@ namespace ETourClient
             services.AddETourLogging();
             services.AddScoped<ClientCookieAuthenticationEvents>();
             services.AddScoped<TripFilterService>();
+            services.AddScoped<QRCodeService>();
 
         }
 

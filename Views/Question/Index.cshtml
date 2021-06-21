@@ -1,75 +1,71 @@
 ﻿@model QuestionListModel
 @{
     ViewData["Title"] = "Questions";
+    var tblId = "questionTbl";
 }
 
 
 
 
-<div class="container">
-    <h1 class=" text-center mb-4">Questions</h1>
-    <div class="main-body p-0">
-        <div class="inner-wrapper">
+<div class="container py-5">
+    <h3 class="mb-5">My Questions</h3>
 
-            <div class="inner-main col-12">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col" class="text-center">No.</th>
-                            <th scope="col" class="text-center">Date</th>
-                            <th scope="col" class="text-center">Title</th>
-                            <th scope="col" class="text-center">Content</th>
-                            <th scope="col" class="text-center">Category</th>
-                            <th scope="col" class="text-center">Status</th>
-
-                        </tr>
-                    </thead>
-                    @if (Model.Questions.Count() > 0)
+    <div class="table-responsive">
+        <table id="@tblId" class="table">
+            <thead>
+                <tr>
+                    <th scope="col" class="text-center">Title</th>
+                    <th scope="col" class="text-center">Date</th>
+                    <th scope="col" class="text-center">Category</th>
+                    <th scope="col" class="text-center">Status</th>
+                    <th scope="col" class="text-center no-ordering">Action</th>
+                </tr>
+            </thead>
+            @if (Model.Questions.Count() > 0)
+            {
+                <tbody>
+                    @foreach (var q in Model.Questions)
                     {
-                        foreach (var q in Model.Questions)
-                        {
 
-                            <tbody>
-                                <tr>
-                                    <th scope="row" class="text-center">@q.ID</th>
+                    <tr>
+                        <td class="text-center">@q.Title</td>
+                        <td class="text-center">@q.LastUpdated</td>
+                        <td class="text-center">@q.Category</td>
+                        <td class="text-center"><span class="@q.Status.Badge()">@q.Status.ToCustomString()</span></td>
+                        <td class="text-center">
+                            <a asp-action="Detail" asp-route-id=@q.ID class="text-primary mr-3"><i class="far fa-eye"></i></a>
+                            <a class="text-danger mr-3 mb-3 mb-md-0" asp-action="Edit" asp-route-id="@q.ID" asp-route-returnUrl="@(Context.Request.Path + Context.Request.QueryString)"><i class="far fa-times-circle"></i></a>
+                        </td>
+                    </tr>
 
-                                    <td class="text-center">@q.LastUpdated</td>
-
-                                    <td class="text-center">@q.Title</td>
-                                    <td style="width:30%;">@q.Content</td>
-                                    <td class="text-center">@q.Category</td>
-                             
-                                    <td class="text-center text-success">@q.Status</td>
-                                </tr>
-                            </tbody>
-
-                        }
                     }
-                    else
-                    {   
-                        <tr class="text-capitalize">Have any question? Please type below</tr>
-                    }
-                </table>
-                <h5 class="text-center mt-5 ">Type your question here</h5>
-                <form asp-action="Create" method="post">
-                    
-                    <div class="form-group">
-                        <b> <label asp-for="@Model._Question.Title"></label></b>
-                        <input   asp-for="@Model._Question.Title" type="text" class="form-control" placeholder="Enter title">
-
-                    </div>
-                    <div class="form-group">
-                       <b><label asp-for="@Model._Question.Content"></label></b>
-                        <textarea asp-for="@Model._Question.Content" type="text" rows="5" cols="20" class="form-control"  placeholder="Type the question here"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <b> <label asp-for="@Model._Question.Category"></label></b>
-                       <select  asp-for="@Model._Question.Category" class="selectpicker" asp-items="@Html.GetEnumSelectList<Question.QuestionCategory>()"></select>
-                    </div> 
-                   
-                    <button type="submit" class="btn btn-primary mb-2">Submit</button>
-                </form>
-                </div>
-        </div>
+                </tbody>
+            }
+            else
+            {
+                <tr class="text-capitalize">Have any question? Please type below</tr>
+            }
+        </table>
     </div>
+    <h3 class="my-5">Type your question here</h3>
+    <form asp-action="Create" method="post">
+
+        <div class="form-group">
+            <b> <label asp-for="@Model._Question.Title"></label></b>
+            <input asp-for="@Model._Question.Title" type="text" class="form-control" placeholder="Enter title">
+
+        </div>
+        <div class="form-group">
+            <b><label asp-for="@Model._Question.Content"></label></b>
+            <textarea asp-for="@Model._Question.Content" type="text" rows="5" cols="20" class="form-control" placeholder="Type the question here"></textarea>
+        </div>
+        <div class="form-group">
+            <b> <label asp-for="@Model._Question.Category"></label></b>
+            <select asp-for="@Model._Question.Category" class="selectpicker" asp-items="@Html.GetEnumSelectList<Question.QuestionCategory>()"></select>
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-2">Submit</button>
+    </form>
 </div>
+
+<partial name="_DataTable" model="@tblId" />

@@ -10,5 +10,7 @@ namespace Client.Models
     {
         public List<CustomerInfo.CustomerAgeGroup> AgeGroups { get; set; }
         public decimal[] SalePrices { get; set; }
+        public bool ApplyPoints { get; set; }
+        public decimal ApplyAmount { get; set; }
     }
 }

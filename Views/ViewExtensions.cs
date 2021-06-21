@@ -44,13 +44,28 @@ namespace Client.Views
         {
             return status switch
             {
-                Booking.BookingStatus.AwaitingDeposit => "badge badge-warning",
+                Booking.BookingStatus.Awaiting_Deposit => "badge badge-warning",
                 Booking.BookingStatus.Processing => "badge badge-primary",
-                Booking.BookingStatus.AwaitingPayment => "badge badge-warning",
-                Booking.BookingStatus.Completed => "badge badge-sucess",
+                Booking.BookingStatus.Awaiting_Payment => "badge badge-warning",
+                Booking.BookingStatus.Completed => "badge badge-success",
                 Booking.BookingStatus.Canceled => "badge badge-danger",
                 _ => ""
             };
+        }
+
+        public static string Badge(this Question.QuestionStatus status)
+        {
+            return status switch
+            {
+                Question.QuestionStatus.Pending => "badge badge-warning",
+                Question.QuestionStatus.Open => "badge badge-primary",
+                Question.QuestionStatus.Closed => "badge badge-danger",
+                _ => throw new NotImplementedException(),
+            };
+        }
+
+        public static string ToCustomString(this Enum enumValue) {
+            return enumValue.ToString().Replace('_', ' ');
         }
     }
 }

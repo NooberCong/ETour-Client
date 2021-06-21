@@ -2,29 +2,12 @@
 @{
     ViewData["Title"] = "User Info";
 }
-<style>
-
-
-    a:link {
-        color: pink;
-        text-decoration: none;
-    }
-
-    a:visited {
-        color: white;
-    }
-
-    a:hover {
-        color: white;
-    }
-</style>
 
 <div class="container my-5">
     <div class="row justify-content-between">
-        <div class="col-4">
-            <form method="post">
+        <div class="col-md-4">
+            <form asp-action="Update" method="post">
                 <div class="form-group row justify-content-center">
-                    <input type="hidden" asp-for="@Model.Customer.ImgUrl" />
                     <img class="img-fluid w-50 rounded" src="@Model.Customer.ImgUrl">
                 </div>
                 <div class="form-group ">
@@ -32,7 +15,6 @@
                     <input class="form-control" asp-for="Customer.Name">
                     <span asp-validation-for="Customer.Name"></span>
                 </div>
-
                 <div class="form-group">
                     <label asp-for="Customer.PhoneNumber"></label>
                     <input class="form-control" asp-for="Customer.PhoneNumber">
@@ -44,13 +26,13 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="Customer.Email"></label>
-                    <input class="form-control" asp-for="Customer.Email" readonly>
+                    <input class="form-control" asp-for="Customer.Email" disabled>
                     <span asp-validation-for="Customer.Email"></span>
                 </div>
                 <div class="form-group d-flex">
                     <div>
                         <label asp-for="Customer.Points"></label>
-                        <input class="form-control" asp-for="Customer.Points" readonly>
+                        <input class="form-control" asp-for="Customer.Points" disabled>
                     </div>
                     <div class="ml-2">
                         <label asp-for="Customer.DOB">Date of birth</label>
@@ -66,74 +48,60 @@
         </div>
 
 
-        <div class="col-8 col-offset-md-1">
-
-            <div class="d-flex">
-                <h3>Upcoming trip</h3>
-                
-            </div>
-
-           
-                <!-- Card -->
-                <div class="card wish-list mt-3">
-                    <div class="card-body">
-
-
-                        @if (Model.Bookings.Count() > 0)
-                        {
-                            @foreach (var b in Model.Bookings)
-                            {<div class="row mb-4">
-                                    <div class="col-md-5 col-xl-4">
-                                        <img class="img-fluid w-100 h-100 rounded" style="object-fit: cover" src="@b.Trip.Tour.ImageUrls[0]" alt="Sample">
-                                    </div>
+        <div class="col-md-8 col-offset-md-1">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mt-md-0 font-weight-normal">Upcoming trips</h3>
+                </div>
+                <div class="card-body">
+                    @if (Model.Bookings.Count() > 0)
+                    {
+                        @foreach (var b in Model.Bookings)
+                        {<div class="row mb-4">
+                                <div class="col-md-5 col-xl-4">
+                                    <img class="img-fluid w-100 h-100 rounded" style="object-fit: cover" src="@b.Trip.Tour.ImageUrls[0]" alt="Sample">
+                                </div>
 
 
-                                    <div class="col-md-7 col-xl-8">
-                                        <div>
-                                            <div class="d-flex justify-content-between">
-                                                <div>
-                                                    <h5>Tour @b.Trip.Tour.StartPlace - @b.Trip.Tour.Destination </h5>
-                                                    <p class="mb-2 text-muted text-uppercase small">
-                                                        Time frame: <span class="bg-light-blue text-center">@b.Trip.StartTime.Day.@b.Trip.StartTime.Month.@b.Trip.StartTime.Year - @b.Trip.EndTime.Day.@b.Trip.EndTime.Month.@b.Trip.EndTime.Year</span>
-                                                    </p>
-                                                    <p class="mb-2 text-muted text-uppercase small">Duration: @(b.Trip.EndTime.Day-b.Trip.StartTime.Day) days</p>
-                                                    <p class="mb-3 text-muted text-uppercase small">Tour Type: @b.Trip.Tour.Type</p>
-                                                </div>
-                                                <div>
-                                                    <p class="text-right">Quantity: @(b.TicketCount)</p>
-                                                    <p class="text-right">@b.Trip.Price</p>
-                                                </div>
+                                <div class="col-md-7 col-xl-8">
+                                    <div>
+                                        <div class="row">
+                                            <div class="col-8">
+                                                <h5>Tour @b.Trip.Tour.StartPlace - @b.Trip.Tour.Destination </h5>
+                                                <p class="mb-3 text-muted text-uppercase small">Status: <span class="@b.Status.Badge()">@b.Status.ToCustomString()</span></p>
+                                                <p class="mb-2 text-muted text-uppercase small">
+                                                    Time frame: <span class="bg-light-primary text-center">@b.Trip.StartTime.Day.@b.Trip.StartTime.Month.@b.Trip.StartTime.Year - @b.Trip.EndTime.Day.@b.Trip.EndTime.Month.@b.Trip.EndTime.Year</span>
+                                                </p>
+                                                <p class="mb-2 text-muted text-uppercase small">Duration: @(b.Trip.EndTime.Day-b.Trip.StartTime.Day) days</p>
                                             </div>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div>
-                                                    <form class="d-inline" asp-controller="Booking" asp-action="Remove" asp-route-id="@b.ID" asp-route-returnUrl="@(Context.Request.Path + Context.Request.QueryString)" method="post">
-                                                        <a style="cursor: pointer" onclick="targetForm = this.parentNode;" class="text-danger" data-toggle="modal" data-target="#delete-modal"><span data-feather="trash" />Cancel</a>
-                                                    </form>
-
-                                                </div>
-                                                <p class="mb-0 text-right"><span><strong>Total: @(b.Trip.Price * (b.CustomerInfos.Count+1))</strong></span></p>
+                                            <div class="col-4">
+                                                <p class="text-right">Quantity: @(b.TicketCount)</p>
                                             </div>
                                         </div>
-
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <a asp-controller="Booking" asp-action="Detail" asp-route-id="@b.ID" class="btn btn-outline-primary">Detail</a>
+                                                <button disabled="@(!b.CanCancel(DateTime.Now))" onclick="showCancelForm(this, this.getAttribute('data-id'))" data-id="@b.ID" class="btn btn-outline-danger"><span data-feather="trash" />Cancel</button>
+                                            </div>
+                                            <p class="mb-0 text-right text-danger">Total: @b.Total.ToCurrencyString()</p>
+                                        </div>
                                     </div>
                                 </div>
-                            }
+                            </div>
                         }
-
-
-                        <p class="text-primary mb-0">
-                            <i class="fas fa-info-circle mr-1"></i> Do not delay the purchase, adding
-                            items to your cart does not mean booking them.
-                        </p>
-
-                    </div>
+                    }
                 </div>
-
             </div>
-      
+        </div>
     </div>
+</div>
 
+
+<div class="modal fade" id="cancel-booking-container" tabindex="-1" role="dialog" aria-labelledby="cancelationModalLabel" aria-hidden="true">
 
 </div>
 
 
+@section Scripts {
+    <script src="~/js/booking.js"></script>
+}

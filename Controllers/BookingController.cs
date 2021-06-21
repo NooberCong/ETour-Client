@@ -1,6 +1,7 @@
 ﻿using Client.Models;
 using Core.Entities;
 using Core.Interfaces;
+using Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,7 @@ namespace Client.Controllers
     {
         private readonly IETourLogger _eTourLogger;
         private readonly IZaloPayService _zaloPayService;
+        private readonly QRCodeService _QRCodeService;
         private readonly ITripRepository _tripRepository;
         private readonly ICustomerRepository _customerRepository;
         private readonly IBookingRepository _bookingRepository;
@@ -26,7 +28,7 @@ namespace Client.Controllers
         private readonly IUnitOfWork _unitOfWork;
         // Display list of the tickets user had added to cart but not yet paid for
         // Return View(bookingList)
-        public BookingController(IUnitOfWork unitOfWork, IBookingRepository bookingrepository, ICustomerRepository customerRepository, ITripRepository tripRepository, IETourLogger eTourLogger, IZaloPayService zaloPayService)
+        public BookingController(IUnitOfWork unitOfWork, IBookingRepository bookingrepository, ICustomerRepository customerRepository, ITripRepository tripRepository, IETourLogger eTourLogger, IZaloPayService zaloPayService, QRCodeService QRCodeService)
         {
             _bookingRepository = bookingrepository;
             _customerRepository = customerRepository;
@@ -34,6 +36,7 @@ namespace Client.Controllers
             _unitOfWork = unitOfWork;
             _eTourLogger = eTourLogger;
             _zaloPayService = zaloPayService;
+            _QRCodeService = QRCodeService;
         }
         public IActionResult Index()
         {
@@ -56,6 +59,8 @@ namespace Client.Controllers
                 .Include(tr => tr.Bookings)
                 .FirstOrDefaultAsync(tr => tr.ID == tripID);
 
+            var applicablePoints = new Booking { Total = trip.GetSalePriceFor(CustomerInfo.CustomerAgeGroup.Adult) }.GetApplicablePoints(customer.Points);
+
             if (trip == null || !trip.IsOpen)
             {
                 return NotFound();
@@ -65,7 +70,9 @@ namespace Client.Controllers
             {
                 Trip = trip,
                 Customer = customer,
-                Total = trip.GetSalePriceFor(CustomerInfo.CustomerAgeGroup.Adult)
+                Total = trip.GetSalePriceFor(CustomerInfo.CustomerAgeGroup.Adult),
+                ApplyPoints = false,
+                ApplyAmount = applicablePoints
             });
         }
 
@@ -74,7 +81,7 @@ namespace Client.Controllers
         // Parameter model represent the model bound values that supports form validation
         // Return NotFound() if tripId is null or no trip with tripId is found, View(bookingModel) otherwise
         [HttpPost]
-        public async Task<IActionResult> New(Booking booking, string[] customerNames, CustomerInfo.CustomerSex[] customerSexes, DateTime[] customerDobs)
+        public async Task<IActionResult> New(Booking booking, string[] customerNames, CustomerInfo.CustomerSex[] customerSexes, DateTime[] customerDobs, bool applyPoints)
         {
             var trip = await _tripRepository.Queryable
                             .Include(tr => tr.Tour)
@@ -92,10 +99,22 @@ namespace Client.Controllers
             var ageGroups = customerDobs.Select(dob => CustomerInfo.AgeGroupFor(dob)).ToArray();
             var salePrices = trip.GetSalePricesFor(ageGroups);
             booking.Total = salePrices.Sum();
+            var applyAmount = 0;
+
+            if (applyPoints)
+            {
+                applyAmount = await GetApplicablePoints(booking);
+                booking.Total -= applyAmount;
+            }
 
             if (booking.TicketCount > trip.Vacancies)
             {
                 ModelState.AddModelError(string.Empty, "There was not enough vacancies for your booking request");
+            }
+
+            if (customer.Points < applyAmount)
+            {
+                ModelState.AddModelError(string.Empty, "There ");
             }
 
             if (!ModelState.IsValid)
@@ -129,10 +148,16 @@ namespace Client.Controllers
                 });
             }
 
-            booking.Status = Booking.BookingStatus.AwaitingDeposit;
+            booking.Status = Booking.BookingStatus.Awaiting_Deposit;
             booking.PaymentDeadline = DateTime.Now.AddDays(2);
             booking.TicketCount = booking.CustomerInfos.Count;
+            booking.PointsApplied = applyAmount;
+            booking.SetDeposit(trip.Deposit);
 
+            customer.Consume(applyAmount);
+            customer.Reward(trip.RewardPoints);
+
+            await _customerRepository.UpdateAsync(customer);
             await _bookingRepository.AddAsync(booking);
             await _unitOfWork.CommitAsync();
 
@@ -157,9 +182,9 @@ namespace Client.Controllers
 
             return booking.Status switch
             {
-                Booking.BookingStatus.AwaitingDeposit => View("Views/Booking/Deposit.cshtml", booking),
+                Booking.BookingStatus.Awaiting_Deposit => View("Views/Booking/Deposit.cshtml", booking),
                 Booking.BookingStatus.Processing => View("Views/Booking/Processing.cshtml", booking),
-                Booking.BookingStatus.AwaitingPayment => View("Views/Booking/Payment.cshtml", booking),
+                Booking.BookingStatus.Awaiting_Payment => View("Views/Booking/Payment.cshtml", booking),
                 Booking.BookingStatus.Completed => View("Views/Booking/Completed.cshtml", booking),
                 Booking.BookingStatus.Canceled => View("Views/Booking/Canceled.cshtml", booking),
                 _ => throw new InvalidOperationException(),
@@ -175,7 +200,7 @@ namespace Client.Controllers
                             .Include(bk => bk.Author)
                             .FirstOrDefaultAsync(bk => bk.ID == id);
 
-            if (booking == null || booking.Status != Booking.BookingStatus.AwaitingDeposit && booking.Status != Booking.BookingStatus.AwaitingPayment)
+            if (booking == null || booking.Status != Booking.BookingStatus.Awaiting_Deposit && booking.Status != Booking.BookingStatus.Awaiting_Payment)
             {
                 return NotFound();
             }
@@ -186,7 +211,7 @@ namespace Client.Controllers
             switch (provider)
             {
                 case Booking.BookingPaymentProvider.Zalo_Pay:
-                    paymentUrl = await _zaloPayService.CreateOrderAsync(booking, (long)booking.GetDeposit(), $"Toure: Deposit for tour {booking.Trip.Tour.Title}");
+                    paymentUrl = await _zaloPayService.CreateOrderAsync(booking, (long)booking.Deposit, $"Toure: Deposit for tour {booking.Trip.Tour.Title}");
                     viewName = "ZaloPay";
                     break;
                 case Booking.BookingPaymentProvider.MoMo:
@@ -197,29 +222,16 @@ namespace Client.Controllers
                     break;
             }
 
-            QRCodeData _qrCodeData = new QRCodeGenerator().CreateQrCode(paymentUrl, QRCodeGenerator.ECCLevel.Q);
-            QRCode qrCode = new QRCode(_qrCodeData);
-            Bitmap qrCodeImage = qrCode.GetGraphic(20);
-
+            
             return View(viewName, new QRPaymentModel
             {
-                QRImageSource = string.Format($"data:image/png;base64,{Convert.ToBase64String(BitmapToBytesCode(qrCodeImage))}"),
-                TotalAmount = booking.GetDeposit(),
+                QRImageSource = _QRCodeService.GenerateBase64(paymentUrl),
+                TotalAmount = booking.Deposit.Value,
                 BookingID = booking.ID
             });
-        }
+        }        
 
-        [NonAction]
-        private static byte[] BitmapToBytesCode(Bitmap image)
-        {
-            using (MemoryStream stream = new MemoryStream())
-            {
-                image.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-                return stream.ToArray();
-            }
-        }
-
-        public async Task<IActionResult> CustomerInfos(int adult, int youth, int children, int baby, int tripID)
+        public async Task<IActionResult> CustomerInfos(int adult, int youth, int children, int baby, int tripID, bool applyPoints)
         {
 
             var trip = await _tripRepository.Queryable
@@ -240,10 +252,15 @@ namespace Client.Controllers
             ageGroups.AddRange(Enumerable.Repeat(CustomerInfo.CustomerAgeGroup.Children, children));
             ageGroups.AddRange(Enumerable.Repeat(CustomerInfo.CustomerAgeGroup.Baby, baby));
 
+            var total = trip.GetSalePricesFor(ageGroups);
+            var applicablePoints = await GetApplicablePoints(new Booking { Total = total.Sum() });
+
             return View(new CustomerInfosModel
             {
                 AgeGroups = ageGroups,
-                SalePrices = trip.GetSalePricesFor(ageGroups)
+                SalePrices = total,
+                ApplyPoints = applyPoints,
+                ApplyAmount = applicablePoints
             });
         }
 
@@ -253,15 +270,16 @@ namespace Client.Controllers
                 .Include(bk => bk.Trip)
                 .FirstOrDefaultAsync(bk => bk.ID == id);
 
-            if (booking == null || booking.Status != Booking.BookingStatus.AwaitingDeposit && booking.Status != Booking.BookingStatus.AwaitingPayment)
+            if (booking == null || booking.Status != Booking.BookingStatus.Awaiting_Deposit && booking.Status != Booking.BookingStatus.Awaiting_Payment)
             {
                 return NotFound();
             }
 
-            if (booking.Status == Booking.BookingStatus.AwaitingDeposit)
+            if (booking.Status == Booking.BookingStatus.Awaiting_Deposit)
             {
                 booking.ChangeStatus(Booking.BookingStatus.Processing);
-            } else
+            }
+            else
             {
                 booking.ChangeStatus(Booking.BookingStatus.Completed);
             }
@@ -270,6 +288,76 @@ namespace Client.Controllers
             await _unitOfWork.CommitAsync();
 
             return RedirectToAction("Detail", new { id = id });
+        }
+
+        public async Task<JsonResult> ApplyPoints(Booking booking)
+        {
+            decimal applicablePoints = await GetApplicablePoints(booking);
+
+            return Json(new { ApplyAmount = applicablePoints });
+        }
+
+        public async Task<IActionResult> CancelationForm(int id)
+        {
+            var booking = await _bookingRepository.Queryable
+                .Include(bk => bk.Trip)
+                .ThenInclude(tr => tr.Tour)
+                .FirstOrDefaultAsync(bk => bk.ID == id);
+
+            if (booking == null)
+            {
+                return NotFound();
+            }
+
+            if (!booking.CanCancel(DateTime.Now))
+            {
+                return BadRequest();
+            }
+
+            return View(booking.GetBookingCancelInfo(DateTime.Now));
+        }
+
+        public IActionResult History()
+        {
+            IEnumerable<Booking> bookings = _bookingRepository.Queryable
+                .Where(bk => bk.AuthorID == UserID)
+                .Include(bk => bk.CustomerInfos)
+                .Include(bk => bk.Trip).ThenInclude(t => t.Tour)
+                .AsEnumerable();
+
+            return View(bookings);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CancelBooking(int id)
+        {
+            var booking = await _bookingRepository.Queryable
+                            .Include(bk => bk.Trip)
+                            .FirstOrDefaultAsync(bk => bk.ID == id);
+            if (booking == null)
+            {
+                return NotFound();
+            }
+
+            var cancelDate = DateTime.Now;
+
+            if (!booking.CanCancel(cancelDate))
+            {
+                return BadRequest();
+            }
+
+            booking.Cancel(cancelDate);
+
+            await _bookingRepository.UpdateAsync(booking);
+            await _unitOfWork.CommitAsync();
+
+            return RedirectToAction("Detail", new { id = booking.ID });
+        }
+
+        private async Task<int> GetApplicablePoints(Booking booking)
+        {
+            var customer = await _customerRepository.FindAsync(UserID);
+            return booking.GetApplicablePoints(customer.Points);
         }
     }
 }
