@@ -31,16 +31,19 @@ namespace Client.Controllers
 
         public async Task<IActionResult> Index(TripFilterParams filterParams, int pageNumber = 1)
         {
-            var trips = await _tripRepository.Queryable
+            var trips = _tripRepository.Queryable
                 .Where(tr => tr.IsOpen)
                 .Include(tr => tr.Tour)
                 .Include(tr => tr.TripDiscounts)
                 .ThenInclude(td => td.Discount)
                 .Include(tr => tr.Bookings)
-                .ThenInclude(bk => bk.CustomerInfos)
-                .ToListAsync();
+                .ThenInclude(bk => bk.CustomerInfos);
 
+<<<<<<< HEAD
             var filteredTrips = _tripFilterService.ApplyFilter(trips.Where(tr=>tr.Vacancies>0), filterParams);
+=======
+            var filteredTrips = _tripFilterService.ApplyFilter(trips, filterParams);
+>>>>>>> 22a897a056218acfad33e472285535ef14984601
 
             var tours = _tourRepository.QueryFiltered(tour => tour.IsOpen);
 

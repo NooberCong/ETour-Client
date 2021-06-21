@@ -121,7 +121,7 @@ namespace Client.Controllers
 
                 booking.Total += trip.GetSalePriceFor(ageGroup);
             }
-            booking.Status = Booking.BookingStatus.AwaitingDeposit;
+            booking.Status = Booking.BookingStatus.Awaiting_Deposit;
 
             await _bookingRepository.AddAsync(booking);
             await _unitOfWork.CommitAsync();
@@ -147,9 +147,9 @@ namespace Client.Controllers
 
             return booking.Status switch
             {
-                Booking.BookingStatus.AwaitingDeposit => View("Views/Booking/Deposit.cshtml", booking),
+                Booking.BookingStatus.Awaiting_Deposit => View("Views/Booking/Deposit.cshtml", booking),
                 Booking.BookingStatus.Processing => throw new NotImplementedException(),
-                Booking.BookingStatus.AwaitingPayment => throw new NotImplementedException(),
+                Booking.BookingStatus.Awaiting_Payment => throw new NotImplementedException(),
                 Booking.BookingStatus.Completed => throw new NotImplementedException(),
                 Booking.BookingStatus.Canceled => throw new NotImplementedException(),
             };
@@ -169,7 +169,7 @@ namespace Client.Controllers
             switch (provider)
             {
                 case Booking.BookingPaymentProvider.Zalo_Pay:
-                    paymentUrl = await _zaloPayService.CreateOrderAsync(booking, (long)booking.GetDeposit(), $"Toure: Deposit for tour {booking.Trip.Tour.Title}");
+                    paymentUrl = await _zaloPayService.CreateOrderAsync(booking, (long)booking.Deposit, $"Toure: Deposit for tour {booking.Trip.Tour.Title}");
                     viewName = "ZaloPay";
                     break;
                 case Booking.BookingPaymentProvider.MoMo:
@@ -189,7 +189,7 @@ namespace Client.Controllers
             return View(viewName, new QRPaymentModel
             {
                 QRImageSource = string.Format($"data:image/png;base64,{Convert.ToBase64String(BitmapToBytesCode(qrCodeImage))}"),
-                TotalAmount = booking.GetDeposit()
+                TotalAmount = booking.Deposit.Value
             });
         }
 
