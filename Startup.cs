@@ -52,12 +52,12 @@ namespace ETourClient
             services.AddETourLogging();
             services.AddScoped<ClientCookieAuthenticationEvents>();
             services.AddScoped<TripFilterService>();
-<<<<<<< HEAD
+
             services.AddSignalR();
-=======
+
             services.AddScoped<BlogFilterService>();
             services.AddScoped<QRCodeService>();
->>>>>>> master
+
 
         }
 

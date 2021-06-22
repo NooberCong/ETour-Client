@@ -39,22 +39,26 @@
         </table>
     </div>
     <h3 class="my-5">Type your question here</h3>
-    <form asp-action="Create" method="post">
+    <form asp-action="Create" method="post" id="submitForm">
 
-<<<<<<< HEAD
-                <form asp-action="Create" method="post" id="submitForm">
-                    <label asp-for="@Model.Question_.Content" class="col-12 text-center mt-3" style="font-size:1.5em;"> <b>Question</b></label>
-                    <textarea asp-for="@Model.Question_.Content" class="col-12 form-control" cols="4" rows="5" placeholder="Type your question here" id="areaText"></textarea>
+        <div class="form-group">
+            <b> <label asp-for="@Model._Question.Title"></label></b>
+            <input asp-for="@Model._Question.Title" type="text" class="form-control" placeholder="Enter title">
 
-                    <div class="d-flex">
-                        <div class="text-info"></div>
-                        <button type="submit" onclick="submitQuestion()" class="btn btn-primary ml-auto mt-3 mb-3" id="submit-button">Send</button>
-                    </div>
-                </form>
-            </div>
         </div>
-    </div>
+        <div class="form-group">
+            <b><label asp-for="@Model._Question.Content"></label></b>
+            <textarea asp-for="@Model._Question.Content" type="text" rows="5" cols="20" class="form-control" placeholder="Type the question here" id="areaText"></textarea>
+        </div>
+        <div class="form-group">
+            <b> <label asp-for="@Model._Question.Category"></label></b>
+            <select asp-for="@Model._Question.Category" class="selectpicker" asp-items="@Html.GetEnumSelectList<Question.QuestionCategory>()"></select>
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-2">Submit</button>
+    </form>
 </div>
+
 
 <script src="https://unpkg.com/@@aspnet/signalr@1.0.2/dist/browser/signalr.js"></script>
 <script src="https://unpkg.com/@@microsoft/signalr@6.0.0-preview.4.21253.5/dist/browser/signalr.min.js"></script>
@@ -72,40 +76,30 @@
     function submitQuestion() {
 
         var questionForm = document.getElementById("submitForm");
-        var text = document.getElementById("areaText").textContent;
-        var date = 0;
+        var text = document.getElementById("areaText");
         questionForm.addEventListener("submit", function (e) {
-            connection.invoke("sendQuestions",
-                text,
-                date
+            e.preventDefault();
 
-            );
+            sendQuestion(text.textContent);
         });
     }
 
-    connection.start();
+    function sendQuestion(text) {
+        if (text && text.length) {
+            connection.invoke('SendQuestions', text);
+        } else {
+            console.log("Can't send");
+        }
+    }
+
+
 
     
-    
+
+
 </script>
-=======
-        <div class="form-group">
-            <b> <label asp-for="@Model._Question.Title"></label></b>
-            <input asp-for="@Model._Question.Title" type="text" class="form-control" placeholder="Enter title">
 
-        </div>
-        <div class="form-group">
-            <b><label asp-for="@Model._Question.Content"></label></b>
-            <textarea asp-for="@Model._Question.Content" type="text" rows="5" cols="20" class="form-control" placeholder="Type the question here"></textarea>
-        </div>
-        <div class="form-group">
-            <b> <label asp-for="@Model._Question.Category"></label></b>
-            <select asp-for="@Model._Question.Category" class="selectpicker" asp-items="@Html.GetEnumSelectList<Question.QuestionCategory>()"></select>
-        </div>
 
-        <button type="submit" class="btn btn-primary mb-2">Submit</button>
-    </form>
-</div>
 
 <partial name="_DataTable" model="@tblId" />
->>>>>>> master
+

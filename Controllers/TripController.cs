@@ -43,12 +43,9 @@ namespace Client.Controllers
                 .ThenInclude(bk => bk.CustomerInfos);
 
 
-            var filteredTrips = _tripFilterService.ApplyFilter(trips, filterParams);
-
-<<<<<<< HEAD
-=======
+           
             var filteredTrips = _tripFilterService.ApplyFilter(trips.Where(tr => tr.Vacancies > 0), filterParams);
->>>>>>> master
+
 
             var tours = _tourRepository.QueryFiltered(tour => tour.IsOpen);
 

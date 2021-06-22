@@ -147,10 +147,6 @@ namespace Client.Controllers
                     AgeGroup = ageGroup
                 });
             }
-<<<<<<< HEAD
-            booking.Status = Booking.BookingStatus.Awaiting_Deposit;
-=======
->>>>>>> master
 
             booking.Status = Booking.BookingStatus.Awaiting_Deposit;
             booking.PaymentDeadline = DateTime.Now.AddDays(2);
@@ -187,18 +183,13 @@ namespace Client.Controllers
             return booking.Status switch
             {
                 Booking.BookingStatus.Awaiting_Deposit => View("Views/Booking/Deposit.cshtml", booking),
-<<<<<<< HEAD
-                Booking.BookingStatus.Processing => throw new NotImplementedException(),
-                Booking.BookingStatus.Awaiting_Payment => throw new NotImplementedException(),
-                Booking.BookingStatus.Completed => throw new NotImplementedException(),
-                Booking.BookingStatus.Canceled => throw new NotImplementedException(),
-=======
+
                 Booking.BookingStatus.Processing => View("Views/Booking/Processing.cshtml", booking),
                 Booking.BookingStatus.Awaiting_Payment => View("Views/Booking/Payment.cshtml", booking),
                 Booking.BookingStatus.Completed => View("Views/Booking/Completed.cshtml", booking),
                 Booking.BookingStatus.Canceled => View("Views/Booking/Canceled.cshtml", booking),
                 _ => throw new InvalidOperationException(),
->>>>>>> master
+
             };
         }
 
@@ -268,15 +259,12 @@ namespace Client.Controllers
 
             return View(new CustomerInfosModel
             {
-<<<<<<< HEAD
-                QRImageSource = string.Format($"data:image/png;base64,{Convert.ToBase64String(BitmapToBytesCode(qrCodeImage))}"),
-                TotalAmount = booking.Deposit.Value
-=======
+
                 AgeGroups = ageGroups,
                 SalePrices = total,
                 ApplyPoints = applyPoints,
                 ApplyAmount = applicablePoints
->>>>>>> master
+
             });
         }
 
