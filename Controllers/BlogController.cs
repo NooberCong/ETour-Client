@@ -57,7 +57,14 @@ namespace Client.Controllers
                 return NotFound();
             }
 
-            return View(post);
+            var recommendations = _postRepository.Queryable
+                .Where(p => p.ID != id).Include(p => p.Author)
+                .Take(5).AsEnumerable();
+
+            return View(new PostDetailModel { 
+                Post = post,
+                Recommendations = recommendations
+            });
         }
     }
 }

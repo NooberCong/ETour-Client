@@ -1,31 +1,37 @@
-﻿@model Post
+﻿@model PostDetailModel
 
 @{
-    ViewData["Title"] = Model.Title;
+    ViewData["Title"] = Model.Post.Title;
 }
 
+<style>
+    #content p{
+        width: 100% !important;
+    }
+</style>
+
 <div class="container py-5">
-    <figure class="mb-5"><img class="img-fluid rounded w-100" src="@Model.CoverImgUrl" alt="coverImg" /></figure>
+    <figure class="mb-5"><img class="img-fluid rounded w-100" src="@Model.Post.CoverImgUrl" alt="coverImg" /></figure>
     <!-- Post content-->
-    <h1 class=" display-4">@Model.Title</h1>
+    <h1 class="font-weight-bold">@Model.Post.Title</h1>
     <div class="text-muted d-flex justify-content-sm-between mt-3 mb-5">
         <div>
-            <p class="pb-1">Written by @Model.Author.FullName on @Model.LastUpdated</p>
+            <p class="pb-1">Written by @Model.Post.Author.FullName on @Model.Post.LastUpdated</p>
         </div>
         <div>
             <i class="fas fa-tag mr-2"></i>
-            @for (int i = 0; i < Model.Tags.Count; i++)
+            @for (int i = 0; i < Model.Post.Tags.Count; i++)
             {
-                <a href="#!" class="text-reset">@Model.Tags[i]</a>
-                @if (i != Model.Tags.Count - 1)
+                <a href="#!" class="text-reset">@Model.Post.Tags[i]</a>
+                @if (i != Model.Post.Tags.Count - 1)
                 {
                     <span>,&nbsp;</span>
                 }
             }
         </div>
     </div>
-    <section class="mb-3 overflow-hidden">
-        @Html.Raw(Model.Content)
+    <section id="content" class="mb-3 overflow-hidden w-100">
+        @Html.Raw(Model.Post.Content)
     </section>
     <!-- Comments section-->
     <section>
@@ -69,4 +75,50 @@
             </div>
         </div>
     </section>
+    <h3 class="my-5">You may also be interested in</h3>
+    <div class="d-flex overflow-auto">
+        @foreach (var post in Model.Recommendations)
+        {
+        <div class="d-flex flex-column mr-5" style="width: 25rem;">
+            <!-- Card -->
+            <div class="w-100" style="height: 15rem;">
+                <img class="img-fluid rounded" style="object-fit: cover; width: 100%; height: 100%" src="@post.CoverImgUrl" alt="Sample">
+            </div>
+
+            @if (post.LastUpdated >= DateTime.Now.AddDays(-1))
+            {
+                <span class="mb-0"><span class="badge badge-primary badge-pill badge-news">New</span></span>
+            }
+
+            <div class="pt-4">
+                <a asp-action="Detail" asp-route-id="@post.ID" class="h5 card-link" style="color: black">@post.Title</a>
+                <p class="small text-muted text-uppercase my-3">
+                    by
+                    <a href="#!" class="text-reset"><strong>@post.Author.FullName</strong></a>
+                    <a href="#!" class="text-reset float-right">@post.LastUpdated</a>
+                </p>
+                <hr>
+
+            </div>
+            <div class="d-flex justify-content-between text-uppercase text-muted white small">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-tag mr-2"></i>
+                    @for (int i = 0; i < post.Tags.Count; i++)
+                    {
+                        <a href="#!" class="text-reset">@post.Tags[i]</a>
+                        @if (i != post.Tags.Count - 1)
+                        {
+                            <span>,&nbsp;</span>
+                        }
+                    }
+                </div>
+                <div class="d-flex align-items-center">
+                    <a href="#!" class="text-reset">
+                        <i class="fas fa-comment-alt mr-2"></i>1
+                    </a>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
 </div>

@@ -35,15 +35,13 @@
             <div class="col-md-6 col-lg-4 mb-4">
                 <!-- Card -->
                 <div class="">
-
-                    <div class="view overlay z-depth-2">
-                        <img class="img-fluid rounded" src="@post.CoverImgUrl" alt="Sample">
-                        @if (post.LastUpdated >= DateTime.Now.AddDays(-1))
-                        {
-                            <span class="mb-0"><span class="badge badge-primary badge-pill badge-news">New</span></span>
-                        }
+                    <div class="w-100" style="height: 15rem;">
+                        <img class="img-fluid rounded w-100 h-100" style="object-fit: cover" src="@post.CoverImgUrl" alt="Sample">
                     </div>
-
+                    @if (post.LastUpdated >= DateTime.Now.AddDays(-1))
+                    {
+                        <span><span class="badge badge-primary badge-pill">New</span></span>
+                    }
 
                     <div class="pt-4">
                         <a asp-action="Detail" asp-route-id="@post.ID" class="h5 card-link" style="color: black">@post.Title</a>
