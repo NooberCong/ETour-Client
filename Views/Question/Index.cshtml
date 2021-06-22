@@ -76,10 +76,18 @@
     function submitQuestion() {
 
         var questionForm = document.getElementById("submitForm");
+<<<<<<< HEAD
         var text = document.getElementById("areaText");
         questionForm.addEventListener('submit', function (e) {
             e.preventDefault();
             test("submit");
+=======
+        var text = document.getElementById("areaText").value;
+        questionForm.addEventListener("submit", function (e) {
+            connection.invoke("sendQuestions",
+                text
+            );
+>>>>>>> c55fbc833297aa8d022a059c2cb01d50e45fec4a
         });
     }
 
@@ -91,6 +99,7 @@
         }
     }
 
+<<<<<<< HEAD
 
     connection.on("ReceiveQuestion", test);
 
@@ -99,6 +108,8 @@
         console.log(text);
     }
     
+=======
+>>>>>>> c55fbc833297aa8d022a059c2cb01d50e45fec4a
 </script>
 
 
