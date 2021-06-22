@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Entities;
+using System;
 using System.Linq;
 
 namespace Client.Views
@@ -38,6 +39,33 @@ namespace Client.Views
         public static string ToRangeString(this Tuple<DateTime, DateTime> range)
         {
             return $"{range.Item1.ToCustomDateString()} - {range.Item2.ToCustomDateString()}";
+        }
+        public static string Badge(this Booking.BookingStatus status)
+        {
+            return status switch
+            {
+                Booking.BookingStatus.Awaiting_Deposit => "badge badge-warning",
+                Booking.BookingStatus.Processing => "badge badge-primary",
+                Booking.BookingStatus.Awaiting_Payment => "badge badge-warning",
+                Booking.BookingStatus.Completed => "badge badge-success",
+                Booking.BookingStatus.Canceled => "badge badge-danger",
+                _ => ""
+            };
+        }
+
+        public static string Badge(this Question.QuestionStatus status)
+        {
+            return status switch
+            {
+                Question.QuestionStatus.Pending => "badge badge-warning",
+                Question.QuestionStatus.Open => "badge badge-primary",
+                Question.QuestionStatus.Closed => "badge badge-danger",
+                _ => throw new NotImplementedException(),
+            };
+        }
+
+        public static string ToCustomString(this Enum enumValue) {
+            return enumValue.ToString().Replace('_', ' ');
         }
     }
 }

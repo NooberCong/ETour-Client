@@ -1,4 +1,5 @@
-﻿using Client.AuthenticationSchemes;
+﻿using Client.Authentication;
+using Client.Models;
 using Core.Entities;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Authentication;
@@ -26,14 +27,18 @@ namespace Client.Controllers
 
         // Display sign in page with a button for authenticating using Google
         // Return View()
-        public IActionResult Index()
+        public IActionResult Index(string errorMessage, string returnUrl = "/")
         {
-            return View();
+            return View(new AuthHomeModel
+            {
+                ErrorMessage = errorMessage,
+                ReturnUrl = returnUrl
+            });
         }
 
         // This action is called when sign in with google button is clicked
         // Return Challenge result with google authentication scheme
-        public IActionResult SignInWithGoogle(string returnUrl = "/")
+        public IActionResult SignInWithGoogle(string returnUrl)
         {
             var props = new AuthenticationProperties
             {
@@ -64,12 +69,21 @@ namespace Client.Controllers
                     Name = externalClaims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value,
                     Email = externalClaims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value,
                     ImgUrl = externalClaims.FirstOrDefault(x => x.Type == "image")?.Value,
+                    Points = 0,
+                    LastSignIn = DateTime.Now
                 };
 
                 await _customerRepository.AddAsync(customer);
                 await _unitOfWork.CommitAsync();
             }
 
+            await HttpContext.SignOutAsync(ExternalAuthenticationDefaults.AuthenticationScheme);
+
+            // Customer is banned
+            if (customer.IsSoftDeleted)
+            {
+                return RedirectToAction("Index", new { errorMessage = "This account was banned, please contact support for more information" });
+            }
             var claims = new List<Claim> {
                 new Claim(ClaimTypes.NameIdentifier, customer.ID),
                 new Claim(ClaimTypes.Name, customer.Name),
@@ -80,8 +94,6 @@ namespace Client.Controllers
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
             var principal = new ClaimsPrincipal(identity);
-
-            await HttpContext.SignOutAsync(ExternalAuthenticationDefaults.AuthenticationScheme);
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 

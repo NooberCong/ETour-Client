@@ -111,7 +111,7 @@
                         @for (int i = 0; i < Model.Tour.ImageUrls.Count; i++)
                         {
                             <div class="carousel-item @(i == 0? "active": "")">
-                                <img src="@Model.Tour.ImageUrls[i]" class="d-block w-100" alt="tour-image-@i">
+                                <img style="height: 25rem; width: 100%; object-fit: cover;" src="@Model.Tour.ImageUrls[i]" class="d-block w-100" alt="tour-image-@i">
                             </div>
                         }
                     </div>
@@ -253,7 +253,7 @@
         <div class="col-md-3">
             <!-- Tab navs -->
             <div class="nav flex-column nav-pills text-center position-sticky"
-                 style="top: 50px;"
+                 style="top: 75px;"
                  id="v-pills-tab"
                  role="tablist"
                  aria-orientation="vertical">
@@ -313,6 +313,27 @@
                                             <div class="float-right text-muted">@itin.StartTime</div>
                                             <h4 class="card-title">@itin.Title</h4>
                                             @Html.Raw(itin.Detail)
+                                            <a class="btn btn-outline-primary" data-toggle="collapse" href="#detail-@itin.ID">Itinerary Summary</a>
+                                            <div id="detail-@itin.ID" class="collapse table-responsive mt-3">
+                                                <table class="table">
+                                                    <tr>
+                                                        <th>@Html.DisplayNameFor(_ => itin.Accommodation)</th>
+                                                        <td>@Html.DisplayFor(_ => itin.Accommodation)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>@Html.DisplayNameFor(_ => itin.Meal)</th>
+                                                        <td>@Html.DisplayFor(_ => itin.Meal)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>@Html.DisplayNameFor(_ => itin.Transport)</th>
+                                                        <td>@Html.DisplayFor(_ => itin.Transport)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>@Html.DisplayNameFor(_ => itin.Activity)</th>
+                                                        <td>@Html.DisplayFor(_ => itin.Activity)</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

@@ -4,6 +4,8 @@
     ViewData["Title"] = "Payment with ZaloPay";
 }
 
+<input id="bookingID" type="hidden" value="@Model.BookingID" />
+
 <div class="container card p-5 shadow my-5">
     <h3 class="text-center">SCAN THE QR CODE TO PAY VIA <img height="70" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQw0oqxAd16P4rwxegN-h_VnyNLKh2jmaiHYNNSe4RIAk0z8Z0D4EFoHhUqasbKWa2SFD0&usqp=CAU" alt="Zalo Pay logo" /></h3>
     <div class="row">
@@ -25,7 +27,8 @@
 
 @section Scripts {
     <script>
-        function startTimer(duration, display) {
+        function startExpireTimer(duration) {
+            let display = document.querySelector('#countdown');
             let timer = duration, minutes, seconds;
             let interval = setInterval(function () {
                 minutes = parseInt(timer / 60, 10);
@@ -42,10 +45,16 @@
             }, 1000);
         }
 
+        function startRedirectTimer() {
+            setTimeout(function () {
+                window.location.replace(`/Booking/ZaloPayConfirm?id=${$('#bookingID').val()}`);
+            }, 5000);
+        }
+
         window.onload = function () {
             let fifteenMinutes = 60 * 15;
-            let display = document.querySelector('#countdown');
-            startTimer(fifteenMinutes, display);
+            startExpireTimer(fifteenMinutes);
+            startRedirectTimer();
         };
     </script>
 } 

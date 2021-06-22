@@ -1,4 +1,5 @@
-﻿@{
+﻿@model Client.Models.BlogListModel
+@{
     ViewData["Title"] = "Blog";
 }
 
@@ -8,168 +9,89 @@
 
 <!--Section: Block Content-->
 <section class="container mb-5">
+    <form method="get">
+
+        <div class="row p-0 m-0 my-5">
+            <div class="d-flex col-md-5 p-0">
+                <input class="form-control w-100" asp-for="FilterParams.Keyword" placeholder="Search keyword, tags..." value="" />
+            </div>
+            <div class="d-flex col-8 col-md-5 mt-md-0 mt-3 p-0 pl-md-3">
+                <label>Category:</label>
+                <select asp-for="FilterParams.Category" class="form-control ml-3" asp-items="@Html.GetEnumSelectList<IPost<Employee>.PostCategory>()">
+                    <option value="">All</option>
+                </select>
+            </div>
+            <div class="col-4 col-md-2 mt-3 mt-md-0 p-0 d-flex justify-content-end">
+                <button class="btn btn-primary ml-auto">Search</button>
+            </div>
+        </div>
+    </form>
+
     <!-- Grid row -->
     <div class="row mt-3">
+        @foreach (var post in Model.Posts)
+        {
+            <!-- Grid column -->
+            <div class="col-md-6 col-lg-4 mb-4">
+                <!-- Card -->
+                <div class="">
 
-        <!-- Grid column -->
-        <div class="col-md-6 col-lg-4 mb-4">
-
-            <!-- Card -->
-            <div class="">
-
-                <div class="view overlay z-depth-2">
-                    <img class="img-fluid rounded" src="https://mdbootstrap.com/img/Photos/Horizontal/Nature/12-col/img%20(117).jpg" alt="Sample">
-                    <h4 class="mb-0"><span class="badge badge-primary badge-pill badge-news">New</span></h4>
-                    <a href="#!">
-                        <div class="mask rgba-white-slight"></div>
-                    </a>
-                </div>
-
-                <div class="pt-4">
-
-                    <h5>Small glass garden</h5>
-                    <p class="small text-muted text-uppercase mb-3">
-                        by
-                        <a href="#!" class="text-reset"><strong>marthasteward </strong></a>
-                        <a href="#!" class="text-reset float-right">February 20, 2020</a>
-                    </p>
-                    <p class="text-multiline-truncate">
-                        Vivamus condimentum purus in lorem molestie fermentum.
-                        Nulla suscipit nibh eu ultricies pellentesque. Fusce consectetur velit eu tristique dapibus.
-                        Donec et lobortis massa, vitae lacinia elit. Proin dolor dui, tempus eu leo vitae, congue venenatis augue.
-                        orbi pharetra urna quis lectus pulvinar, non tincidunt purus consectetur adipisicing elit. Cumque beatae officiis,
-                        corporis hic numquam eum, sit dicta quia mollitia fugit totam deserunt aliquam dolorum exercitationem!
-                        Possimus excepturi odio eaque recusandae.
-                    </p>
-                    <hr>
-
-                </div>
-
-                <div class="d-flex justify-content-between text-uppercase text-muted white small">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-tag mr-2"></i>
-                        <a href="#!" class="text-reset">Design</a>
+                    <div class="view overlay z-depth-2">
+                        <img class="img-fluid rounded" src="@post.CoverImgUrl" alt="Sample">
+                        @if (post.LastUpdated >= DateTime.Now.AddDays(-1))
+                        {
+                            <span class="mb-0"><span class="badge badge-primary badge-pill badge-news">New</span></span>
+                        }
                     </div>
-                    <div class="d-flex align-items-center">
-                        <a href="#!" class="text-reset">
-                            <i class="fas fa-comment-alt mr-2"></i>1
-                        </a>
+
+
+                    <div class="pt-4">
+                        <a asp-action="Detail" asp-route-id="@post.ID" class="h5 card-link" style="color: black">@post.Title</a>
+                        <p class="small text-muted text-uppercase my-3">
+                            by
+                            <a href="#!" class="text-reset"><strong>@post.Author.FullName</strong></a>
+                            <a href="#!" class="text-reset float-right">@post.LastUpdated</a>
+                        </p>
+                        <hr>
+
+                    </div>
+                    <div class="d-flex justify-content-between text-uppercase text-muted white small">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-tag mr-2"></i>
+                            @for (int i = 0; i < post.Tags.Count; i++)
+                            {
+                                <a href="#!" class="text-reset">@post.Tags[i]</a>
+                                @if (i != post.Tags.Count - 1)
+                                {
+                                    <span>,&nbsp;</span>
+                                }
+                            }
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <a href="#!" class="text-reset">
+                                <i class="fas fa-comment-alt mr-2"></i>1
+                            </a>
+                        </div>
                     </div>
                 </div>
-
+                <!-- Card -->
             </div>
-            <!-- Card -->
-
-        </div>
-        <!-- Grid column -->
-        <!-- Grid column -->
-        <div class="col-md-6 col-lg-4 mb-4">
-
-            <!-- Card -->
-            <div class="">
-
-                <div class="view overlay z-depth-2">
-                    <img class="img-fluid rounded" src="https://mdbootstrap.com/img/Photos/Horizontal/Nature/12-col/img%20(118).jpg" alt="Sample">
-                    <a href="#!">
-                        <div class="mask rgba-white-slight"></div>
-                    </a>
-                </div>
-
-                <div class="pt-4">
-
-                    <h5>Animals in our area</h5>
-                    <p class="small text-muted text-uppercase mb-3">
-                        by
-                        <a href="#!" class="text-reset"><strong>marthasteward </strong></a>
-                        <a href="#!" class="text-reset float-right">February 19, 2020</a>
-                    </p>
-                    <p class="card-text text-multiline-truncate">
-                        Vivamus condimentum purus in lorem molestie fermentum.
-                        Nulla suscipit nibh eu ultricies
-                        pellentesque. Fusce consectetur velit eu tristique dapibus. Donec et lobortis massa, vitae lacinia
-                        elit. Proin dolor dui, tempus eu leo vitae, congue venenatis augue. Morbi pharetra urna quis lectus
-                        pulvinar, non tincidunt purus consectetur adipisicing elit. Cumque beatae officiis,
-                        corporis hic numquam eum, sit dicta quia mollitia fugit totam deserunt aliquam dolorum exercitationem!
-                        Possimus excepturi odio eaque recusandae.
-                    </p>
-                    <hr>
-
-                </div>
-
-                <div class="d-flex justify-content-between text-uppercase text-muted white small">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-tag mr-2"></i>
-                        <a href="#!" class="text-reset">Nature</a>,
-                        <a href="#!" class="text-reset ml-1">Photography</a>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <a href="#!" class="text-reset">
-                            <i class="fas fa-comment-alt mr-2"></i>0
-                        </a>
-                    </div>
-                </div>
-
-            </div>
-            <!-- Card -->
-
-        </div>
-        <!-- Grid column -->
-        <!-- Grid column -->
-        <div class="col-md-12 col-lg-4 mb-4">
-
-            <!-- Card -->
-            <div class="">
-
-                <div class="view overlay z-depth-2">
-                    <img class="img-fluid rounded" src="https://mdbootstrap.com/img/Photos/Horizontal/Nature/12-col/img%20(116).jpg"
-                         alt="Sample">
-                    <a href="#!">
-                        <div class="mask rgba-white-slight"></div>
-                    </a>
-                </div>
-
-                <div class="pt-4">
-
-                    <h5>Wooden house holiday</h5>
-                    <p class="small text-muted text-uppercase mb-3">
-                        by
-                        <a href="#!" class="text-reset"><strong>marthasteward </strong></a>
-                        <a href="#!" class="text-reset float-right">February 18, 2020</a>
-                    </p>
-                    <p class="card-text text-multiline-truncate">
-                        Vivamus condimentum purus in lorem molestie fermentum.
-                        Nulla suscipit nibh eu ultricies
-                        pellentesque. Fusce consectetur velit eu tristique dapibus. Donec et lobortis massa, vitae lacinia
-                        elit. Proin dolor dui, tempus eu leo vitae, congue venenatis augue. Morbi pharetra urna quis lectus
-                        pulvinar, non tincidunt purus consectetur adipisicing elit. Cumque beatae officiis,
-                        corporis hic numquam eum, sit dicta quia mollitia fugit totam deserunt aliquam dolorum exercitationem!
-                        Possimus excepturi odio eaque recusandae.
-                    </p>
-                    <hr>
-
-                </div>
-
-                <div class="d-flex justify-content-between text-uppercase text-muted white small">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-tag mr-2"></i>
-                        <a href="#!" class="text-reset">Travel</a>,
-                        <a href="#!" class="text-reset ml-1">Uncategorized</a>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <a href="#!" class="text-reset">
-                            <i class="fas fa-comment-alt mr-2"></i>0
-                        </a>
-                    </div>
-                </div>
-
-            </div>
-            <!-- Card -->
-
-        </div>
-        <!-- Grid column -->
-
+            <!-- Grid column -->
+        }
     </div>
     <!-- Grid row -->
-
+    @if (!Model.Posts.Any())
+    {
+        <div class="w-100 d-flex justify-content-center my-5">
+            <img class="w-50" src="~/images/empty.svg" alt="completed booking illustration" />
+        </div>
+        <p class="text-center text-muted mt-5">Sorry, we could not find any posts for your preferences</p>
+    }
+    @if (Model.Posts.Any())
+    {
+        <div class="my-5 mr-4 pr-2">
+            <partial name="_Pagination" model="Model.Posts.PaginationInfo" />
+        </div>
+    }
 </section>
 <!--Section: Block Content-->

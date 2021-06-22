@@ -1,0 +1,23 @@
+﻿@model Booking 
+
+@{
+    ViewData["Title"] = $"Processing - Booking No.{Model.ID}";
+}
+
+
+<div class="container mt-5 mb-sm-4">
+    <partial name="_BookingProgress" model="Model.Status" />
+    <div class="d-flex mt-5">
+        <h3 class="d-inline">Hang on tight, your booking is being finalized by our staff</h3>
+        <div class="spinner-grow text-success ml-2" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <p class="text-muted">We'll get back to you as soon as possible inform you of the final itineraries</p>
+    <p class="text-muted">Expected finalization date is <span class="text-danger">@Model.Trip.StartTime.AddDays(-10).ToCustomDateString()</span></p>
+    <div class="w-100 d-flex justify-content-center my-5">
+        <img class="w-50" src="~/images/organize.svg" alt="organize your trip illustration" />
+    </div>
+</div>
+
+<partial name="_BookingDetail" /> 

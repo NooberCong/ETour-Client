@@ -193,6 +193,12 @@
                         </select>
                     </div>
                     <div class="form-group">
+                        <label for="dd">Tour Type</label>
+                        <select asp-for="FilterParams.TourType" class="form-control" asp-items="@Html.GetEnumSelectList<Tour.TourType>()">
+                            <option>All</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label asp-for="FilterParams.Starts">Date Start</label>
                         <input asp-for="FilterParams.Starts" class="form-control" />
                     </div>
@@ -273,7 +279,16 @@
             }
             @if (!Model.Trips.Any())
             {
-                <p class="text-center text-muted mt-5">We could not find any trip for you</p>
+                <div class="w-100 d-flex justify-content-center my-5">
+                    <img class="w-50" src="~/images/empty.svg" alt="completed booking illustration" />
+                </div>
+                <p class="text-center text-muted mt-5">Sorry, we could not find any trips for your preferences</p>
+            }
+            @if (Model.Trips.Any())
+            {
+                <div class="my-5 mr-4 pr-2">
+                    <partial name="_Pagination" model="Model.Trips.PaginationInfo" />
+                </div>
             }
         </section>
     </div>

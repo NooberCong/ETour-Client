@@ -1,4 +1,5 @@
 ﻿using Core.Entities;
+using Core.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,6 @@ namespace Client.Models
 {
     public class TourListModel
     {
-        public IEnumerable<Tour> Tours { get; set; }
+        public PaginatedList<Tour> Tours { get; set; }
     }
 }
