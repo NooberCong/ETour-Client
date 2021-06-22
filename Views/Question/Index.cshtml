@@ -68,13 +68,11 @@
     function submitQuestion() {
 
         var questionForm = document.getElementById("submitForm");
-        var text = document.getElementById("areaText").textContent;
+        var text = document.getElementById("areaText").value;
         var date = 0;
         questionForm.addEventListener("submit", function (e) {
             connection.invoke("sendQuestions",
-                text,
-                date
-
+                text
             );
         });
     }
