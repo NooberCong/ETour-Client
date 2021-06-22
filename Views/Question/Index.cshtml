@@ -55,7 +55,7 @@
             <select asp-for="@Model._Question.Category" class="selectpicker" asp-items="@Html.GetEnumSelectList<Question.QuestionCategory>()"></select>
         </div>
 
-        <button type="submit" class="btn btn-primary mb-2">Submit</button>
+        <button type="submit" class="btn btn-primary mb-2" onclick="submitQuestion">Submit</button>
     </form>
 </div>
 
@@ -77,10 +77,9 @@
 
         var questionForm = document.getElementById("submitForm");
         var text = document.getElementById("areaText");
-        questionForm.addEventListener("submit", function (e) {
+        questionForm.addEventListener('submit', function (e) {
             e.preventDefault();
-
-            sendQuestion(text.textContent);
+            test("submit");
         });
     }
 
@@ -93,10 +92,13 @@
     }
 
 
+    connection.on("ReceiveQuestion", test);
 
+
+    function test(text) {
+        console.log(text);
+    }
     
-
-
 </script>
 
 
