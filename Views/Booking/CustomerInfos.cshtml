@@ -37,13 +37,15 @@
         <hr />
     </div>
 }
-<h4 class="text-right">Total: <span class="text-danger font-weight-bold">@Model.SalePrices.Sum().ToCurrencyString()</span></h4>
-@if (Model.ApplyPoints)
-{
-    <div id="apply-container">
+<h4 class="text-right">Total: <span id="PriceTotal" class="text-danger font-weight-bold">@Model.SalePrices.Sum().ToCurrencyString()</span></h4>
+<div id="apply-container">
+
+    @if (Model.ApplyPoints)
+    {
         <h4 class="text-right">Points: <span class="text-success font-weight-bold">-@Model.ApplyAmount.ToCurrencyString()</span></h4>
-    </div>
-}
+    }
+</div>
+
 <div class="form-group">
     <input id="ApplyPoints" onchange="toggleApplyPoints(this, this.checked)" asp-for="@Model.ApplyPoints" />
     <label asp-for="@Model.ApplyPoints">Use Reward Points (<span id="apply-amount">@Model.ApplyAmount</span> applicable)</label>
