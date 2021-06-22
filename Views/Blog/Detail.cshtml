@@ -81,7 +81,7 @@
         {
         <div class="d-flex flex-column mr-5" style="width: 25rem;">
             <!-- Card -->
-            <div class="w-100" style="height: 15rem;">
+            <div class="w-100" style="height: 12.5rem;">
                 <img class="img-fluid rounded" style="object-fit: cover; width: 100%; height: 100%" src="@post.CoverImgUrl" alt="Sample">
             </div>
 
@@ -92,10 +92,9 @@
 
             <div class="pt-4">
                 <a asp-action="Detail" asp-route-id="@post.ID" class="h5 card-link" style="color: black">@post.Title</a>
-                <p class="small text-muted text-uppercase my-3">
-                    by
-                    <a href="#!" class="text-reset"><strong>@post.Author.FullName</strong></a>
-                    <a href="#!" class="text-reset float-right">@post.LastUpdated</a>
+                <p class="small text-muted text-uppercase my-3 d-md-flex justify-content-between">
+                    <a href="#!" class="text-reset">by <strong>@post.Author.FullName</strong></a>
+                    <a href="#!" class="text-reset d-block">@post.LastUpdated.ToCustomDateString()</a>
                 </p>
                 <hr>
 
