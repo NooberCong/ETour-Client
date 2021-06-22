@@ -1,0 +1,18 @@
+﻿@model Booking
+
+@{
+    ViewData["Title"] = $"Canceled - Booking No.{Model.ID}";
+}
+
+<div class="container mt-5 mb-sm-4">
+    <partial name="_BookingProgress" model="Model.Status" />
+
+    <h3 class="mt-5">Your booking was <span class="text-danger">canceled <i class="fas fa-times"></i></span></h3>
+    <p class="text-muted">We're very sorry to see that your booking was canceled. Anyway, <span class="text-info">we're always looking forward to seeing you in your next journey with us</span></p>
+
+    <div class="w-100 d-flex justify-content-center my-5">
+        <img class="w-50" src="~/images/cancel.svg" alt="cancel your trip illustration" />
+    </div>
+</div>
+
+<partial name="_BookingDetail" />

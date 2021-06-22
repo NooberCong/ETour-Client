@@ -1,56 +1,64 @@
 ﻿@model QuestionListModel
 @{
     ViewData["Title"] = "Questions";
+    var tblId = "questionTbl";
 }
 
 
-<h1>Questions</h1>
 
-<div class="container">
-    <div class="main-body p-0">
-        <div class="inner-wrapper">
 
-            <div class="inner-main col-12">
-                @if (Model.Questions.Count() > 0)
+<div class="container py-5">
+    <h3 class="mb-5">My Questions</h3>
+
+    <div class="table-responsive">
+        <table id="@tblId" class="table">
+            <thead>
+                <tr>
+                    <th scope="col" class="text-center">Title</th>
+                    <th scope="col" class="text-center">Date</th>
+                    <th scope="col" class="text-center">Category</th>
+                    <th scope="col" class="text-center">Status</th>
+                    <th scope="col" class="text-center no-ordering">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var q in Model.Questions)
                 {
-                    foreach (var q in Model.Questions)
-                    {
-                        <div class="inner-main-body  collapse forum-content show">
-                            <div class="card ">
-                                <div class="card-body ">
-                                    <div class="media forum-item">
-                                        <a href="#" data-toggle="collapse" data-target=".forum-content"><img src="@q.Author.ImgUrl" class="mr-3 rounded-circle" width="50" alt="User" /></a>
-                                        <div class="media-body">
-                                            <h6>@q.Author.Name</h6>
-                                            <p class="text-secondary">
-                                                @q.Content
-                                            </p>
-                                            <p class="text-muted"><span class="text-secondary font-weight-bold">@q.LastUpdated.Day/@q.LastUpdated.Month/@q.LastUpdated.Year at @q.LastUpdated.Hour:@q.LastUpdated.Minute    </span></p>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>}
+                    <tr>
+                        <td class="text-center">@q.Title</td>
+                        <td class="text-center">@q.LastUpdated</td>
+                        <td class="text-center">@q.Category</td>
+                        <td class="text-center"><span class="@q.Status.Badge()">@q.Status.ToCustomString()</span></td>
+                        <td class="text-center">
+                            <a asp-action="Detail" asp-route-id=@q.ID class="text-primary mr-3"><i class="far fa-eye"></i></a>
+                            <a class="text-danger mr-3 mb-3 mb-md-0" asp-action="Edit" asp-route-id="@q.ID" asp-route-returnUrl="@(Context.Request.Path + Context.Request.QueryString)"><i class="far fa-times-circle"></i></a>
+                        </td>
+                    </tr>
                 }
-                else
-                {
-                    <div>Have any question? Please type below</div>
-                }
-
-                <form asp-action="Create" method="post" id="submitForm">
-                    <label asp-for="@Model.Question_.Content" class="col-12 text-center mt-3" style="font-size:1.5em;"> <b>Question</b></label>
-                    <textarea asp-for="@Model.Question_.Content" class="col-12 form-control" cols="4" rows="5" placeholder="Type your question here" id="areaText"></textarea>
-
-                    <div class="d-flex">
-                        <div class="text-info"></div>
-                        <button type="submit" onclick="submitQuestion()" class="btn btn-primary ml-auto mt-3 mb-3" id="submit-button">Send</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+            </tbody>
+        </table>
     </div>
+    <h3 class="my-5">Type your question here</h3>
+    <form asp-action="Create" method="post" id="submitForm">
+
+        <div class="form-group">
+            <b> <label asp-for="@Model._Question.Title"></label></b>
+            <input asp-for="@Model._Question.Title" type="text" class="form-control" placeholder="Enter title">
+
+        </div>
+        <div class="form-group">
+            <b><label asp-for="@Model._Question.Content"></label></b>
+            <textarea asp-for="@Model._Question.Content" type="text" rows="5" cols="20" class="form-control" placeholder="Type the question here" id="areaText"></textarea>
+        </div>
+        <div class="form-group">
+            <b> <label asp-for="@Model._Question.Category"></label></b>
+            <select asp-for="@Model._Question.Category" class="selectpicker" asp-items="@Html.GetEnumSelectList<Question.QuestionCategory>()"></select>
+        </div>
+
+        <button type="submit" class="btn btn-primary mb-2">Submit</button>
+    </form>
 </div>
+
 
 <script src="https://unpkg.com/@@aspnet/signalr@1.0.2/dist/browser/signalr.js"></script>
 <script src="https://unpkg.com/@@microsoft/signalr@6.0.0-preview.4.21253.5/dist/browser/signalr.min.js"></script>
@@ -69,7 +77,6 @@
 
         var questionForm = document.getElementById("submitForm");
         var text = document.getElementById("areaText").value;
-        var date = 0;
         questionForm.addEventListener("submit", function (e) {
             connection.invoke("sendQuestions",
                 text
@@ -77,9 +84,17 @@
         });
     }
 
-    connection.on("ReceiveQuestions", inra);
-
-    function inra(content, date) {
-        alert("đmmmm");
+    function sendQuestion(text) {
+        if (text && text.length) {
+            connection.invoke('SendQuestions', text);
+        } else {
+            console.log("Can't send");
+        }
     }
+
 </script>
+
+
+
+<partial name="_DataTable" model="@tblId" />
+

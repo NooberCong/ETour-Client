@@ -4,16 +4,22 @@
     "Children": $("input#NoChildren").val(),
     "Baby": $("input#NoBaby").val()
 }
+
 var max_capacity = parseInt($("td#Vacancies").text());
 
 
 function onCountChange(ageGroup, value) {
+    if (value == LastUpdated[ageGroup]) {
+        return;
+    }
+
 
     if (ageGroup == "Adult" && value < "1") {
         alert(`Invalid number of ${ageGroup}`);
         reset(ageGroup);
         return;
     }
+
 
     if (!value || value < "0") {
         value = "0";
@@ -25,22 +31,8 @@ function onCountChange(ageGroup, value) {
         return;
     }
 
-    let numValue = parseInt(value);
-    let numLastValue = parseInt(LastUpdated[ageGroup]);
-
-    if (numValue > numLastValue) {
-        for (var i = 0; i < numValue - numLastValue; i++) {
-            addCustomerInfoEntry(ageGroup);
-        }
-    } else if (numValue < numLastValue) {
-        $(`div.${ageGroup}`).each(function (index) {
-            if (index >= numValue) {
-                $(this).remove();
-            }
-        });
-    }
-    updatePrice();
     LastUpdated[ageGroup] = value;
+    updateCustomerInfos();
 }
 
 
@@ -61,21 +53,11 @@ function updateTotal() {
     return true;
 }
 
-function updatePrice() {
-    let totalTag = document.getElementById("Price_Total");
-    let total = 0;
-    $("span.Price_Item").each(function () {
-        total += parseFloat($(this).text().substr(1));
-    });
-    totalTag.innerHTML = `$${total.toFixed(2)}`;
-}
-
 function reset(ageGroup) {
     document.getElementById(`No${ageGroup}`).value = LastUpdated[ageGroup];
 }
 
 function onDobUpdated(ageGroup, input) {
-    console.log("date changed");
     let dobRange = document.getElementById(`Range_${ageGroup}`).innerHTML.split(" - ");
     let from = moment(dobRange[0], "DD/MM/YYYY").toDate();
     let to = moment(dobRange[1], "DD/MM/YYYY").toDate();
@@ -88,42 +70,106 @@ function onDobUpdated(ageGroup, input) {
     }
 }
 
-function addCustomerInfoEntry(ageGroup) {
-    let custonerInfoListContainer = document.getElementById("customerInfosContainer");
-    let no = custonerInfoListContainer.children.length + 1;
-    let container = document.createElement("div");
-    container.classList.add(ageGroup);
-    var content = '<div>' +
-        `                    <h6 class="mb-3">Customer No.${no}</h6>` +
-        '                    <div class="row">' +
-        '                        <div class="form-group col-md-3 mb-3">' +
-        `                            <label for="Name_${no}">Name</label>` +
-        `                            <input name="CustomerNames" id="Name_${no}" class="form-control" required>` +
-        '                        </div>' +
-        '                        <div class="form-group col-md-3 mb-3">' +
-        `                            <label for="Sex_${no}">Sex</label>` +
-        `                            <select id="Sex_${no}" name="CustomerSexes" class="form-control" required>` +
-        '                                <option value="0">Male</option>' +
-        '                                <option value="1">Female</option>' +
-        '                            </select>' +
-        '                        </div>' +
-        '                        <div class="form-group col-md-3 mb-3">' +
-        `                            <label for="DOB_${no}">Date of birth</label>` +
-        `                            <input onfocusout="onDobUpdated('${ageGroup}', this)"  id="DOB_${no}" name="CustomerDobs" class="form-control" type="date" required />` +
-        '                        </div>' +
-        '                        <div class="form-group col-md-3 mb-3">' +
-        `                            <label for="AG_${no}">Age Group</label>` +
-        `                            <select disabled id="AG_${no}" name="CustomerAgeGroups" class="form-control">` +
-        `                                <option ${ageGroup == "Adult" ? "selected" : ""} value="0">Adult</option>` +
-        `                                <option ${ageGroup == "Youth" ? "selected" : ""} value="1">Youth</option>` +
-        `                                <option ${ageGroup == "Children" ? "selected" : ""} value="2">Children</option>` +
-        `                                <option ${ageGroup == "Baby" ? "selected" : ""} value="3">Baby</option>` +
-        '                            </select>' +
-        '                        </div>' +
-        '                    </div>' +
-        `                    <p class="text-right">Price: <span class="Price_Item text-danger font-weight-bold">${$("td#Price_" + ageGroup).text()}</span></p>` +
-        '                    <hr />' +
-        '                </div>';
-    container.innerHTML = content;
-    custonerInfoListContainer.appendChild(container);
+function updateCustomerInfos() {
+    let params = buildCustomerInfoRequestParams();
+    let customerinfosContainer = $('#customerinfos-container');
+    let clone = customerinfosContainer.clone();
+    customerinfosContainer.html('<div class="w-100 text-center"><div style="height: 50px; width: 50px" class="spinner-grow text-primary" role="status"><span class="sr-only">Loading...</span></div></div>');
+
+    $.ajax({
+        type: "GET",
+        url: 'CustomerInfos',
+        data: params.toString(),
+        dataType: "html",
+        success: function (data) {
+            customerinfosContainer.html(data);
+        },
+        error: function () {
+            Snackbar.show({
+                text: 'Error processing customer age groups ❌',
+                textColor: "#dc3545",
+                actionTextColor: "#ffffff",
+                duration: 2000,
+                pos: "top-right"
+            });
+            customerinfosContainer.replaceWith(clone);
+        }
+    });
+}
+
+function buildCustomerInfoRequestParams() {
+    let tripID = $('#tripID').val();
+    let params = new URLSearchParams();
+    let applyPoints = $("#ApplyPoints").is(':checked');
+    params.append('tripID', tripID);
+    params.append('applyPoints', applyPoints);
+    params.append('adult', LastUpdated['Adult']);
+    params.append('youth', LastUpdated['Youth']);
+    params.append('children', LastUpdated['Children']);
+    params.append('baby', LastUpdated['Baby']);
+    console.log(params.toString());
+    return params;
+}
+
+function toggleApplyPoints(input, value) {
+    if (value == true) {
+        let total = parseFloat($('#PriceTotal').text().substr(1));
+        $.ajax({
+            type: "GET",
+            url: 'ApplyPoints',
+            data: `total=${total}`,
+            dataType: "json",
+            success: function (data) {
+                $('#apply-container').html(`<h4 class="text-right">Points: <span class="text-success font-weight-bold">-$${parseFloat(data['applyAmount']).toFixed(2)}</span></h4>`);
+                $('#apply-amount').text(data['applyAmount']);
+            },
+            error: function () {
+                Snackbar.show({
+                    text: 'Error applying points ❌',
+                    textColor: "#dc3545",
+                    actionTextColor: "#ffffff",
+                    duration: 2000,
+                    pos: "top-right"
+                });
+                input.value = false;
+            }
+        });
+    } else {
+        $('#apply-container').html('');
+    }
+}
+
+
+function showCancelForm(input, bookingID) {
+    let cancelBookingContainer = $('#cancel-booking-container');
+    let cloneElement = $(input).clone();
+    let loadingElement;
+    if (input.tagName == 'button') {
+        loadingElement = createLoadingButtonFor(input);
+    } else {
+        loadingElement = createSpinnerFor(input);
+    }
+    $(input).replaceWith(loadingElement);
+
+    $.ajax({
+        type: "GET",
+        url: "/Booking/CancelationForm",
+        data: `id=${bookingID}`,
+        dataType: "html",
+        success: function (data) {
+            cancelBookingContainer.html(data);
+            $(cancelBookingContainer).modal();
+            $(loadingElement).replaceWith(cloneElement);
+        },
+        error: function () {
+            Snackbar.show({
+                text: 'Error generating booking cancelation form ❌',
+                textColor: "#dc3545",
+                actionTextColor: "#ffffff",
+                duration: 2000,
+                pos: "top-right"
+            });
+            $(loadingElement).replaceWith(cloneElement);
+        }
+    });
 }

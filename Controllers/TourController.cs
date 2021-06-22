@@ -6,12 +6,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Core.Helpers;
 
 namespace Client.Controllers
 {
     public class TourController : Controller
     {
+        private static readonly int _pageSize = 10;
         private readonly ITourRepository _tourRepository;
 
         public TourController(ITourRepository tourRepository)
@@ -20,13 +21,13 @@ namespace Client.Controllers
            
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int pageNumber = 1)
         {
 
-            IEnumerable<Tour> tourList =_tourRepository.QueryFiltered(Tour => Tour.IsOpen);
+            IEnumerable<Tour> tours =_tourRepository.QueryFiltered(Tour => Tour.IsOpen);
             return View(new TourListModel
             {
-                Tours = tourList,
+                Tours = PaginatedList<Tour>.Create(tours.AsQueryable(), pageNumber, _pageSize)
             });
         }
 

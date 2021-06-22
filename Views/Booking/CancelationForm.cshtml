@@ -1,0 +1,28 @@
+﻿@model Booking.BookingCancelInfo
+<form asp-action="CancelBooking" asp-route-id="@Model.BookingID" method="post">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cancelationModalLabel">Booking Cancelation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h6>Are you sure you want to cancel booking <span class="text-primary">No.@Model.BookingID</span> for @Model.Trip.Tour.Title @Model.Trip.StartTime.ToCustomDateString() - @Model.Trip.EndTime.ToCustomDateString()</h6>
+                <p class="text-danger">You are canceling <strong>@Model.DaysEarly day(s)</strong> before the start date, cancelation price will be calculated based on our policy relative to the booking price</p>
+                <p>From 20 days and sooner: <strong>30%</strong></p>
+                <p>Day 15 to before day 20: <strong>50%</strong></p>
+                <p>Day 10 to before day 15: <strong>70%</strong></p>
+                <p>Day 5 to before day 10: <strong>90%</strong></p>
+                <p>Less than 5 days: <strong>100%</strong></p>
+                <hr />
+                <p>You will lose: <span class="text-danger">@Model.AmountLost.ToCurrencyString(), @Model.PointsLost points (used on this booking)</span></p>
+                <p>You will be refunded: <span class="text-primary">@Model.Refund.ToCurrencyString()</span></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger">Confirm Cancelation</button>
+            </div>
+        </div>
+    </div>
+</form>

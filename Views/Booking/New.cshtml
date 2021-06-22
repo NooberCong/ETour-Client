@@ -45,10 +45,11 @@
                     <td id="Price_Adult">@Model.Trip.GetSalePriceFor(CustomerInfo.CustomerAgeGroup.Adult).ToCurrencyString()</td>
                     <td id="Price_Youth">@Model.Trip.GetSalePriceFor(CustomerInfo.CustomerAgeGroup.Youth).ToCurrencyString()</td>
                     <td id="Price_Children">@Model.Trip.GetSalePriceFor(CustomerInfo.CustomerAgeGroup.Children).ToCurrencyString()</td>
-                    <td id="Price_Baby">@Model.Trip.GetSalePriceFor(CustomerInfo.CustomerAgeGroup.Baby).ToCurrencyString()</td>
+                    <td id="Price_Baby">@Model.Trip.GetSalePriceFor(CustomerInfo.CustomerAgeGroup.Baby).ToCurrencyString() <span class="text-danger">*</span></td>
                 </tr>
             </tbody>
         </table>
+        <span class="text-danger">(*) Each adult is entitled to one free baby ticket. From the second baby, the price will be that of children</span>
         <div class="mt-5 alert alert-warning" role="alert">
             <p class="ml-3 font-weight-bold">Age Groups <i class="fas fa-info-circle"></i></p>
             <div class="row m-0">
@@ -67,7 +68,7 @@
 </div>
 <form method="post" onsubmit="if(document.getElementById('agree').checked) { return true; } else { alert('Please indicate that you have read and agree to the Terms and Conditions and Privacy Policy'); return false; }">
     <h3 class="my-5 text-center">Contact information</h3>
-    <input type="hidden" asp-for="Booking.TripID" value="@Model.Trip.ID" />
+    <input id="tripID" type="hidden" asp-for="Booking.TripID" value="@Model.Trip.ID" />
     <div class="container order-md-1">
         <div class="row">
             <div class="col-md-6 mb-3">
@@ -122,7 +123,7 @@
                 </div>
                 <div>
                     <label>Total</label>
-                    <input id="NoTotal" disabled type="number" class="form-control" value="1">
+                    <input id="NoTotal" asp-for="Booking.TicketCount" readonly type="number" class="form-control" value="1">
                 </div>
             </div>
             <div class="col-12 mb-3 form-group">
@@ -131,381 +132,381 @@
             </div>
         </div>
     </div>
-
     <h3 class="text-center my-5">Customer List</h3>
-
-
-    <div class="container">
-        <div id="customerInfosContainer">
-            @if (!Model.CustomerNames.Any())
-            {<div class="Adult">
-                    <h6 class="mb-3">Customer No.1</h6>
+    <div id="customerinfos-container" class="container">
+        @if (!Model.CustomerNames.Any())
+        {
+            <div>
+                <h6 class="mb-3">Customer No.1</h6>
+                <div class="row">
+                    <div class="form-group col-md-3 mb-3">
+                        <label for="Name_1">Name</label>
+                        <input asp-for="CustomerNames" value="" id="Name_1" class="form-control" required>
+                    </div>
+                    <div class="form-group col-md-3 mb-3">
+                        <label for="Sex_1">Sex</label>
+                        <select id="Sex_1" name="@(nameof(Model.CustomerSexes))" asp-items="@Html.GetEnumSelectList<CustomerInfo.CustomerSex>()" class="form-control" required></select>
+                    </div>
+                    <div class="form-group col-md-3 mb-3">
+                        <label for="DOB_1">Date of birth</label>
+                        <input onfocusout="onDobUpdated('Adult', this)" id="DOB_1" asp-for="CustomerDobs" class="form-control" type="date" required />
+                    </div>
+                    <div class="form-group col-md-3 mb-3">
+                        <label for="AG_1">Age Group</label>
+                        <select disabled id="AG_1" name="@(nameof(Model.CustomerAgeGroups))" class="form-control" asp-items="@Html.GetEnumSelectList<CustomerInfo.CustomerAgeGroup>()">
+                        </select>
+                    </div>
+                </div>
+                <p class="text-right">Price: <span class="Price_Item text-danger font-weight-bold">@Model.Trip.GetSalePriceFor(CustomerInfo.CustomerAgeGroup.Adult).ToCurrencyString()</span></p>
+                <hr />
+            </div>
+        }
+        else
+        {
+            @for (int i = 1; i <= Model.CustomerNames.Length; i++)
+            {
+                <div>
+                    <h6 class="mb-3">Customer No.@i</h6>
                     <div class="row">
                         <div class="form-group col-md-3 mb-3">
-                            <label for="Name_1">Name</label>
-                            <input value="@Model.Customer.Name" asp-for="CustomerNames" id="Name_1" class="form-control" required>
+                            <label for="Name_@i">Name</label>
+                            <input value="@Model.CustomerNames[i - 1]" asp-for="CustomerNames" id="Name_@i" class="form-control" required>
                         </div>
                         <div class="form-group col-md-3 mb-3">
-                            <label for="Sex_1">Sex</label>
-                            <select id="Sex_1" name="@(nameof(Model.CustomerSexes))" asp-items="@Html.GetEnumSelectList<CustomerInfo.CustomerSex>()" class="form-control" required></select>
+                            <label for="Sex_@i">Sex</label>
+                            <select id="Sex_@i" name="@(nameof(Model.CustomerSexes))" class="form-control" required>
+                                @foreach (CustomerInfo.CustomerSex sex in Enum.GetValues(typeof(CustomerInfo.CustomerSex)))
+                                {
+                                    <option selected="@(Model.CustomerSexes[i - 1] == sex)" value="@((int)sex)">@sex</option>
+                                }
+                            </select>
                         </div>
                         <div class="form-group col-md-3 mb-3">
-                            <label for="DOB_1">Date of birth</label>
-                            <input onfocusout="onDobUpdated('Adult', this)" value="@Model.Customer.DOB" id="DOB_1" asp-for="CustomerDobs" class="form-control" type="date" required />
+                            <label for="DOB_@i">Date of birth</label>
+                            <input onfocusout="onDobUpdated('@Model.CustomerAgeGroups[i - 1]', this)" id="DOB_@i" asp-for="CustomerDobs" class="form-control" type="date" required />
                         </div>
                         <div class="form-group col-md-3 mb-3">
-                            <label for="AG_1">Age Group</label>
-                            <select disabled id="AG_1" name="@(nameof(Model.CustomerAgeGroups))" class="form-control" asp-items="@Html.GetEnumSelectList<CustomerInfo.CustomerAgeGroup>()">
+                            <label for="AG_@i">Age Group</label>
+                            <select disabled id="AG_@i" name="@(nameof(Model.CustomerAgeGroups))" class="form-control">
+                                <option value="@((int)Model.CustomerAgeGroups[i - 1])">@Model.CustomerAgeGroups[i - 1]</option>
                             </select>
                         </div>
                     </div>
-                    <p class="text-right">Price: <span class="Price_Item text-danger font-weight-bold">@Model.Trip.GetSalePriceFor(CustomerInfo.CustomerAgeGroup.Adult).ToCurrencyString()</span></p>
+                    <p class="text-right">Price: <span class="Price_Item text-danger font-weight-bold">@Model.SalePrices[i - 1].ToCurrencyString()</span></p>
                     <hr />
                 </div>
             }
-            else
-            {
-                @for (int i = 0; i < Model.CustomerNames.Length; i++)
-                {
-                    <div>
-                        <h6 class="mb-3">Customer No.@(i + 1)</h6>
-                        <div class="row">
-                            <div class="form-group col-md-3 mb-3">
-                                <label for="Name_@(i + 1)">Name</label>
-                                <input value="@Model.CustomerNames[i]" asp-for="CustomerNames" id="Name_@(i + 1)" class="form-control" required>
-                            </div>
-                            <div class="form-group col-md-3 mb-3">
-                                <label for="Sex_@(i + 1)">Sex</label>
-                                <select id="Sex_@(i + 1)" name="CustomerSexes" class="form-control">
-                                    @foreach (CustomerInfo.CustomerSex sex in Enum.GetValues(typeof(CustomerInfo.CustomerSex)))
-                                    {
-                                        <option selected="@(sex == Model.CustomerSexes[i])" value="@((int)sex)">@sex</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="form-group col-md-3 mb-3">
-                                <label for="DOB_@(i + 1)">Date of birth</label>
-                                <input onfocusout="onDobUpdated('Adult', this)" value="@Model.CustomerDobs[i]" id="DOB_@(i + 1)" asp-for="CustomerDobs" class="form-control" type="date" required />
-                            </div>
-                            <div class="form-group col-md-3 mb-3">
-                                <label for="AG_@(i + 1)">Age Group</label>
-                                <select disabled id="AG_@(i + 1)" name="CustomerAgeGroups" class="form-control">
-                                    @foreach (CustomerInfo.CustomerAgeGroup ag in Enum.GetValues(typeof(CustomerInfo.CustomerAgeGroup)))
-                                    {
-                                        <option selected="@(ag == Model.CustomerAgeGroups[i])" value="@((int)ag)">@ag</option>
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                        <p class="text-right">Price: <span class="Price_Item text-danger font-weight-bold">@Model.Trip.GetSalePrice().ToCurrencyString()</span></p>
-                        <hr />
-                    </div>
-                }
-            }
+        }
+
+        <h4 class="text-right">Total: <span id="PriceTotal" class="text-danger font-weight-bold">@Model.Total.ToCurrencyString()</span></h4>
+        <div id="apply-container"></div>
+        <div class="form-group">
+            <input id="ApplyPoints" onchange="toggleApplyPoints(this, this.checked)" asp-for="@Model.ApplyPoints" />
+            <label asp-for="@Model.ApplyPoints">Use Reward Points (<span id="apply-amount">@Model.ApplyAmount</span> applicable)</label>
         </div>
-        <h4 class="text-right">Total: <span id="Price_Total" class="text-danger font-weight-bold">@Model.Total.ToCurrencyString()</span></h4>
     </div>
 
     <h3 class="text-center my-5">Terms and Conditions</h3>
-
-    <div class="container bg-light-primary p-5 overflow-auto" style="height: 30rem;">
-        <div style="text-align: center;">
-            <span style="font-size:18px;"><strong>ĐIỀU KIỆN BÁN VÉ CHƯƠNG TRÌNH DU LỊCH (TOUR) XUYÊN VIỆT</strong></span>
-        </div>
-        <div style="text-align: center;">
-            &nbsp;
-        </div>
-        <div>
-            <strong>I. GIÁ VÉ DU LỊCH</strong>
-        </div>
-        <div>
-            Giá vé du lịch được tính theo tiền Đồng (Việt Nam - VNĐ). Trường hợp khách thanh toán bằng USD sẽ được quy đổi ra VNĐ theo tỉ giá của Ngân hàng Đầu tư và Phát triển Việt Nam - Chi nhánh TP.HCM tại thời điểm thanh toán.
-        </div>
-        <div>
-            Giá vé chỉ bao gồm những khoản được liệt kê một cách rõ ràng trong phần “Bao gồm” trong các chương trình du lịch. Khách hàng sẽ thanh toán các chi phí không nằm trong phần “Bao gồm”.
-        </div>
-        <div>
-            &nbsp;
-        </div>
-        <div>
-            <strong>II. CÁC ĐỊNH NGHĨA</strong>
-        </div>
-        <div>
-            *Tour Xuyên Việt “Tôi yêu Việt Nam” là tour lấy cảm hứng từ “Con đường Cái Quan xưa” đi từ Ải Nam Quan đến Mũi Cà Mau, được Vietravel thực hiện theo trục đường Quốc lộ 1A để du khách có thể cảm nhận trọn vẹn Việt Nam tươi đẹp dọc chiều dài đất nước.
-        </div>
-        <div>
-            &nbsp;
-        </div>
-        <div>
-            *Tour Trục: 07 sản phẩm chính theo các hướng từ bắc đến nam hoặc ngược lại từ nam ra bắc, đi qua 07 trạm điều phối chính của vietravel gồm: Hà Nội, Vinh, Huế, Quy Nhơn, Nha Trang, Tp.Hồ Chí Minh Và Cần Thơ.
-        </div>
-        <div>
-            &nbsp;
-        </div>
-        <div>
-            *Tour Nan hoa: Các sản phẩm tại điểm đến là 07 trạm điều phối của Vietravel. Du khách mua tour hành trình xuyên Việt có thể lựa chọn thêm sản phẩm tại điểm đến để khám phá thêm những nét đẹp văn hóa lịch sử tại đây trước khi tiếp tục hành trình xuyên Việt.
-        </div>
-        <div>
-            &nbsp;
-        </div>
-        <div>
-            <strong>III. GIÁ DÀNH CHO TRẺ EM</strong>
-        </div>
-        <div>
-            - Trẻ em dưới 5 tuổi:&nbsp; không thu phí dịch vụ, bố mẹ tự lo cho bé và thanh toán các chi phí phát sinh (đối với các dịch vụ tính phí theo chiều cao…). Hai người lớn chỉ được kèm 1 trẻ em dưới 5 tuổi, trẻ em thứ 2 sẽ đóng phí theo qui định dành cho độ tuổi từ 5 đến dưới 12 tuổi và phụ thu phòng đơn. Vé máy bay, tàu hỏa, phương tiện vận chuyển công cộng mua vé theo qui định của các đơn vị vận chuyển (nếu có)&nbsp;
-        </div>
-        <div>
-            - Trẻ em từ 5 tuổi đến dưới 12 tuổi:&nbsp; 50% giá tour người lớn đối với tuyến xe, 75% giá tour người lớn đối với tuyến có vé máy bay (không có chế độ giường riêng). Hai người lớn chỉ được kèm 1 trẻ em từ 5 - dưới 12 tuổi, em thứ hai trở lên phải mua 1 suất giường đơn.
-        </div>
-        <div>
-            Giá dành cho trẻ em có thể sẽ thay đổi vào thời điểm Quý khách xác nhận tham gia hành trình tour (*).
-        </div>
-        <div>
-            - Trẻ em từ 12 tuổi trở lên: mua một vé như người lớn.
-        </div>
-        <div>
-            &nbsp;
-        </div>
-        <div>
-            <strong>IV. THANH TOÁN</strong>
-        </div>
-        <div>
-            Khi thanh toán, Quý khách vui lòng cung cấp đầy đủ thông tin và đặt cọc ít nhất 50% tổng số tiền tour để giữ chỗ, số tiền còn lại Quý khách sẽ thanh toán trước ngày khởi hành 05 ngày làm việc (tour ngày thường) và trước 10 ngày làm việc (tour dịp Lễ, Tết)”.
-        </div>
-        <div>
-            &nbsp;
-        </div>
-        <div>
-            <span style="color:#0000ff;">Thanh toán bằng tiền mặt hoặc chuyển khoản tới tài khoản ngân hàng của Vietravel.</span>
-        </div>
-        <div>
-            <span style="color:#0000ff;">Tên tài khoản: VIETRAVEL</span>
-        </div>
-        <div>
-            <span style="color:#0000ff;">Ngân hàng:<span style="white-space:pre"> </span>Ngoại Thương Việt Nam – Chi nhánh TPHCM</span>
-        </div>
-        <div>
-            <span style="color:#0000ff;">Tài khoản:<span style="white-space:pre"> </span>VNĐ: 007 100 115 1480</span>
-        </div>
-        <div>
-            &nbsp;
-        </div>
-        <div>
-            Việc thanh toán được xem là hoàn tất khi Vietravel nhận được đủ tiền vé du lịch trước lúc khởi hành hoặc theo hợp đồng thỏa thuận giữa hai bên. Bất kỳ mọi sự thanh toán chậm trễ dẫn đến việc hủy dịch vụ không thuộc trách nhiệm của Vietravel.
-        </div>
-        <div>
-            &nbsp;
-        </div>
-        <div>
-            Khách hàng có nhu cầu xuất hóa đơn, vui lòng cung cấp thông tin xuất hóa đơn ngay tại thời điểm đăng ký. Vietravel có trách nhiệm xuất hóa đơn cho khách hàng trong vòng 7 ngày sau khi tour kết thúc.
-        </div>
-        <div>
-            &nbsp;
-        </div>
-        <div>
-            <strong>DÀNH CHO KHÁCH HÀNG ĐĂNG KÝ TRÊN TRANG WWW.TRAVEL.COM.VN THANH TOÁN CHUYỂN KHOẢN:</strong>
-        </div>
-        <div>
-            Khi thực hiện việc chuyển khoản, Quý khách vui lòng ghi rõ Tên họ, Số điện thoại và Nội dung chuyển cho chương trình du lịch cụ thể đã được Quý khách chọn đăng ký. Sau khi thực hiện việc chuyển khoản, Quý khách vui lòng gửi Ủy Nhiệm Chi về công ty Vietravel theo địa chỉ email sales@vietravel.com và liên hệ với nhân viên phụ trách tuyến để nhận được Vé du lịch chính thức từ công ty Vietravel. Vietravel sẽ không giải quyết các trường hợp hệ thống tự động hủy phiếu đăng ký nếu Quý khách không thực hiện đúng qui định trên.
-        </div>
-        <div>
-            &nbsp;
-        </div>
-        <div>
-            <strong>V. ĐIỀU KIỆN SỬ DỤNG VÉ DU LỊCH CỦA TOUR XUYÊN VIỆT:&nbsp;</strong>
-        </div>
-        <div>
-            -Vé du lịch Xuyên Việt có hiệu lực 3 năm tính từ ngày in Vé và ngày khởi hành phải thực hiện trước khi Vé du lịch hết hạn. Mỗi Vé du lịch được áp dụng cho một (01) khách đi tour.
-        </div>
-        <div>
-            -Vé du lịch tour Xuyên Việt chưa sử dụng hoặc chỉ sử dụng một phần sẽ không có giá trị quy đổi thành tiền mặt hoặc các hình thức thanh toán khác.
-        </div>
-        <div>
-            -Quý khách vui lòng đăng ký ngày bắt đầu hành trình Xuyên Việt hoặc ngày tái xuất hành trước ngày khởi hành ít nhất: 05 ngày làm việc đối với ngày thường; hoặc ít nhất 15 ngày làm việc đối với ngày Lễ, Tết. Việc xác nhận tham gia tour phụ thuộc vào tình trạng chổ trống tại thời điểm đăng ký. Quý khách nên đăng ký sớm để có nhiều sự lựa chọn hơn.
-        </div>
-        <div>
-            -Quý khách đang mang thai vui lòng báo cho nhân viên bán tour ngay tại thời điểm đăng ký. Công ty sẽ thực hiện chính sách bảo lưu để quý khách sử dụng sau khi sinh, thời điểm sức khỏe tốt. Trường hợp khách có thai nhưng không thông báo/hoặc vẫn quyết định đi tour thì cam kết tự trách nhiệm đối với các vấn đề xảy ra (nếu có), bao gồm nhưng không giới hạn việc Hàng không từ chối không cho lên máy bay hoặc bất kỳ sự cố nào khác liên quan đến vấn đề sức khỏe trong suốt hành trình tour.
-        </div>
-        <div>
-            &nbsp;
-        </div>
-        <div>
-            <strong>VI. ĐIỀU KIỆN BẢO LƯU MỘT PHẦN TOUR XUYÊN VIỆT SAU KHI TOUR ĐÃ KHỞI HÀNH:&nbsp;</strong>
-        </div>
-        <div>
-            <strong>(KHÔNG ÁP DỤNG NGÀY LỄ, TẾT VÀ CUỐI TUẦN)</strong>
-        </div>
-        <div>
-            -Quý khách thông báo trước 5 ngày so với ngày thực hiện trạm kế tiếp: không mất chi phí
-        </div>
-        <div>
-            -Quý khách thông báo trước 3 ngày so với ngày thực hiện trạm kế tiếp: 50% phí dịch vụ trạm kế tiếp
-        </div>
-        <div>
-            -Quý khách thông báo dưới 3 ngày so với ngày thực hiện trạm kế tiếp: 100% phí dịch vụ trạm kế tiếp.
-        </div>
-        <div>
-            &nbsp;
-        </div>
-        <div>
-            <strong>VII. ĐIỀU KIỆN HUỶ VÉ DU LỊCH</strong>
-        </div>
-        <div>
-            1. Lưu ý:
-        </div>
-        <div>
-            -Trong thời gian Vé du lịch Xuyên Việt còn hiệu lực, nếu Quý khách chưa chọn được ngày bắt đầu hành trình hoặc ngày tái xuất hành cũng sẽ không được phép yêu cầu hoàn, huỷ. Tuy nhiên, nếu chưa bắt đầu hành trình Xuyên Việt thì Quý khách có thể chuyển nhượng sang người khác. Người chuyển nhượng và người được chuyển nhượng đều xem như không hoàn thành tour Xuyên Việt, đồng nghĩa với các quà tặng theo tour và các khuyến mãi khác sẽ được thu hồi hoặc thu phí tương đương giá trị quà tặng nếu Quý khách đã sử dụng.
-        </div>
-        <div>
-            - Sau khi xác nhận tham gia tour, nếu Quý khách muốn chuyển/huỷ tour xin vui lòng mang Vé Du Lịch cùng Biên nhận đến văn phòng đăng ký tour để làm thủ tục chuyển/huỷ tour và chịu mất phí theo quy định của Vietravel. Quý khách xác nhận chuyển sang các tuyến du lịch khác (không phải tour Xuyên Việt) hoặc huỷ tour đồng nghĩa với các quà tặng theo tour và các khuyến mãi khác sẽ được thu hồi hoặc thu phí tương đương giá trị quà tặng nếu Quý khách đã sử dụng.
-        </div>
-        <div>
-            2. Các điều kiện Chuyển, Huỷ tour sau khi xác nhận tham gia tour: (đối với ngày thường)
-        </div>
-        <div>
-            -&nbsp; Nếu báo hủy/chuyển sang các tuyến du lịch khác trước ngày khởi hành ít nhất 20 ngày: Không mất phí.
-        </div>
-        <div>
-            -&nbsp; Nếu báo hủy hoặc chuyển sang các tuyến du lịch khác từ 15-19 ngày trước ngày khởi hành, chi phí hủy/chuyển tour: 100% tiền cọc tour.
-        </div>
-        <div>
-            -&nbsp; Nếu báo hủy chuyến du lịch trong vòng từ 11-14 ngày trước ngày khởi hành, chi phí hủy tour: 70% trên giá tour du lịch.
-        </div>
-        <div>
-            -&nbsp; Nếu báo hủy chuyến du lịch trong vòng từ 06-10 ngày trước ngày khởi hành, chi phí hủy tour: 90% trên giá tour du lịch.
-        </div>
-        <div>
-            -&nbsp; Nếu báo hủy chuyến du lịch trong vòng 05 ngày trước ngày khởi hành, chi phí hủy tour: 100% trên giá tour du lịch.
-        </div>
-        <div>
-            Các điều kiện Chuyển, Huỷ tour sau khi xác nhận tham gia tour: (đối với ngày lễ, Tết. Áp dụng cho các tour có thời gian diễn ra rơi vào một trong các ngày Lễ, Tết theo qui định)&nbsp;
-        </div>
-        <div>
-            -&nbsp; Nếu báo hủy/chuyển sang các tuyến du lịch khác trước ngày khởi hành ít nhất 30 ngày: Không mất chi phí.
-        </div>
-        <div>
-            -&nbsp; Nếu báo hủy hoặc chuyển sang các tuyến du lịch khác từ 25-29 ngày trước ngày khởi hành, chi phí hủy/chuyển tour: 100% tiền cọc tour.
-        </div>
-        <div>
-            -&nbsp; Nếu báo hủy chuyến du lịch trong vòng từ 21-24 ngày trước ngày khởi hành, chi phí hủy tour: 70% trên giá tour du lịch.
-        </div>
-        <div>
-            -&nbsp; Nếu báo hủy chuyến du lịch trong vòng từ 16-20 ngày trước ngày khởi hành, chi phí hủy tour: 90% trên giá tour du lịch.
-        </div>
-        <div>
-            -&nbsp; Nếu báo hủy chuyến du lịch trong vòng 15 ngày trước ngày khởi hành, chi phí hủy tour: 100% trên giá tour du lịch.
-        </div>
-        <div>
-            Nếu Quý khách Chuyển, Huỷ một (01) hoặc nhiều (tối đa 05) chặng trong hành trình Tour Xuyên Việt thì chi phí huỷ tour sẽ được tính trên giá bán lẻ của từng tour trục cộng gộp lại. Giá tour trục được niêm yết trên website travel.com.vn
-        </div>
-        <div>
-            Thời gian hủy chuyến du lịch được tính cho ngày làm việc, không tính thứ 7, Chủ Nhật và các ngày Lễ, Tết.
-        </div>
-        <div>
-            &nbsp;
-        </div>
-        <div>
-            <strong>DÀNH CHO KHÁCH HÀNG ĐĂNG KÝ TRÊN TRANG WWW.TRAVEL.COM.VN THANH TOÁN TRỰC TUYẾN:</strong>
-        </div>
-        <div>
-            Khách hàng hủy Vé du lịch trong thời điểm ngày Thường và Lễ Tết theo đúng những qui định trên, trong trường hợp khách thanh toán trực tuyến, nếu hủy Vé du lịch khách hàng sẽ chịu toàn bộ phí ngân hàng cho việc thanh toán tiền Vé du lịch. Việc hoàn trả tiền cho khách sẽ được Vietravel thực hiện ngay sau khi ngân hàng thông báo tiền đã vào tài khoản của Vietravel.&nbsp;
-        </div>
-        <div>
-            3.&nbsp; &nbsp;Trường hợp bất khả kháng:
-        </div>
-        <div>
-            Nếu chương trình du lịch, dịch vụ lẻ mua kèm bị hủy bỏ hoặc thay đổi bởi một trong hai bên vì một lý do bất khả kháng (hỏa hoạn, thời tiết, tai nạn, thiên tai, chiến tranh, dịch bệnh, hoãn, dời, hủy chuyến hoặc thay đổi khác của các phương tiện vận chuyển công cộng hoặc các sự kiến bất khả kháng khác theo quy định pháp luật…), thì Vietravel sẽ không chịu bất kỳ nghĩa vụ bồi hoàn các tổn thất đã xảy ra và không chịu bất kỳ trách nhiệm pháp lý nào. Tuy nhiên mỗi bên có trách nhiệm cố gắng tối đa để giúp đỡ bên bị thiệt hại nhằm giảm thiểu các tổn thất gây ra vì lý do bất khả kháng.&nbsp;Thời gian hoàn tiền dịch vụ do hủy tour vì trường hợp bất khả kháng sẽ được hoàn tất trong vòng 60 – 90 ngày phụ thuộc điều kiện các đối tác cung ứng dịch vụ.
-        </div>
-        <div>
-            4.&nbsp; &nbsp; Thay đổi lộ trình:&nbsp;&nbsp;
-        </div>
-        <div>
-            Tùy theo tình hình thực tế, Vietravel giữ quyền thay đổi lộ trình, sắp xếp lại thứ tự các điểm tham quan hoặc hủy bỏ chuyến đi du lịch bất cứ lúc nào mà Vietravel thấy cần thiết vì sự thuận tiện hoặc an toàn cho khách hàng.
-        </div>
-        <div>
-            &nbsp;
-        </div>
-        <div>
-            <strong>VIII.&nbsp; &nbsp;NHỮNG YÊU CẦU ĐẶC BIỆT TRONG CHUYẾN DU LỊCH</strong>
-        </div>
-        <div>
-            Các yêu cầu đặc biệt của Quý khách phải được báo trước cho Vietravel ngay tại thời điểm đăng ký. Vietravel sẽ cố gắng đáp ứng những yêu cầu này trong khả năng của mình song sẽ không chịu trách nhiệm về bất kỳ sự từ chối cung cấp dịch vụ từ phía các nhà vận chuyển, khách sạn, nhà hàng và các nhà cung cấp dịch vụ độc lập khác.
-        </div>
-        <div>
-            &nbsp;
-        </div>
-        <div>
-            <strong>IX.&nbsp; &nbsp;KHÁCH SẠN</strong>
-        </div>
-        <div>
-            Khách sạn được cung cấp trên cơ sở những phòng có hai giường đơn (TWN) hoặc một giường đôi (DBL) tùy theo cơ cấu phòng của các khách sạn. Khách sạn do Vietravel đặt cho các chương trình tham quan có tiêu chuẩn tương ứng với các mức giá vé mà khách chọn khi đăng ký đi du lịch. Nếu cần thiết thay đổi về bất kỳ lý do nào, khách sạn thay thế sẽ tương đương với tiêu chuẩn của khách sạn ban đầu và sẽ được báo cho du khách trước khi khởi hành. Những yêu cầu đặc biệt của khách hàng nếu thông báo trước cho Vietravel sẽ được đáp ứng tùy theo khả năng cung cấp của khách sạn và khách hàng phải trả thêm tiền đối với các yêu cầu này (nếu có). Vietravel có quyền không đáp ứng những yêu cầu này nếu khách sạn từ chối cung cấp dịch vụ. Thời gian nhận phòng theo qui định tại các khách sạn là sau 14:00 và phải trả phòng trước 12:00. Đối với các trường hợp khách lưu trú tại hệ thống khách sạn/Resort 5 sao (Vinpearl, FLC, Grand Ho Tram Strip…) tuân thủ theo điều kiện hủy phạt của khách sạn/Resort cho từng thời điểm.
-        </div>
-        <div>
-            &nbsp;
-        </div>
-        <div>
-            <strong>X.&nbsp; &nbsp;VẬN CHUYỂN</strong>
-        </div>
-        <div>
-            Phương tiện vận chuyển tùy thuộc theo từng chương trình du lịch.
-        </div>
-        <div>
-            Với chương trình đi bằng xe: xe máy lạnh (4, 7, 15, 25, 35, 45 chỗ) sẽ được Vietravel sắp xếp tùy theo số lượng khách từng đoàn, phục vụ suốt chương trình tham quan.
-        </div>
-        <div>
-            Với chương trình đi bằng xe lửa - máy bay - tàu cánh ngầm (phương tiện vận chuyển công cộng), trong một số chương trình các nhà cung cấp dịch vụ có thể thay đổi giờ khởi hành mà không báo trước, việc thay đổi này sẽ được Vietravel thông báo cho khách hàng nếu thời gian cho phép.&nbsp;
-        </div>
-        <div>
-            Vietravel không chịu trách nhiệm bồi hoàn và trách nhiệm pháp lý với những thiệt hại về vật chất lẫn tinh thần do việc chậm trễ, thay đổi giờ giấc khởi hành của các phương tiện vận chuyển công cộng hoặc sự chậm trễ do chính hành khách gây ra. Vietravel chỉ thực hiện hành vi giúp đỡ để giảm bớt tổn thất cho hành khách.
-        </div>
-        <div>
-            &nbsp;
-        </div>
-        <div>
-            <strong>XI. HÀNH LÝ</strong>
-        </div>
-        <div>
-            Hành lý gửi vào hầm xe được phép tối đa: 01 kiện lớn 20kg/khách + 01 kiện nhỏ không quá 12kg/khách.&nbsp;
-        </div>
-        <div>
-            Đối với các chương trình sử dụng dịch vụ hàng không, hành lý miễn cước sẽ do các hãng hàng không qui định. Vietravel không chịu trách nhiệm về sự thất lạc, hư hỏng hành lý hoặc bất kỳ vật dụng gì của du khách trong suốt chuyến đi, du khách tự bảo quản hành lý của mình. Nếu khách hàng bị mất hay thất lạc hành lý thì Vietravel sẽ giúp hành khách liên lạc và khai báo với các bộ phận liên quan truy tìm hành lý bị mất hay thất lạc. Việc bồi thường hành lý bị mất hay thất lạc sẽ theo qui định của các đơn vị cung cấp dịch vụ hoặc các đơn vị bảo hiểm (nếu có).
-        </div>
-        <div>
-            &nbsp;
-        </div>
-        <div>
-            <strong>XII.&nbsp; &nbsp;BẢO HIỂM DU LỊCH</strong>
-        </div>
-        <div>
-            Giá dịch vụ du lịch trọn gói đã bao gồm bảo hiểm du lịch trong nước với mức đền bù cao nhất là 120.000.000đ/khách Việt Nam/vụ cho nhân mạng và 12.000.000 VNĐ/khách Việt Nam/vụ cho hành lý .
-        </div>
-        <div>
-            Điều kiện, điều khoản bảo hiểm: Theo quy tắc bảo hiểm khách du lịch trong nước QĐ số: 001321/2006 – BM/BHCN.
-        </div>
-        <div>
-            Số hotline tư vấn về các điều kiện, điều khoản bảo hiểm 0938 30 1234
-        </div>
-        <div>
-            &nbsp;
-        </div>
-        <div>
-            * Vé du lịch cùng các văn bản kèm theo (Biên nhận tour, Chương trình tour) được xem như là bộ Hợp đồng lữ hành có giá trị ràng buộc với các bên và được lập thành 2 bản, mỗi bên giữ một bản, có giá trị pháp lý như nhau. Do tính chất tour dành cho Khách lẻ (Cá nhân / Nhóm gia đình) nên Khách hàng (người đăng ký và người đi cùng nhóm) được coi là chấp thuận toàn bộ nội dung trong Vé du lịch và các văn bản kèm theo kể từ thời điểm đặt cọc, không phụ thuộc vào việc khách hàng có ký tên trên Vé du lịch, Biên nhận tour hay Chương trình tour hay không.
-        </div>
-        <div>
-            Trong quá trình thực hiện, nếu xảy ra tranh chấp sẽ được giải quyết trên cơ sở thương lượng trong thời hạn 30 ngày kể từ ngày một trong hai bên đưa tranh chấp ra thương lượng. Hết thời hạn này nếu tranh chấp không được giải quyết hoặc một trong hai bên không đồng ý với kết quả thương lượng thì có quyền đưa tranh chấp ra giải quyết tại Tòa án thẩm quyền.
-        </div>
-        <div>
-            &nbsp;
-        </div>
-        <div>
-            <span style="color:#ff0000;">(*) Trẻ em tại thời điểm đăng ký tham gia tour nếu đã 12 tuổi (tính từ ngày sinh đến ngày bắt đầu tour) sẽ phải thanh toán phụ thu 50% giá trị của người lớn.</span>
-        </div>
-        <div>
-            &nbsp;
+    <div class="container">
+        <div class="bg-light-primary p-5 overflow-auto" style="height: 30rem;">
+            <div style="text-align: center;">
+                <span style="font-size:18px;"><strong>ĐIỀU KIỆN BÁN VÉ CHƯƠNG TRÌNH DU LỊCH (TOUR) XUYÊN VIỆT</strong></span>
+            </div>
+            <div style="text-align: center;">
+                &nbsp;
+            </div>
+            <div>
+                <strong>I. GIÁ VÉ DU LỊCH</strong>
+            </div>
+            <div>
+                Giá vé du lịch được tính theo tiền Đồng (Việt Nam - VNĐ). Trường hợp khách thanh toán bằng USD sẽ được quy đổi ra VNĐ theo tỉ giá của Ngân hàng Đầu tư và Phát triển Việt Nam - Chi nhánh TP.HCM tại thời điểm thanh toán.
+            </div>
+            <div>
+                Giá vé chỉ bao gồm những khoản được liệt kê một cách rõ ràng trong phần “Bao gồm” trong các chương trình du lịch. Khách hàng sẽ thanh toán các chi phí không nằm trong phần “Bao gồm”.
+            </div>
+            <div>
+                &nbsp;
+            </div>
+            <div>
+                <strong>II. CÁC ĐỊNH NGHĨA</strong>
+            </div>
+            <div>
+                *Tour Xuyên Việt “Tôi yêu Việt Nam” là tour lấy cảm hứng từ “Con đường Cái Quan xưa” đi từ Ải Nam Quan đến Mũi Cà Mau, được Vietravel thực hiện theo trục đường Quốc lộ 1A để du khách có thể cảm nhận trọn vẹn Việt Nam tươi đẹp dọc chiều dài đất nước.
+            </div>
+            <div>
+                &nbsp;
+            </div>
+            <div>
+                *Tour Trục: 07 sản phẩm chính theo các hướng từ bắc đến nam hoặc ngược lại từ nam ra bắc, đi qua 07 trạm điều phối chính của vietravel gồm: Hà Nội, Vinh, Huế, Quy Nhơn, Nha Trang, Tp.Hồ Chí Minh Và Cần Thơ.
+            </div>
+            <div>
+                &nbsp;
+            </div>
+            <div>
+                *Tour Nan hoa: Các sản phẩm tại điểm đến là 07 trạm điều phối của Vietravel. Du khách mua tour hành trình xuyên Việt có thể lựa chọn thêm sản phẩm tại điểm đến để khám phá thêm những nét đẹp văn hóa lịch sử tại đây trước khi tiếp tục hành trình xuyên Việt.
+            </div>
+            <div>
+                &nbsp;
+            </div>
+            <div>
+                <strong>III. GIÁ DÀNH CHO TRẺ EM</strong>
+            </div>
+            <div>
+                - Trẻ em dưới 5 tuổi:&nbsp; không thu phí dịch vụ, bố mẹ tự lo cho bé và thanh toán các chi phí phát sinh (đối với các dịch vụ tính phí theo chiều cao…). Hai người lớn chỉ được kèm 1 trẻ em dưới 5 tuổi, trẻ em thứ 2 sẽ đóng phí theo qui định dành cho độ tuổi từ 5 đến dưới 12 tuổi và phụ thu phòng đơn. Vé máy bay, tàu hỏa, phương tiện vận chuyển công cộng mua vé theo qui định của các đơn vị vận chuyển (nếu có)&nbsp;
+            </div>
+            <div>
+                - Trẻ em từ 5 tuổi đến dưới 12 tuổi:&nbsp; 50% giá tour người lớn đối với tuyến xe, 75% giá tour người lớn đối với tuyến có vé máy bay (không có chế độ giường riêng). Hai người lớn chỉ được kèm 1 trẻ em từ 5 - dưới 12 tuổi, em thứ hai trở lên phải mua 1 suất giường đơn.
+            </div>
+            <div>
+                Giá dành cho trẻ em có thể sẽ thay đổi vào thời điểm Quý khách xác nhận tham gia hành trình tour (*).
+            </div>
+            <div>
+                - Trẻ em từ 12 tuổi trở lên: mua một vé như người lớn.
+            </div>
+            <div>
+                &nbsp;
+            </div>
+            <div>
+                <strong>IV. THANH TOÁN</strong>
+            </div>
+            <div>
+                Khi thanh toán, Quý khách vui lòng cung cấp đầy đủ thông tin và đặt cọc ít nhất 50% tổng số tiền tour để giữ chỗ, số tiền còn lại Quý khách sẽ thanh toán trước ngày khởi hành 05 ngày làm việc (tour ngày thường) và trước 10 ngày làm việc (tour dịp Lễ, Tết)”.
+            </div>
+            <div>
+                &nbsp;
+            </div>
+            <div>
+                <span style="color:#0000ff;">Thanh toán bằng tiền mặt hoặc chuyển khoản tới tài khoản ngân hàng của Vietravel.</span>
+            </div>
+            <div>
+                <span style="color:#0000ff;">Tên tài khoản: VIETRAVEL</span>
+            </div>
+            <div>
+                <span style="color:#0000ff;">Ngân hàng:<span style="white-space:pre"> </span>Ngoại Thương Việt Nam – Chi nhánh TPHCM</span>
+            </div>
+            <div>
+                <span style="color:#0000ff;">Tài khoản:<span style="white-space:pre"> </span>VNĐ: 007 100 115 1480</span>
+            </div>
+            <div>
+                &nbsp;
+            </div>
+            <div>
+                Việc thanh toán được xem là hoàn tất khi Vietravel nhận được đủ tiền vé du lịch trước lúc khởi hành hoặc theo hợp đồng thỏa thuận giữa hai bên. Bất kỳ mọi sự thanh toán chậm trễ dẫn đến việc hủy dịch vụ không thuộc trách nhiệm của Vietravel.
+            </div>
+            <div>
+                &nbsp;
+            </div>
+            <div>
+                Khách hàng có nhu cầu xuất hóa đơn, vui lòng cung cấp thông tin xuất hóa đơn ngay tại thời điểm đăng ký. Vietravel có trách nhiệm xuất hóa đơn cho khách hàng trong vòng 7 ngày sau khi tour kết thúc.
+            </div>
+            <div>
+                &nbsp;
+            </div>
+            <div>
+                <strong>DÀNH CHO KHÁCH HÀNG ĐĂNG KÝ TRÊN TRANG WWW.TRAVEL.COM.VN THANH TOÁN CHUYỂN KHOẢN:</strong>
+            </div>
+            <div>
+                Khi thực hiện việc chuyển khoản, Quý khách vui lòng ghi rõ Tên họ, Số điện thoại và Nội dung chuyển cho chương trình du lịch cụ thể đã được Quý khách chọn đăng ký. Sau khi thực hiện việc chuyển khoản, Quý khách vui lòng gửi Ủy Nhiệm Chi về công ty Vietravel theo địa chỉ email sales@vietravel.com và liên hệ với nhân viên phụ trách tuyến để nhận được Vé du lịch chính thức từ công ty Vietravel. Vietravel sẽ không giải quyết các trường hợp hệ thống tự động hủy phiếu đăng ký nếu Quý khách không thực hiện đúng qui định trên.
+            </div>
+            <div>
+                &nbsp;
+            </div>
+            <div>
+                <strong>V. ĐIỀU KIỆN SỬ DỤNG VÉ DU LỊCH CỦA TOUR XUYÊN VIỆT:&nbsp;</strong>
+            </div>
+            <div>
+                -Vé du lịch Xuyên Việt có hiệu lực 3 năm tính từ ngày in Vé và ngày khởi hành phải thực hiện trước khi Vé du lịch hết hạn. Mỗi Vé du lịch được áp dụng cho một (01) khách đi tour.
+            </div>
+            <div>
+                -Vé du lịch tour Xuyên Việt chưa sử dụng hoặc chỉ sử dụng một phần sẽ không có giá trị quy đổi thành tiền mặt hoặc các hình thức thanh toán khác.
+            </div>
+            <div>
+                -Quý khách vui lòng đăng ký ngày bắt đầu hành trình Xuyên Việt hoặc ngày tái xuất hành trước ngày khởi hành ít nhất: 05 ngày làm việc đối với ngày thường; hoặc ít nhất 15 ngày làm việc đối với ngày Lễ, Tết. Việc xác nhận tham gia tour phụ thuộc vào tình trạng chổ trống tại thời điểm đăng ký. Quý khách nên đăng ký sớm để có nhiều sự lựa chọn hơn.
+            </div>
+            <div>
+                -Quý khách đang mang thai vui lòng báo cho nhân viên bán tour ngay tại thời điểm đăng ký. Công ty sẽ thực hiện chính sách bảo lưu để quý khách sử dụng sau khi sinh, thời điểm sức khỏe tốt. Trường hợp khách có thai nhưng không thông báo/hoặc vẫn quyết định đi tour thì cam kết tự trách nhiệm đối với các vấn đề xảy ra (nếu có), bao gồm nhưng không giới hạn việc Hàng không từ chối không cho lên máy bay hoặc bất kỳ sự cố nào khác liên quan đến vấn đề sức khỏe trong suốt hành trình tour.
+            </div>
+            <div>
+                &nbsp;
+            </div>
+            <div>
+                <strong>VI. ĐIỀU KIỆN BẢO LƯU MỘT PHẦN TOUR XUYÊN VIỆT SAU KHI TOUR ĐÃ KHỞI HÀNH:&nbsp;</strong>
+            </div>
+            <div>
+                <strong>(KHÔNG ÁP DỤNG NGÀY LỄ, TẾT VÀ CUỐI TUẦN)</strong>
+            </div>
+            <div>
+                -Quý khách thông báo trước 5 ngày so với ngày thực hiện trạm kế tiếp: không mất chi phí
+            </div>
+            <div>
+                -Quý khách thông báo trước 3 ngày so với ngày thực hiện trạm kế tiếp: 50% phí dịch vụ trạm kế tiếp
+            </div>
+            <div>
+                -Quý khách thông báo dưới 3 ngày so với ngày thực hiện trạm kế tiếp: 100% phí dịch vụ trạm kế tiếp.
+            </div>
+            <div>
+                &nbsp;
+            </div>
+            <div>
+                <strong>VII. ĐIỀU KIỆN HUỶ VÉ DU LỊCH</strong>
+            </div>
+            <div>
+                1. Lưu ý:
+            </div>
+            <div>
+                -Trong thời gian Vé du lịch Xuyên Việt còn hiệu lực, nếu Quý khách chưa chọn được ngày bắt đầu hành trình hoặc ngày tái xuất hành cũng sẽ không được phép yêu cầu hoàn, huỷ. Tuy nhiên, nếu chưa bắt đầu hành trình Xuyên Việt thì Quý khách có thể chuyển nhượng sang người khác. Người chuyển nhượng và người được chuyển nhượng đều xem như không hoàn thành tour Xuyên Việt, đồng nghĩa với các quà tặng theo tour và các khuyến mãi khác sẽ được thu hồi hoặc thu phí tương đương giá trị quà tặng nếu Quý khách đã sử dụng.
+            </div>
+            <div>
+                - Sau khi xác nhận tham gia tour, nếu Quý khách muốn chuyển/huỷ tour xin vui lòng mang Vé Du Lịch cùng Biên nhận đến văn phòng đăng ký tour để làm thủ tục chuyển/huỷ tour và chịu mất phí theo quy định của Vietravel. Quý khách xác nhận chuyển sang các tuyến du lịch khác (không phải tour Xuyên Việt) hoặc huỷ tour đồng nghĩa với các quà tặng theo tour và các khuyến mãi khác sẽ được thu hồi hoặc thu phí tương đương giá trị quà tặng nếu Quý khách đã sử dụng.
+            </div>
+            <div>
+                2. Các điều kiện Chuyển, Huỷ tour sau khi xác nhận tham gia tour: (đối với ngày thường)
+            </div>
+            <div>
+                -&nbsp; Nếu báo hủy/chuyển sang các tuyến du lịch khác trước ngày khởi hành ít nhất 20 ngày: Không mất phí.
+            </div>
+            <div>
+                -&nbsp; Nếu báo hủy hoặc chuyển sang các tuyến du lịch khác từ 15-19 ngày trước ngày khởi hành, chi phí hủy/chuyển tour: 100% tiền cọc tour.
+            </div>
+            <div>
+                -&nbsp; Nếu báo hủy chuyến du lịch trong vòng từ 11-14 ngày trước ngày khởi hành, chi phí hủy tour: 70% trên giá tour du lịch.
+            </div>
+            <div>
+                -&nbsp; Nếu báo hủy chuyến du lịch trong vòng từ 06-10 ngày trước ngày khởi hành, chi phí hủy tour: 90% trên giá tour du lịch.
+            </div>
+            <div>
+                -&nbsp; Nếu báo hủy chuyến du lịch trong vòng 05 ngày trước ngày khởi hành, chi phí hủy tour: 100% trên giá tour du lịch.
+            </div>
+            <div>
+                Các điều kiện Chuyển, Huỷ tour sau khi xác nhận tham gia tour: (đối với ngày lễ, Tết. Áp dụng cho các tour có thời gian diễn ra rơi vào một trong các ngày Lễ, Tết theo qui định)&nbsp;
+            </div>
+            <div>
+                -&nbsp; Nếu báo hủy/chuyển sang các tuyến du lịch khác trước ngày khởi hành ít nhất 30 ngày: Không mất chi phí.
+            </div>
+            <div>
+                -&nbsp; Nếu báo hủy hoặc chuyển sang các tuyến du lịch khác từ 25-29 ngày trước ngày khởi hành, chi phí hủy/chuyển tour: 100% tiền cọc tour.
+            </div>
+            <div>
+                -&nbsp; Nếu báo hủy chuyến du lịch trong vòng từ 21-24 ngày trước ngày khởi hành, chi phí hủy tour: 70% trên giá tour du lịch.
+            </div>
+            <div>
+                -&nbsp; Nếu báo hủy chuyến du lịch trong vòng từ 16-20 ngày trước ngày khởi hành, chi phí hủy tour: 90% trên giá tour du lịch.
+            </div>
+            <div>
+                -&nbsp; Nếu báo hủy chuyến du lịch trong vòng 15 ngày trước ngày khởi hành, chi phí hủy tour: 100% trên giá tour du lịch.
+            </div>
+            <div>
+                Nếu Quý khách Chuyển, Huỷ một (01) hoặc nhiều (tối đa 05) chặng trong hành trình Tour Xuyên Việt thì chi phí huỷ tour sẽ được tính trên giá bán lẻ của từng tour trục cộng gộp lại. Giá tour trục được niêm yết trên website travel.com.vn
+            </div>
+            <div>
+                Thời gian hủy chuyến du lịch được tính cho ngày làm việc, không tính thứ 7, Chủ Nhật và các ngày Lễ, Tết.
+            </div>
+            <div>
+                &nbsp;
+            </div>
+            <div>
+                <strong>DÀNH CHO KHÁCH HÀNG ĐĂNG KÝ TRÊN TRANG WWW.TRAVEL.COM.VN THANH TOÁN TRỰC TUYẾN:</strong>
+            </div>
+            <div>
+                Khách hàng hủy Vé du lịch trong thời điểm ngày Thường và Lễ Tết theo đúng những qui định trên, trong trường hợp khách thanh toán trực tuyến, nếu hủy Vé du lịch khách hàng sẽ chịu toàn bộ phí ngân hàng cho việc thanh toán tiền Vé du lịch. Việc hoàn trả tiền cho khách sẽ được Vietravel thực hiện ngay sau khi ngân hàng thông báo tiền đã vào tài khoản của Vietravel.&nbsp;
+            </div>
+            <div>
+                3.&nbsp; &nbsp;Trường hợp bất khả kháng:
+            </div>
+            <div>
+                Nếu chương trình du lịch, dịch vụ lẻ mua kèm bị hủy bỏ hoặc thay đổi bởi một trong hai bên vì một lý do bất khả kháng (hỏa hoạn, thời tiết, tai nạn, thiên tai, chiến tranh, dịch bệnh, hoãn, dời, hủy chuyến hoặc thay đổi khác của các phương tiện vận chuyển công cộng hoặc các sự kiến bất khả kháng khác theo quy định pháp luật…), thì Vietravel sẽ không chịu bất kỳ nghĩa vụ bồi hoàn các tổn thất đã xảy ra và không chịu bất kỳ trách nhiệm pháp lý nào. Tuy nhiên mỗi bên có trách nhiệm cố gắng tối đa để giúp đỡ bên bị thiệt hại nhằm giảm thiểu các tổn thất gây ra vì lý do bất khả kháng.&nbsp;Thời gian hoàn tiền dịch vụ do hủy tour vì trường hợp bất khả kháng sẽ được hoàn tất trong vòng 60 – 90 ngày phụ thuộc điều kiện các đối tác cung ứng dịch vụ.
+            </div>
+            <div>
+                4.&nbsp; &nbsp; Thay đổi lộ trình:&nbsp;&nbsp;
+            </div>
+            <div>
+                Tùy theo tình hình thực tế, Vietravel giữ quyền thay đổi lộ trình, sắp xếp lại thứ tự các điểm tham quan hoặc hủy bỏ chuyến đi du lịch bất cứ lúc nào mà Vietravel thấy cần thiết vì sự thuận tiện hoặc an toàn cho khách hàng.
+            </div>
+            <div>
+                &nbsp;
+            </div>
+            <div>
+                <strong>VIII.&nbsp; &nbsp;NHỮNG YÊU CẦU ĐẶC BIỆT TRONG CHUYẾN DU LỊCH</strong>
+            </div>
+            <div>
+                Các yêu cầu đặc biệt của Quý khách phải được báo trước cho Vietravel ngay tại thời điểm đăng ký. Vietravel sẽ cố gắng đáp ứng những yêu cầu này trong khả năng của mình song sẽ không chịu trách nhiệm về bất kỳ sự từ chối cung cấp dịch vụ từ phía các nhà vận chuyển, khách sạn, nhà hàng và các nhà cung cấp dịch vụ độc lập khác.
+            </div>
+            <div>
+                &nbsp;
+            </div>
+            <div>
+                <strong>IX.&nbsp; &nbsp;KHÁCH SẠN</strong>
+            </div>
+            <div>
+                Khách sạn được cung cấp trên cơ sở những phòng có hai giường đơn (TWN) hoặc một giường đôi (DBL) tùy theo cơ cấu phòng của các khách sạn. Khách sạn do Vietravel đặt cho các chương trình tham quan có tiêu chuẩn tương ứng với các mức giá vé mà khách chọn khi đăng ký đi du lịch. Nếu cần thiết thay đổi về bất kỳ lý do nào, khách sạn thay thế sẽ tương đương với tiêu chuẩn của khách sạn ban đầu và sẽ được báo cho du khách trước khi khởi hành. Những yêu cầu đặc biệt của khách hàng nếu thông báo trước cho Vietravel sẽ được đáp ứng tùy theo khả năng cung cấp của khách sạn và khách hàng phải trả thêm tiền đối với các yêu cầu này (nếu có). Vietravel có quyền không đáp ứng những yêu cầu này nếu khách sạn từ chối cung cấp dịch vụ. Thời gian nhận phòng theo qui định tại các khách sạn là sau 14:00 và phải trả phòng trước 12:00. Đối với các trường hợp khách lưu trú tại hệ thống khách sạn/Resort 5 sao (Vinpearl, FLC, Grand Ho Tram Strip…) tuân thủ theo điều kiện hủy phạt của khách sạn/Resort cho từng thời điểm.
+            </div>
+            <div>
+                &nbsp;
+            </div>
+            <div>
+                <strong>X.&nbsp; &nbsp;VẬN CHUYỂN</strong>
+            </div>
+            <div>
+                Phương tiện vận chuyển tùy thuộc theo từng chương trình du lịch.
+            </div>
+            <div>
+                Với chương trình đi bằng xe: xe máy lạnh (4, 7, 15, 25, 35, 45 chỗ) sẽ được Vietravel sắp xếp tùy theo số lượng khách từng đoàn, phục vụ suốt chương trình tham quan.
+            </div>
+            <div>
+                Với chương trình đi bằng xe lửa - máy bay - tàu cánh ngầm (phương tiện vận chuyển công cộng), trong một số chương trình các nhà cung cấp dịch vụ có thể thay đổi giờ khởi hành mà không báo trước, việc thay đổi này sẽ được Vietravel thông báo cho khách hàng nếu thời gian cho phép.&nbsp;
+            </div>
+            <div>
+                Vietravel không chịu trách nhiệm bồi hoàn và trách nhiệm pháp lý với những thiệt hại về vật chất lẫn tinh thần do việc chậm trễ, thay đổi giờ giấc khởi hành của các phương tiện vận chuyển công cộng hoặc sự chậm trễ do chính hành khách gây ra. Vietravel chỉ thực hiện hành vi giúp đỡ để giảm bớt tổn thất cho hành khách.
+            </div>
+            <div>
+                &nbsp;
+            </div>
+            <div>
+                <strong>XI. HÀNH LÝ</strong>
+            </div>
+            <div>
+                Hành lý gửi vào hầm xe được phép tối đa: 01 kiện lớn 20kg/khách + 01 kiện nhỏ không quá 12kg/khách.&nbsp;
+            </div>
+            <div>
+                Đối với các chương trình sử dụng dịch vụ hàng không, hành lý miễn cước sẽ do các hãng hàng không qui định. Vietravel không chịu trách nhiệm về sự thất lạc, hư hỏng hành lý hoặc bất kỳ vật dụng gì của du khách trong suốt chuyến đi, du khách tự bảo quản hành lý của mình. Nếu khách hàng bị mất hay thất lạc hành lý thì Vietravel sẽ giúp hành khách liên lạc và khai báo với các bộ phận liên quan truy tìm hành lý bị mất hay thất lạc. Việc bồi thường hành lý bị mất hay thất lạc sẽ theo qui định của các đơn vị cung cấp dịch vụ hoặc các đơn vị bảo hiểm (nếu có).
+            </div>
+            <div>
+                &nbsp;
+            </div>
+            <div>
+                <strong>XII.&nbsp; &nbsp;BẢO HIỂM DU LỊCH</strong>
+            </div>
+            <div>
+                Giá dịch vụ du lịch trọn gói đã bao gồm bảo hiểm du lịch trong nước với mức đền bù cao nhất là 120.000.000đ/khách Việt Nam/vụ cho nhân mạng và 12.000.000 VNĐ/khách Việt Nam/vụ cho hành lý .
+            </div>
+            <div>
+                Điều kiện, điều khoản bảo hiểm: Theo quy tắc bảo hiểm khách du lịch trong nước QĐ số: 001321/2006 – BM/BHCN.
+            </div>
+            <div>
+                Số hotline tư vấn về các điều kiện, điều khoản bảo hiểm 0938 30 1234
+            </div>
+            <div>
+                &nbsp;
+            </div>
+            <div>
+                * Vé du lịch cùng các văn bản kèm theo (Biên nhận tour, Chương trình tour) được xem như là bộ Hợp đồng lữ hành có giá trị ràng buộc với các bên và được lập thành 2 bản, mỗi bên giữ một bản, có giá trị pháp lý như nhau. Do tính chất tour dành cho Khách lẻ (Cá nhân / Nhóm gia đình) nên Khách hàng (người đăng ký và người đi cùng nhóm) được coi là chấp thuận toàn bộ nội dung trong Vé du lịch và các văn bản kèm theo kể từ thời điểm đặt cọc, không phụ thuộc vào việc khách hàng có ký tên trên Vé du lịch, Biên nhận tour hay Chương trình tour hay không.
+            </div>
+            <div>
+                Trong quá trình thực hiện, nếu xảy ra tranh chấp sẽ được giải quyết trên cơ sở thương lượng trong thời hạn 30 ngày kể từ ngày một trong hai bên đưa tranh chấp ra thương lượng. Hết thời hạn này nếu tranh chấp không được giải quyết hoặc một trong hai bên không đồng ý với kết quả thương lượng thì có quyền đưa tranh chấp ra giải quyết tại Tòa án thẩm quyền.
+            </div>
+            <div>
+                &nbsp;
+            </div>
+            <div>
+                <span style="color:#ff0000;">(*) Trẻ em tại thời điểm đăng ký tham gia tour nếu đã 12 tuổi (tính từ ngày sinh đến ngày bắt đầu tour) sẽ phải thanh toán phụ thu 50% giá trị của người lớn.</span>
+            </div>
+            <div>
+                &nbsp;
+            </div>
         </div>
     </div>
 
-    <div class="container p-0 pb-5">
+    <div class="container pb-5">
         <div class="form-check my-3">
             <input type="checkbox" class="form-check-input" name="name" id="agree" value="" />
             <label for="agree">I have read and agree to the terms and conditions</label>

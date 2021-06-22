@@ -18,3 +18,28 @@ $(document).ready(function () {
         return false;
     });
 });
+
+function createSpinnerFor(element) {
+    let spinner = document.createElement("div");
+    spinner.classList.add("spinner-grow", "text-center", "text-primary", ...element.classList);
+    spinner.setAttribute("role", "status");
+    let spinnerSize = Math.max(Math.min(element.clientWidth, element.clientHeight), 15);
+    spinner.style.width = `${spinnerSize}px`;
+    spinner.style.height = `${spinnerSize}px`;
+    spinner.innerHTML = '<span class="sr-only">Loading...</span>'
+    return spinner;
+}
+
+function createLoadingButtonFor(button) {
+    let btn = document.createElement('button');
+    btn.classList.add(...button.classList);
+    btn.disabled = true;
+    let loadingSpan = document.createElement('span');
+    loadingSpan.classList.add('spinner-grow', 'spinner-grow-sm');
+    loadingSpan.setAttribute('role', 'status');
+    loadingSpan.setAttribute('aria-hidden', 'true');
+    btn.appendChild(loadingSpan)
+    btn.append('Loading...');
+
+    return btn;
+}

@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Core.Entities.Booking>
+@{
+    ViewData["Title"] = "Booking History";
+    var tblID = "BookingTbl";
+}
+
+<div class="container py-5">
+    <h3 class="mb-5">My Bookings</h3>
+
+    <div class="table-responsive">
+        <table id="@tblID" class="table">
+            <thead>
+                <tr>
+                    <th class="text-center">Booking No.</th>
+                    <th class="text-center">Date Booked</th>
+                    <th class="text-center">Quantity</th>
+                    <th class="text-center">Tour</th>
+                    <th class="text-right">Total</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center no-ordering">Action</th>
+                </tr>
+            </thead>
+            @foreach (var bk in Model)
+            {
+                <tr>
+                    <td class="text-center">@bk.ID</td>
+                    <td class="text-center">@bk.LastUpdated.ToCustomDateString()</td>
+                    <td class="text-center">@bk.TicketCount</td>
+                    <td class="text-center">@bk.Trip.Tour.Title</td>
+                    <td class="text-right">@bk.Total.ToCurrencyString()</td>
+                    <td class="text-center"><span class="@bk.Status.Badge()">@bk.Status.ToCustomString()</span></td>
+                    <td class="text-center">
+                        <a asp-action="Detail" asp-route-id=@bk.ID class="text-primary mr-3"><i class="far fa-eye"></i> View</a>
+                        <a style="cursor: pointer; pointer-events: @(!bk.CanCancel(DateTime.Now) ? "none": "default"); opacity: @(!bk.CanCancel(DateTime.Now) ? "0.5": "1")" class="text-danger mr-3 mb-3 mb-md-0" onclick="showCancelForm(this, this.getAttribute('data-id'))" data-id="@bk.ID"><i class="far fa-times-circle"></i> Cancel</a>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+
+</div>
+
+<div class="modal fade" id="cancel-booking-container" tabindex="-1" role="dialog" aria-labelledby="cancelationModalLabel" aria-hidden="true">
+
+</div>
+
+<partial name="_DataTable" model="@tblID" />
+
+@section Scripts {
+    <script src="~/js/booking.js"></script>
+}

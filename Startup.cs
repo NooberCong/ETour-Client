@@ -1,4 +1,4 @@
-using Client.AuthenticationSchemes;
+using Client.Authentication;
 using Core.Services;
 using Infrastructure.Extentions;
 using Infrastructure.Hubs;
@@ -39,6 +39,7 @@ namespace ETourClient
                 .AddCookie(op =>
                 {
                     op.LoginPath = new PathString("/Auth/");
+                    op.EventsType = typeof(ClientCookieAuthenticationEvents);
                 })
                 .AddCookie(ExternalAuthenticationDefaults.AuthenticationScheme)
                 .AddGoogle(op =>
@@ -49,8 +50,14 @@ namespace ETourClient
                     op.ClaimActions.MapJsonKey("image", "picture");
                 });
             services.AddETourLogging();
+            services.AddScoped<ClientCookieAuthenticationEvents>();
             services.AddScoped<TripFilterService>();
+
             services.AddSignalR();
+
+            services.AddScoped<BlogFilterService>();
+            services.AddScoped<QRCodeService>();
+
 
         }
 
