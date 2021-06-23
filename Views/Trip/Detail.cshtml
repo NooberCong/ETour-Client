@@ -229,13 +229,18 @@
                                class="btn btn-primary btn-rounded me-2">
                                 <i class="fas fa-cart-plus me-2"></i> Book now
                             </a>
-                            <button href="#!"
-                                    type="button"
-                                    class="btn btn-danger btn-floating ml-2"
-                                    data-mdb-toggle="tooltip"
-                                    title="Add to wishlist">
+                            <a asp-controller="Tour"
+                               asp-action="ToggleFollow"
+                               asp-route-id="@Model.Trip.ID"
+                               class="btn btn-danger btn-floating ml-2"
+                               data-mdb-toggle="tooltip"
+                               title="Follow this tour">
+                                @if (Model.IsTourFollowed)
+                                {
+                                    <span>Following</span>
+                                }
                                 <i class="fas fa-heart"></i>
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>

@@ -6,24 +6,27 @@ using Core.Services;
 using Core.Value_Objects;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Client.Controllers
 {
-    public class TripController : Controller
+    public class TripController : BaseController
     {
         private static readonly int _pageSize = 10;
 
         private readonly ITripRepository _tripRepository;
         private readonly ITourRepository _tourRepository;
+        private readonly ICustomerRepository _customerRepository;
         private readonly TripFilterService _tripFilterService;
         private readonly TripRecommendationService _recommendationService;
 
-        public TripController(ITripRepository tripRepository, ITourRepository tourRepository, TripFilterService tripFilterService, TripRecommendationService recommendationService)
+        public TripController(ITripRepository tripRepository, ITourRepository tourRepository, ICustomerRepository customerRepository, TripFilterService tripFilterService, TripRecommendationService recommendationService)
         {
             _tripRepository = tripRepository;
             _tourRepository = tourRepository;
+            _customerRepository = customerRepository;
             _tripFilterService = tripFilterService;
             _recommendationService = recommendationService;
         }
@@ -82,8 +85,24 @@ namespace Client.Controllers
             return View(new TripDetailModel
             {
                 Trip = trip,
+                IsTourFollowed = await CheckFollowing(trip.TourID),
                 Recommendations = _recommendationService.GetRecommendations(recommendCandidates, trip)
             });
         }
-}
+
+        private async Task<bool> CheckFollowing(int tourID)
+        {
+            // User is not logged in
+            if (UserID == null)
+            {
+                return false;
+            }
+
+            var customer = await _customerRepository.Queryable
+                .Include(cus => cus.TourFollowings)
+                .FirstOrDefaultAsync(cus => cus.ID == UserID);
+
+            return customer.TourFollowings.Any(tf => tf.TourID == tourID);
+        }
+    }
 }
