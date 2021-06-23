@@ -788,32 +788,35 @@
     </div>
 </div>
 
-<!--Recommendations-->
-<div class="container">
-    <h3 class="mt-5">Other recommended trips</h3>
-    <div class="overflow-auto">
-        <div class="d-inline-flex">
-            @foreach (var trip in Model.Recommendations)
-            {
-                <div class="card mr-5 my-5" style="width: 20rem;">
-                    <img class="img-fluid rounded" style="width: 100%; height: 9rem; object-fit: cover" src="@trip.Tour.ImageUrls.First()" alt="recommended trip image" />
-                    <div class="p-3">
-                        <a asp-action="Detail" asp-route-id="@trip.ID" class="h5 card-link" style="color: black">@trip.Tour.Title</a>
-                        <p class="m-0 mb-2 text-black-50 small">@trip.Tour.StartPlace <i class="fas fa-exchange-alt"></i> @trip.Tour.Destination</p>
-                        <p class="bg-light-primary m-0 mb-3">@trip.StartTime.ToCustomDateString() - @trip.EndTime.ToCustomDateString()</p>
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <span class="mr-1 align-text-bottom">@trip.GetSalePrice().ToCurrencyString()</span>
-                                @if (trip.GetSalePrice() != trip.Price)
-                                {
-                                    <span class="strike-text">@trip.Price.ToCurrencyString()</span>
-                                }
+@if (Model.Recommendations.Any())
+{
+    <!--Recommendations-->
+    <div class="container">
+        <h3 class="mt-5">Other recommended trips</h3>
+        <div class="overflow-auto">
+            <div class="d-inline-flex">
+                @foreach (var trip in Model.Recommendations)
+                {
+                    <div class="card mr-5 my-5" style="width: 20rem;">
+                        <img class="img-fluid rounded" style="width: 100%; height: 9rem; object-fit: cover" src="@trip.Tour.ImageUrls.First()" alt="recommended trip image" />
+                        <div class="p-3">
+                            <a asp-action="Detail" asp-route-id="@trip.ID" class="h5 card-link" style="color: black">@trip.Tour.Title</a>
+                            <p class="m-0 mb-2 text-black-50 small">@trip.Tour.StartPlace <i class="fas fa-exchange-alt"></i> @trip.Tour.Destination</p>
+                            <p class="bg-light-primary m-0 mb-3">@trip.StartTime.ToCustomDateString() - @trip.EndTime.ToCustomDateString()</p>
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <span class="mr-1 align-text-bottom">@trip.GetSalePrice().ToCurrencyString()</span>
+                                    @if (trip.GetSalePrice() != trip.Price)
+                                    {
+                                        <span class="strike-text">@trip.Price.ToCurrencyString()</span>
+                                    }
+                                </div>
+                                <p class="text-danger mb-1">@trip.Vacancies vacancies left!</p>
                             </div>
-                            <p class="text-danger mb-1">@trip.Vacancies vacancies left!</p>
                         </div>
                     </div>
-                </div>
-            }
+                }
+            </div>
         </div>
     </div>
-</div>
+}

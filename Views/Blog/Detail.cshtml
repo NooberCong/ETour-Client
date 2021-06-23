@@ -75,49 +75,52 @@
             </div>
         </div>
     </section>
-    <h3 class="my-5">You may also be interested in</h3>
-    <div class="overflow-auto">
-        <div class="d-inline-flex py-3">
-            @foreach (var post in Model.Recommendations)
-            {
-                <div class="mr-5" style="width: 20rem;">
-                    <!-- Card -->
-                    <img class="img-fluid rounded" style="object-fit: cover; width: 100%; height: 12rem" src="@post.CoverImgUrl" alt="Sample">
+    @if (Model.Recommendations.Any())
+    {
+        <h3 class="my-5">You may also be interested in</h3>
+        <div class="overflow-auto">
+            <div class="d-inline-flex py-3">
+                @foreach (var post in Model.Recommendations)
+                {
+                    <div class="mr-5" style="width: 20rem;">
+                        <!-- Card -->
+                        <img class="img-fluid rounded" style="object-fit: cover; width: 100%; height: 12rem" src="@post.CoverImgUrl" alt="Sample">
 
-                    @if (post.LastUpdated >= DateTime.Now.AddDays(-1))
-                    {
-                        <span class="mb-0"><span class="badge badge-primary badge-pill badge-news">New</span></span>
-                    }
+                        @if (post.LastUpdated >= DateTime.Now.AddDays(-1))
+                        {
+                            <span class="mb-0"><span class="badge badge-primary badge-pill badge-news">New</span></span>
+                        }
 
-                    <div class="pt-4">
-                        <a asp-action="Detail" asp-route-id="@post.ID" class="h5 card-link" style="color: black">@post.Title</a>
-                        <p class="small text-muted text-uppercase my-3 d-md-flex justify-content-between">
-                            <a href="#!" class="text-reset">by <strong>@post.Author.FullName</strong></a>
-                            <a href="#!" class="text-reset d-block">@post.LastUpdated.ToCustomDateString()</a>
-                        </p>
-                        <hr>
+                        <div class="pt-4">
+                            <a asp-action="Detail" asp-route-id="@post.ID" class="h5 card-link" style="color: black">@post.Title</a>
+                            <p class="small text-muted text-uppercase my-3 d-md-flex justify-content-between">
+                                <a href="#!" class="text-reset">by <strong>@post.Author.FullName</strong></a>
+                                <a href="#!" class="text-reset d-block">@post.LastUpdated.ToCustomDateString()</a>
+                            </p>
+                            <hr>
 
-                    </div>
-                    <div class="d-flex justify-content-between text-uppercase text-muted white small">
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-tag mr-2"></i>
-                            @for (int i = 0; i < post.Tags.Count; i++)
-                            {
-                                <a href="#!" class="text-reset">@post.Tags[i]</a>
-                                @if (i != post.Tags.Count - 1)
+                        </div>
+                        <div class="d-flex justify-content-between text-uppercase text-muted white small">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-tag mr-2"></i>
+                                @for (int i = 0; i < post.Tags.Count; i++)
                                 {
-                                    <span>,&nbsp;</span>
+                                    <a href="#!" class="text-reset">@post.Tags[i]</a>
+                                    @if (i != post.Tags.Count - 1)
+                                    {
+                                        <span>,&nbsp;</span>
+                                    }
                                 }
-                            }
-                        </div>
-                        <div class="d-flex align-items-center">
-                            <a href="#!" class="text-reset">
-                                <i class="fas fa-comment-alt mr-2"></i>1
-                            </a>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <a href="#!" class="text-reset">
+                                    <i class="fas fa-comment-alt mr-2"></i>1
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            }
+                }
+            </div>
         </div>
-    </div>
+    }
 </div>
