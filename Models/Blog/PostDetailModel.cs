@@ -1,4 +1,5 @@
-﻿using Infrastructure.InterfaceImpls;
+﻿using Core.Entities;
+using Infrastructure.InterfaceImpls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace Client.Models
     public class PostDetailModel
     {
         public Post Post { get; set; }
-        public IEnumerable<Post> Recommendations { get; set; }
+        public IEnumerable<IPost<Employee>> Recommendations { get; set; }
     }
 }

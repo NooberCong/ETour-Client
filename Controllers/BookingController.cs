@@ -5,11 +5,8 @@ using Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using QRCoder;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -114,7 +111,7 @@ namespace Client.Controllers
 
             if (customer.Points < applyAmount)
             {
-                ModelState.AddModelError(string.Empty, "There ");
+                ModelState.AddModelError(string.Empty, "You points amount changed unexpectedly during the booking");
             }
 
             if (!ModelState.IsValid)

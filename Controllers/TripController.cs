@@ -18,13 +18,14 @@ namespace Client.Controllers
         private readonly ITripRepository _tripRepository;
         private readonly ITourRepository _tourRepository;
         private readonly TripFilterService _tripFilterService;
-        private readonly ITourReviewRepository _tourReviewRepository;
-        public TripController(ITourReviewRepository tourReviewRepository, ITripRepository tripRepository, ITourRepository tourRepository, TripFilterService tripFilterService)
+        private readonly TripRecommendationService _recommendationService;
+
+        public TripController(ITripRepository tripRepository, ITourRepository tourRepository, TripFilterService tripFilterService, TripRecommendationService recommendationService)
         {
             _tripRepository = tripRepository;
             _tourRepository = tourRepository;
             _tripFilterService = tripFilterService;
-            _tourReviewRepository = tourReviewRepository;
+            _recommendationService = recommendationService;
         }
 
         // Display list of trips
@@ -32,18 +33,17 @@ namespace Client.Controllers
         // Parameter pageNumber specify which set of tours to display according to pageSize
         // Returns View(tourList)
 
-        public async Task<IActionResult> Index(TripFilterParams filterParams, int pageNumber = 1)
+        public IActionResult Index(TripFilterParams filterParams, int pageNumber = 1)
         {
-            var trips = await _tripRepository.Queryable
+            var trips = _tripRepository.Queryable
                 .Where(tr => tr.IsOpen)
                 .Include(tr => tr.Tour)
                 .Include(tr => tr.TripDiscounts)
                 .ThenInclude(td => td.Discount)
                 .Include(tr => tr.Bookings)
-                .ThenInclude(bk => bk.CustomerInfos)
-                .ToListAsync();
+                .AsEnumerable();
 
-            var filteredTrips = _tripFilterService.ApplyFilter(trips.Where(tr => tr.Vacancies > 0), filterParams);
+            var filteredTrips = _tripFilterService.ApplyFilter(trips, filterParams);
 
             var tours = _tourRepository.QueryFiltered(tour => tour.IsOpen);
 
@@ -65,7 +65,6 @@ namespace Client.Controllers
                 .Include(tr => tr.TripDiscounts)
                 .ThenInclude(tr => tr.Discount)
                 .Include(tr => tr.Bookings)
-                .ThenInclude(bk => bk.CustomerInfos)
                 .FirstOrDefaultAsync(tr => tr.ID == id);
 
             if (trip == null || !trip.IsOpen)
@@ -73,7 +72,18 @@ namespace Client.Controllers
                 return NotFound();
             }
 
-            return View(trip);
+            var recommendCandidates = _tripRepository.Queryable
+                .Where(tr => tr.IsOpen)
+                .Include(tr => tr.Tour)
+                .Include(tr => tr.TripDiscounts)
+                .ThenInclude(td => td.Discount)
+                .Include(tr => tr.Bookings);
+
+            return View(new TripDetailModel
+            {
+                Trip = trip,
+                Recommendations = _recommendationService.GetRecommendations(recommendCandidates, trip)
+            });
         }
-    }
+}
 }

@@ -18,12 +18,14 @@ namespace Client.Controllers
     {
         private static readonly int _pageSize = 10;
         private readonly BlogFilterService _filterService;
+        private readonly BlogRecommendationService _recommendationService;
         private readonly IPostRepository<Post, Employee> _postRepository;
 
-        public BlogController(IPostRepository<Post, Employee> postRepository, BlogFilterService filterService)
+        public BlogController(IPostRepository<Post, Employee> postRepository, BlogFilterService filterService, BlogRecommendationService recommendationService)
         {
             _postRepository = postRepository;
             _filterService = filterService;
+            _recommendationService = recommendationService;
         }
 
         // Display list of blog posts
@@ -32,7 +34,7 @@ namespace Client.Controllers
         public IActionResult Index(BlogFilterParams filterParams, int pageNumber = 1)
         {
             IEnumerable<IPost<Employee>> posts = _postRepository.Queryable.Include(p => p.Author)
-               .Where(post => !post.IsSoftDeleted).Select(p => (IPost<Employee>)p);
+               .Select(p => (IPost<Employee>)p);
 
             var filteredPosts = _filterService.ApplyFilter(posts, filterParams);
 
@@ -57,13 +59,13 @@ namespace Client.Controllers
                 return NotFound();
             }
 
-            var recommendations = _postRepository.Queryable
-                .Where(p => p.ID != id).Include(p => p.Author)
-                .Take(5).AsEnumerable();
+            IEnumerable<IPost<Employee>> recommendCandidates = _postRepository.Queryable.Include(p => p.Author)
+               .Select(p => (IPost<Employee>)p);
 
-            return View(new PostDetailModel { 
+            return View(new PostDetailModel
+            {
                 Post = post,
-                Recommendations = recommendations
+                Recommendations = _recommendationService.GetRecommendations(recommendCandidates, post)
             });
         }
     }
