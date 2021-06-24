@@ -31,7 +31,6 @@
                         <td class="text-center"><span class="@q.Status.Badge()">@q.Status.ToCustomString()</span></td>
                         <td class="text-center">
                             <a asp-action="Detail" asp-route-id=@q.ID class="text-primary mr-3"><i class="far fa-eye"></i></a>
-                            <a class="text-danger mr-3 mb-3 mb-md-0" asp-action="Edit" asp-route-id="@q.ID" asp-route-returnUrl="@(Context.Request.Path + Context.Request.QueryString)"><i class="far fa-times-circle"></i></a>
                         </td>
                     </tr>
                 }
