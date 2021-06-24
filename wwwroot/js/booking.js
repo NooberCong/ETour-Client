@@ -107,13 +107,13 @@ function buildCustomerInfoRequestParams() {
     params.append('youth', LastUpdated['Youth']);
     params.append('children', LastUpdated['Children']);
     params.append('baby', LastUpdated['Baby']);
-    console.log(params.toString());
     return params;
 }
 
 function toggleApplyPoints(input, value) {
     if (value == true) {
         let total = parseFloat($('#PriceTotal').text().substr(1));
+        console.log(total);
         $.ajax({
             type: "GET",
             url: 'ApplyPoints',

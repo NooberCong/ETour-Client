@@ -1,7 +1,7 @@
-﻿@model Trip
+﻿@model TripDetailModel
 
 @{
-    ViewData["Title"] = $"Trip - {Model.Tour.Title}";
+    ViewData["Title"] = $"Trip - {Model.Trip.Tour.Title}";
 }
 
 <style>
@@ -102,16 +102,16 @@
             <div class="col-md-7 mb-4 mb-md-0">
                 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                     <ol class="carousel-indicators">
-                        @for (int i = 0; i < Model.Tour.ImageUrls.Count; i++)
+                        @for (int i = 0; i < Model.Trip.Tour.ImageUrls.Count; i++)
                         {
                             <li data-target="#carouselExampleIndicators" data-slide-to="@i" class="@(i == 0? "active": "")"></li>
                         }
                     </ol>
                     <div class="carousel-inner">
-                        @for (int i = 0; i < Model.Tour.ImageUrls.Count; i++)
+                        @for (int i = 0; i < Model.Trip.Tour.ImageUrls.Count; i++)
                         {
                             <div class="carousel-item @(i == 0? "active": "")">
-                                <img style="height: 25rem; width: 100%; object-fit: cover;" src="@Model.Tour.ImageUrls[i]" class="d-block w-100" alt="tour-image-@i">
+                                <img style="height: 25rem; width: 100%; object-fit: cover;" src="@Model.Trip.Tour.ImageUrls[i]" class="d-block w-100" alt="tour-image-@i">
                             </div>
                         }
                     </div>
@@ -124,10 +124,10 @@
                         <span class="sr-only">Next</span>
                     </a>
                 </div>
-                <div class="mt-3 d-flex justify-content-@(Model.Tour.ImageUrls.Count > 3? "between": "start")">
-                    @for (int i = 0; i < Model.Tour.ImageUrls.Count; i++)
+                <div class="mt-3 d-flex justify-content-@(Model.Trip.Tour.ImageUrls.Count > 3? "between": "start")">
+                    @for (int i = 0; i < Model.Trip.Tour.ImageUrls.Count; i++)
                     {
-                        <img src="@Model.Tour.ImageUrls[i]" data-target="#carouselExampleIndicators" data-slide-to="@i" class="@(i == 0? "active": "") mt-2 @(Model.Tour.ImageUrls.Count < 4? "mr-2": "")" style="width: 22%;" />
+                        <img src="@Model.Trip.Tour.ImageUrls[i]" data-target="#carouselExampleIndicators" data-slide-to="@i" class="@(i == 0? "active": "") mt-2 @(Model.Trip.Tour.ImageUrls.Count < 4? "mr-2": "")" style="width: 22%;" />
                     }
                 </div>
             </div>
@@ -135,7 +135,7 @@
             <div class="col-md-5 mb-4 mb-md-0">
                 <!-- Details -->
                 <div>
-                    <h1 class="fw-bold mb-3 h3">@Model.Tour.Title</h1>
+                    <h1 class="fw-bold mb-3 h3">@Model.Trip.Tour.Title</h1>
 
                     <div class="d-flex text-warning">
                         <ul class="d-flex mb-3 p-0 mr-3"
@@ -168,17 +168,17 @@
 
                     <div class="mb-3">
                         <div class="d-flex flex-row align-items-center">
-                            <h4 class="mr-1">@Model.GetSalePrice().ToCurrencyString()</h4>
-                            @if (Model.GetSalePrice() != Model.Price)
+                            <h4 class="mr-1">@Model.Trip.GetSalePrice().ToCurrencyString()</h4>
+                            @if (Model.Trip.GetSalePrice() != Model.Trip.Price)
                             {
-                                <span class="strike-text">@Model.Price.ToCurrencyString()</span>
+                                <span class="strike-text">@Model.Trip.Price.ToCurrencyString()</span>
                             }
                         </div>
-                        <h6 class="text-success">Free cancelation till @Model.StartTime.AddDays(-10).ToCustomDateString()</h6>
+                        <h6 class="text-success">Free cancelation till @Model.Trip.StartTime.AddDays(-10).ToCustomDateString()</h6>
                     </div>
 
                     <p class="text-muted">
-                        @Model.Tour.Description
+                        @Model.Trip.Tour.Description
                     </p>
 
                     <div class="table-responsive">
@@ -188,54 +188,59 @@
                                     <th class="w-25" scope="row">
                                         <span>Start place</span>
                                     </th>
-                                    <td>@Model.Tour.StartPlace</td>
+                                    <td>@Model.Trip.Tour.StartPlace</td>
                                 </tr>
                                 <tr>
                                     <th class="w-25" scope="row">
                                         <span>Destination</span>
                                     </th>
-                                    <td>@Model.Tour.Destination</td>
+                                    <td>@Model.Trip.Tour.Destination</td>
                                 </tr>
                                 <tr>
                                     <th class="w-25" scope="row">
                                         <span>Tour type</span>
                                     </th>
-                                    <td>@Model.Tour.Type</td>
+                                    <td>@Model.Trip.Tour.Type</td>
                                 </tr>
                                 <tr>
                                     <th class="w-25" scope="row">
                                         <span>Time frame</span>
                                     </th>
-                                    <td><span class="bg-light-primary">@Model.StartTime.ToCustomDateString() - @Model.EndTime.ToCustomDateString()</span></td>
+                                    <td><span class="bg-light-primary">@Model.Trip.StartTime.ToCustomDateString() - @Model.Trip.EndTime.ToCustomDateString()</span></td>
                                 </tr>
                                 <tr>
                                     <th class="w-25" scope="row">
                                         <span>Vacancies</span>
                                     </th>
-                                    <td class="text-danger">@Model.Vacancies spots left (2 bookings an hour ago)</td>
+                                    <td class="text-danger">@Model.Trip.Vacancies spots left (2 bookings an hour ago)</td>
                                 </tr>
                                 <tr>
                                     <th class="w-25" scope="row">
                                         <span>Reward</span>
                                     </th>
-                                    <td class="text-success">@Model.RewardPoints points / successful booking</td>
+                                    <td class="text-success">@Model.Trip.RewardPoints points / successful booking</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="row mt-4">
                         <div class="ml-3 btn-toolbar">
-                            <a asp-controller="Booking" asp-action="New" asp-route-tripID="@Model.ID"
+                            <a asp-controller="Booking" asp-action="New" asp-route-tripID="@Model.Trip.ID"
                                class="btn btn-primary btn-rounded me-2">
                                 <i class="fas fa-cart-plus me-2"></i> Book now
                             </a>
-                            <button href="#!"
-                                    type="button"
-                                    class="btn btn-danger btn-floating ml-2"
-                                    data-mdb-toggle="tooltip"
-                                    title="Add to wishlist">
+                            <a asp-controller="Tour"
+                               asp-action="ToggleFollow"
+                               asp-route-id="@Model.Trip.ID"
+                               class="btn btn-danger btn-floating ml-2"
+                               data-mdb-toggle="tooltip"
+                               title="Follow this tour">
+                                @if (Model.IsTourFollowed)
+                                {
+                                    <span>Following</span>
+                                }
                                 <i class="fas fa-heart"></i>
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -291,7 +296,7 @@
                     <div class="container pb-2">
                         <h2 class="font-weight-light text-center mt-0 pb-3">Trip Timeline</h2>
                         <!-- timeline item 1 -->
-                        @foreach (var itin in Model.Itineraries)
+                        @foreach (var itin in Model.Trip.Itineraries)
                         {
                             <div class="row">
                                 <div class="col-auto text-center flex-column d-none d-sm-flex">
@@ -339,7 +344,7 @@
                                 </div>
                             </div>
                         }
-                        @if (!Model.Itineraries.Any())
+                        @if (!Model.Trip.Itineraries.Any())
                         {
                             <p class="text-muted text-center">Updating...</p>
                         }
@@ -787,3 +792,36 @@
         </div>
     </div>
 </div>
+
+@if (Model.Recommendations.Any())
+{
+    <!--Recommendations-->
+    <div class="container">
+        <h3 class="mt-5">Other recommended trips</h3>
+        <div class="overflow-auto">
+            <div class="d-inline-flex">
+                @foreach (var trip in Model.Recommendations)
+                {
+                    <div class="card mr-5 my-5" style="width: 20rem;">
+                        <img class="img-fluid rounded" style="width: 100%; height: 9rem; object-fit: cover" src="@trip.Tour.ImageUrls.First()" alt="recommended trip image" />
+                        <div class="p-3">
+                            <a asp-action="Detail" asp-route-id="@trip.ID" class="h5 card-link" style="color: black">@trip.Tour.Title</a>
+                            <p class="m-0 mb-2 text-black-50 small">@trip.Tour.StartPlace <i class="fas fa-exchange-alt"></i> @trip.Tour.Destination</p>
+                            <p class="bg-light-primary m-0 mb-3">@trip.StartTime.ToCustomDateString() - @trip.EndTime.ToCustomDateString()</p>
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <span class="mr-1 align-text-bottom">@trip.GetSalePrice().ToCurrencyString()</span>
+                                    @if (trip.GetSalePrice() != trip.Price)
+                                    {
+                                        <span class="strike-text">@trip.Price.ToCurrencyString()</span>
+                                    }
+                                </div>
+                                <p class="text-danger mb-1">@trip.Vacancies vacancies left!</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}

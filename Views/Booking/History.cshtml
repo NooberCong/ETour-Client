@@ -28,10 +28,10 @@
                     <td class="text-center">@bk.TicketCount</td>
                     <td class="text-center">@bk.Trip.Tour.Title</td>
                     <td class="text-right">@bk.Total.ToCurrencyString()</td>
-                    <td class="text-center"><span class="@bk.Status.Badge()">@bk.Status</span></td>
+                    <td class="text-center"><span class="@bk.Status.Badge()">@bk.Status.ToCustomString()</span></td>
                     <td class="text-center">
                         <a asp-action="Detail" asp-route-id=@bk.ID class="text-primary mr-3"><i class="far fa-eye"></i> View</a>
-                        <a style="cursor: pointer; pointer-events: @(!bk.CanCancel(DateTime.Now) ? "none": "default"); opacity: @(!bk.CanCancel(DateTime.Now) ? "0": "1")" class="text-danger mr-3 mb-3 mb-md-0" onclick="showCancelForm(this, this.getAttribute('data-id'))" data-id="@bk.ID"><i class="far fa-times-circle"></i> Cancel</a>
+                        <a style="cursor: pointer; pointer-events: @(!bk.CanCancel(DateTime.Now) ? "none": "default"); opacity: @(!bk.CanCancel(DateTime.Now) ? "0.5": "1")" class="text-danger mr-3 mb-3 mb-md-0" onclick="showCancelForm(this, this.getAttribute('data-id'))" data-id="@bk.ID"><i class="far fa-times-circle"></i> Cancel</a>
                     </td>
                 </tr>
             }
