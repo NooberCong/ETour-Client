@@ -16,10 +16,12 @@ namespace Client.Controllers
 
         private readonly IQuestionRepository _questionRepository;
         private readonly IUnitOfWork _unitOfWork;
-        public QuestionController(IQuestionRepository questionRepository, IUnitOfWork unitOfWork)
+        private readonly IAnswerRepository _answerRepository;
+        public QuestionController(IQuestionRepository questionRepository, IUnitOfWork unitOfWork, IAnswerRepository answerRepository)
         {
             _unitOfWork = unitOfWork;
             _questionRepository = questionRepository;
+            _answerRepository = answerRepository;
         }
         // Display list of questions that user have asked
         // Return View(questionList)
@@ -47,5 +49,35 @@ namespace Client.Controllers
 
 
         }
+        
+        public async Task<IActionResult> Detail (int id)
+        {
+          Question question = await _questionRepository.Queryable.Include(q=> q.Author).Include(q=>q.Answers).FirstOrDefaultAsync(q => q.ID == id);
+           
+            return View(
+                new QuestionListModel
+                {
+                    _Question = question
+                }
+                ); ;
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateAns(Question _Question)
+        {
+            Answer ans = new Answer();
+            ans.LastUpdated = DateTime.Now;
+            ans.Content = _Question.Content;
+            ans.Author = _Question.Author.Name;
+            ans.QuestionID = _Question.ID;
+            ans.AuthoredByCustomer = true;
+            await _answerRepository.AddAsync(ans);
+            await _unitOfWork.CommitAsync();
+            return RedirectToAction("Detail", new {id= _Question.ID });
+
+
+        }
+
     }
 }
