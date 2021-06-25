@@ -48,7 +48,7 @@ namespace Client.Controllers
 
             var filteredTrips = _tripFilterService.ApplyFilter(trips, filterParams);
 
-            var tours = _tourRepository.QueryFiltered(tour => tour.IsOpen);
+            var tours = _tourRepository.Queryable.Where(tour => tour.IsOpen).AsEnumerable();
 
             return View(new TripListModel
             {

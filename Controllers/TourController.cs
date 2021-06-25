@@ -29,7 +29,7 @@ namespace Client.Controllers
         public IActionResult Index(int pageNumber = 1)
         {
 
-            IEnumerable<Tour> tours = _tourRepository.QueryFiltered(Tour => Tour.IsOpen);
+            IEnumerable<Tour> tours = _tourRepository.Queryable.Where(Tour => Tour.IsOpen).AsEnumerable();
             return View(new TourListModel
             {
                 Tours = PaginatedList<Tour>.Create(tours.AsQueryable(), pageNumber, _pageSize)

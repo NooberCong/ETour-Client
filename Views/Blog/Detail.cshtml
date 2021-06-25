@@ -16,7 +16,7 @@
     <h1 class="font-weight-bold">@Model.Post.Title</h1>
     <div class="text-muted d-flex justify-content-sm-between mt-3 mb-5">
         <div>
-            <p class="pb-1">Written by @Model.Post.Author.FullName on @Model.Post.LastUpdated</p>
+            <p class="pb-1">Written by @Model.Post.Owner.FullName on @Model.Post.LastUpdated</p>
         </div>
         <div>
             <i class="fas fa-tag mr-2"></i>
@@ -94,7 +94,7 @@
                         <div class="pt-4">
                             <a asp-action="Detail" asp-route-id="@post.ID" class="h5 card-link" style="color: black">@post.Title</a>
                             <p class="small text-muted text-uppercase my-3 d-md-flex justify-content-between">
-                                <a href="#!" class="text-reset">by <strong>@post.Author.FullName</strong></a>
+                                <a href="#!" class="text-reset">by <strong>@post.Owner.FullName</strong></a>
                                 <a href="#!" class="text-reset d-block">@post.LastUpdated.ToCustomDateString()</a>
                             </p>
                             <hr>

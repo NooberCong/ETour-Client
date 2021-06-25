@@ -25,7 +25,7 @@ namespace Client.Controllers
         // Return View(questionList)
         public IActionResult Index()
         {
-            IEnumerable<Question> Questions = _questionRepository.Queryable.Include(q => q.Author);
+            IEnumerable<Question> Questions = _questionRepository.Queryable.Include(q => q.Owner);
             return View(new QuestionListModel
             {
                 Questions = Questions,
@@ -38,7 +38,7 @@ namespace Client.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Question _Question)
         {
-            _Question.AuthorID = UserID;
+            _Question.OwnerID = UserID;
             _Question.LastUpdated = DateTime.Now;
             
             await _questionRepository.AddAsync(_Question);

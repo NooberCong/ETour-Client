@@ -91,7 +91,7 @@
                     </tr>
                     <tr>
                         <th>Refund</th>
-                        <td>@Model.Refunded?.ToCurrencyString()</td>
+                        <td>@(Model.Refunded.HasValue? $"{Model.Refunded} Points": "")</td>
                     </tr>
                     <tr>
                         <th>Date Booked</th>

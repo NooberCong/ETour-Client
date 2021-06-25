@@ -15,24 +15,23 @@ namespace Client.Controllers
     [Authorize]
     public class BookingController : BaseController
     {
-        private readonly IETourLogger _eTourLogger;
         private readonly IZaloPayService _zaloPayService;
         private readonly QRCodeService _QRCodeService;
         private readonly ITripRepository _tripRepository;
         private readonly ICustomerRepository _customerRepository;
         private readonly IBookingRepository _bookingRepository;
-
+        private readonly IInvoiceRepository _invoiceRepository;
         private readonly IUnitOfWork _unitOfWork;
         // Display list of the tickets user had added to cart but not yet paid for
         // Return View(bookingList)
-        public BookingController(IUnitOfWork unitOfWork, IBookingRepository bookingrepository, ICustomerRepository customerRepository, ITripRepository tripRepository, IETourLogger eTourLogger, IZaloPayService zaloPayService, QRCodeService QRCodeService)
+        public BookingController(IUnitOfWork unitOfWork, IBookingRepository bookingrepository, ICustomerRepository customerRepository, ITripRepository tripRepository, IInvoiceRepository invoiceRepository, IZaloPayService zaloPayService, QRCodeService QRCodeService)
         {
             _bookingRepository = bookingrepository;
             _customerRepository = customerRepository;
             _tripRepository = tripRepository;
             _unitOfWork = unitOfWork;
-            _eTourLogger = eTourLogger;
             _zaloPayService = zaloPayService;
+            _invoiceRepository = invoiceRepository;
             _QRCodeService = QRCodeService;
         }
         public IActionResult Index()
@@ -130,7 +129,7 @@ namespace Client.Controllers
                 });
             }
 
-            booking.AuthorID = UserID;
+            booking.OwnerID = UserID;
 
             for (int i = 0; i < customerNames.Length; i++)
             {
@@ -169,7 +168,7 @@ namespace Client.Controllers
                 .Include(bk => bk.Trip)
                 .ThenInclude(tr => tr.Tour)
                 .Include(bk => bk.CustomerInfos)
-                .Include(bk => bk.Author)
+                .Include(bk => bk.Owner)
                 .FirstOrDefaultAsync(bk => bk.ID == id);
 
             if (booking == null)
@@ -189,12 +188,12 @@ namespace Client.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GenerateDepositQRCode(int id, Booking.BookingPaymentProvider provider)
+        public async Task<IActionResult> GenerateDepositQRCode(int id, Invoice.PaymentMethod method)
         {
             var booking = await _bookingRepository.Queryable
                             .Include(bk => bk.Trip)
                             .ThenInclude(tr => tr.Tour)
-                            .Include(bk => bk.Author)
+                            .Include(bk => bk.Owner)
                             .FirstOrDefaultAsync(bk => bk.ID == id);
 
             if (booking == null || booking.Status != Booking.BookingStatus.Awaiting_Deposit && booking.Status != Booking.BookingStatus.Awaiting_Payment)
@@ -205,15 +204,15 @@ namespace Client.Controllers
             string paymentUrl = "";
             string viewName = "";
 
-            switch (provider)
+            switch (method)
             {
-                case Booking.BookingPaymentProvider.Zalo_Pay:
+                case Invoice.PaymentMethod.Zalo_Pay:
                     paymentUrl = await _zaloPayService.CreateOrderAsync(booking, (long)booking.Deposit, $"Toure: Deposit for tour {booking.Trip.Tour.Title}");
                     viewName = "ZaloPay";
                     break;
-                case Booking.BookingPaymentProvider.MoMo:
+                case Invoice.PaymentMethod.Momo:
                     break;
-                case Booking.BookingPaymentProvider.Google_Pay:
+                case Invoice.PaymentMethod.GPay:
                     break;
                 default:
                     break;
@@ -264,8 +263,12 @@ namespace Client.Controllers
         public async Task<IActionResult> ZaloPayConfirm(int id)
         {
             var booking = await _bookingRepository.Queryable
+                .Include(bk => bk.Owner)
                 .Include(bk => bk.Trip)
+                .ThenInclude(tr => tr.Tour)
                 .FirstOrDefaultAsync(bk => bk.ID == id);
+
+            Invoice invoice;
 
             if (booking == null || booking.Status != Booking.BookingStatus.Awaiting_Deposit && booking.Status != Booking.BookingStatus.Awaiting_Payment)
             {
@@ -275,16 +278,19 @@ namespace Client.Controllers
             if (booking.Status == Booking.BookingStatus.Awaiting_Deposit)
             {
                 booking.ChangeStatus(Booking.BookingStatus.Processing);
+                invoice = booking.GenerateDepositInvoice(Invoice.PaymentMethod.Zalo_Pay);
             }
             else
             {
                 booking.ChangeStatus(Booking.BookingStatus.Completed);
+                invoice = booking.GenerateFinalPaymentInvoice(Invoice.PaymentMethod.Zalo_Pay);
             }
 
+            await _invoiceRepository.AddAsync(invoice);
             await _bookingRepository.UpdateAsync(booking);
             await _unitOfWork.CommitAsync();
 
-            return RedirectToAction("Detail", new { id = id });
+            return RedirectToAction("Detail", new { id });
         }
 
         public async Task<JsonResult> ApplyPoints(Booking booking)
@@ -317,7 +323,7 @@ namespace Client.Controllers
         public IActionResult History()
         {
             IEnumerable<Booking> bookings = _bookingRepository.Queryable
-                .Where(bk => bk.AuthorID == UserID)
+                .Where(bk => bk.OwnerID == UserID)
                 .Include(bk => bk.CustomerInfos)
                 .Include(bk => bk.Trip).ThenInclude(t => t.Tour)
                 .AsEnumerable();
@@ -329,6 +335,7 @@ namespace Client.Controllers
         public async Task<IActionResult> CancelBooking(int id)
         {
             var booking = await _bookingRepository.Queryable
+                            .Include(bk => bk.Owner)
                             .Include(bk => bk.Trip)
                             .FirstOrDefaultAsync(bk => bk.ID == id);
             if (booking == null)
@@ -343,8 +350,11 @@ namespace Client.Controllers
                 return BadRequest();
             }
 
-            booking.Cancel(cancelDate);
 
+            booking.Cancel(cancelDate);
+            booking.Owner.Reward(booking.Refunded.Value);
+
+            await _customerRepository.UpdateAsync(booking.Owner);
             await _bookingRepository.UpdateAsync(booking);
             await _unitOfWork.CommitAsync();
 
