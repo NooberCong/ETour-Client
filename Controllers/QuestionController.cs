@@ -52,7 +52,7 @@ namespace Client.Controllers
         
         public async Task<IActionResult> Detail (int id)
         {
-          Question question = await _questionRepository.Queryable.Include(q=> q.Author).Include(q=>q.Answers).FirstOrDefaultAsync(q => q.ID == id);
+          Question question = await _questionRepository.Queryable.Include(q=> q.Owner).Include(q=>q.Answers).FirstOrDefaultAsync(q => q.ID == id);
            
             return View(
                 new QuestionListModel
@@ -69,7 +69,7 @@ namespace Client.Controllers
             Answer ans = new Answer();
             ans.LastUpdated = DateTime.Now;
             ans.Content = _Question.Content;
-            ans.Author = _Question.Author.Name;
+            ans.Author = _Question.Owner.Name;
             ans.QuestionID = _Question.ID;
             ans.AuthoredByCustomer = true;
             await _answerRepository.AddAsync(ans);
