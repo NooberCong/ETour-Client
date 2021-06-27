@@ -43,7 +43,7 @@ namespace Client.Controllers
 
             if (tour == null)
             {
-                return new NotFoundResult();
+                return NotFound();
             }
 
             var customer = await _customerRepository.Queryable

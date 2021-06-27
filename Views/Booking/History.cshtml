@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Core.Entities.Booking>
+﻿@model BookingHistoryModel
 @{
     ViewData["Title"] = "Booking History";
     var tblID = "BookingTbl";
@@ -20,7 +20,7 @@
                     <th class="text-center no-ordering">Action</th>
                 </tr>
             </thead>
-            @foreach (var bk in Model)
+            @foreach (var bk in Model.Bookings)
             {
                 <tr>
                     <td class="text-center">@bk.ID</td>
@@ -32,6 +32,7 @@
                     <td class="text-center">
                         <a asp-action="Detail" asp-route-id=@bk.ID class="text-primary mr-3"><i class="far fa-eye"></i> View</a>
                         <a style="cursor: pointer; pointer-events: @(!bk.CanCancel(DateTime.Now) ? "none": "default"); opacity: @(!bk.CanCancel(DateTime.Now) ? "0.5": "1")" class="text-danger mr-3 mb-3 mb-md-0" onclick="showCancelForm(this, this.getAttribute('data-id'))" data-id="@bk.ID"><i class="far fa-times-circle"></i> Cancel</a>
+                        <a href="#review-modal" style="cursor: pointer; pointer-events: @(!bk.CanBeReviewed(DateTime.Now) ? "none": "default"); opacity: @(!bk.CanBeReviewed(DateTime.Now) ? "0.25": "1")" class="text-info mr-3 mb-3 mb-md-0" data-toggle="modal" data-id="@bk.ID" onclick="$('#bookingID').val($(this).data('id'))"><i class="fas fa-pen"></i> Review</a>
                     </td>
                 </tr>
             }
@@ -41,11 +42,46 @@
 </div>
 
 <div class="modal fade" id="cancel-booking-container" tabindex="-1" role="dialog" aria-labelledby="cancelationModalLabel" aria-hidden="true">
+</div>
 
+<div class="modal fade" id="review-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form asp-controller="Customer" asp-action="Review" asp-route-returnUrl="@(Context.Request.Path + Context.Request.QueryString)">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="review-modalLabel">Write a review</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <input id="bookingID" type="hidden" name="bookingID" />
+                    <span id="TourReview_Stars" data-stars="@(Model.TourReview?.Stars ?? 1)"></span>
+                    <div class="form-group mt-1">
+                        <label>Your Comment</label>
+                        <textarea rows="5" asp-for="@Model.TourReview.Content" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <partial name="_DataTable" model="@tblID" />
 
 @section Scripts {
     <script src="~/js/booking.js"></script>
-}
+    <script src="~/lib/start-rating/js/jquery-rate-picker.js"></script>
+    <script>
+        $.ratePicker("#TourReview_Stars", {
+            rate: function (stars) {
+                console.log(stars);
+            },
+            max: 5
+        });
+    </script>
+} 

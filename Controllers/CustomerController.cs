@@ -3,6 +3,7 @@ using Core.Entities;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,15 +12,16 @@ namespace Client.Controllers
     public class CustomerController : BaseController
     {
         private readonly IBookingRepository _bookingRepository;
+        private readonly ITourReviewRepository _tourReviewRepository;
         private readonly ICustomerRepository _customerRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CustomerController(IUnitOfWork unitOfWork, ICustomerRepository customerRepository, IBookingRepository bookingRepository)
+        public CustomerController(IUnitOfWork unitOfWork, ICustomerRepository customerRepository, IBookingRepository bookingRepository, ITourReviewRepository tourReviewRepository)
         {
             _unitOfWork = unitOfWork;
             _bookingRepository = bookingRepository;
             _customerRepository = customerRepository;
-
+            _tourReviewRepository = tourReviewRepository;
         }
 
         // Display user main screen, including user details and list of upcoming trips
@@ -61,6 +63,43 @@ namespace Client.Controllers
             await _customerRepository.UpdateAsync(existingUser);
             await _unitOfWork.CommitAsync();
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Review(int bookingID, TourReview tourReview, string returnUrl)
+        {
+            returnUrl ??= Url.Action("Index");
+
+            var booking = await _bookingRepository.Queryable
+                .Include(bk => bk.Trip)
+                .FirstOrDefaultAsync(bk => bk.ID == bookingID);
+
+            if (booking == null)
+            {
+                return NotFound();
+            }
+
+
+            var customer = await _customerRepository.Queryable
+                .Include(cus => cus.Bookings)
+                .ThenInclude(bk => bk.Trip)
+                .FirstOrDefaultAsync(cus => cus.ID == UserID);
+
+            if (!booking.CanBeReviewed(DateTime.Now))
+            {
+                return Forbid();
+            }
+
+            tourReview.OwnerID = customer.ID;
+            tourReview.TourID = booking.Trip.TourID;
+            tourReview.LastUpdated = DateTime.Now;
+            booking.Reviewed = true;
+
+            await _bookingRepository.UpdateAsync(booking);
+            await _tourReviewRepository.AddAsync(tourReview);
+            await _unitOfWork.CommitAsync();
+
+            return LocalRedirect(returnUrl);
         }
     }
 }

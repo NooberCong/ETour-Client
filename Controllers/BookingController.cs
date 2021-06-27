@@ -320,7 +320,7 @@ namespace Client.Controllers
             return View(booking.GetBookingCancelInfo(DateTime.Now));
         }
 
-        public IActionResult History()
+        public async Task<IActionResult> History()
         {
             IEnumerable<Booking> bookings = _bookingRepository.Queryable
                 .Where(bk => bk.OwnerID == UserID)
@@ -328,7 +328,13 @@ namespace Client.Controllers
                 .Include(bk => bk.Trip).ThenInclude(t => t.Tour)
                 .AsEnumerable();
 
-            return View(bookings);
+            var customer = await _customerRepository.Queryable
+                .Include(cus => cus.Reviews)
+                .FirstOrDefaultAsync(cus => cus.ID == UserID);
+
+            return View(new BookingHistoryModel { 
+                Bookings = bookings,
+            });
         }
 
         [HttpPost]
