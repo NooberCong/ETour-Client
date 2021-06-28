@@ -69,7 +69,7 @@ namespace Client.Controllers
             
             _Answer.LastUpdated = DateTime.Now;
            
-            _Answer.Author = _Question.Author.Name;
+            _Answer.Author = _Question.Owner.Name;
             _Answer.QuestionID = _Question.ID;
             _Answer.AuthoredByCustomer = true;
             await _answerRepository.AddAsync(_Answer);
