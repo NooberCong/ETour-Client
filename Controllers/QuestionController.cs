@@ -64,15 +64,15 @@ namespace Client.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAns(Question _Question)
+        public async Task<IActionResult> CreateAns(Question _Question, Answer _Answer)
         {
-            Answer ans = new Answer();
-            ans.LastUpdated = DateTime.Now;
-            ans.Content = _Question.Content;
-            ans.Author = _Question.Author.Name;
-            ans.QuestionID = _Question.ID;
-            ans.AuthoredByCustomer = true;
-            await _answerRepository.AddAsync(ans);
+            
+            _Answer.LastUpdated = DateTime.Now;
+           
+            _Answer.Author = _Question.Author.Name;
+            _Answer.QuestionID = _Question.ID;
+            _Answer.AuthoredByCustomer = true;
+            await _answerRepository.AddAsync(_Answer);
             await _unitOfWork.CommitAsync();
             return RedirectToAction("Detail", new {id= _Question.ID });
 
