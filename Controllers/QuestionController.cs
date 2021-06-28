@@ -26,9 +26,11 @@ namespace Client.Controllers
         public IActionResult Index()
         {
             IEnumerable<Question> Questions = _questionRepository.Queryable.Include(q => q.Author);
+            
             return View(new QuestionListModel
             {
                 Questions = Questions,
+                AuthorID = UserID
             });
         }
         //ok
