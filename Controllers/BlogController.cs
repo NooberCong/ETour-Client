@@ -33,7 +33,7 @@ namespace Client.Controllers
         // Returns View(postList)
         public IActionResult Index(BlogFilterParams filterParams, int pageNumber = 1)
         {
-            IEnumerable<IPost<Employee>> posts = _postRepository.Queryable.Include(p => p.Author)
+            IEnumerable<IPost<Employee>> posts = _postRepository.Queryable.Include(p => p.Owner)
                .Select(p => (IPost<Employee>)p);
 
             var filteredPosts = _filterService.ApplyFilter(posts, filterParams);
@@ -51,7 +51,7 @@ namespace Client.Controllers
         public async Task<IActionResult> Detail(int id)
         {
             var post = await _postRepository.Queryable
-                .Include(p => p.Author)
+                .Include(p => p.Owner)
                 .FirstOrDefaultAsync(p => p.ID == id);
 
             if (post == null)
@@ -59,7 +59,7 @@ namespace Client.Controllers
                 return NotFound();
             }
 
-            IEnumerable<IPost<Employee>> recommendCandidates = _postRepository.Queryable.Include(p => p.Author)
+            IEnumerable<IPost<Employee>> recommendCandidates = _postRepository.Queryable.Include(p => p.Owner)
                .Select(p => (IPost<Employee>)p);
 
             return View(new PostDetailModel

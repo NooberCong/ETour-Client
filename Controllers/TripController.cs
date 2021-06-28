@@ -48,7 +48,7 @@ namespace Client.Controllers
 
             var filteredTrips = _tripFilterService.ApplyFilter(trips, filterParams);
 
-            var tours = _tourRepository.QueryFiltered(tour => tour.IsOpen);
+            var tours = _tourRepository.Queryable.Where(tour => tour.IsOpen).AsEnumerable();
 
             return View(new TripListModel
             {
@@ -64,6 +64,8 @@ namespace Client.Controllers
         {
             var trip = await _tripRepository.Queryable
                 .Include(tr => tr.Tour)
+                .ThenInclude(t => t.Reviews)
+                .ThenInclude(rev => rev.Owner)
                 .Include(tr => tr.Itineraries)
                 .Include(tr => tr.TripDiscounts)
                 .ThenInclude(tr => tr.Discount)
@@ -74,6 +76,11 @@ namespace Client.Controllers
             {
                 return NotFound();
             }
+
+            var customer = await _customerRepository.Queryable
+                .Include(cus => cus.Bookings)
+                .ThenInclude(bk => bk.Trip)
+                .FirstOrDefaultAsync(cus => cus.ID == UserID);
 
             var recommendCandidates = _tripRepository.Queryable
                 .Where(tr => tr.IsOpen)
@@ -86,7 +93,7 @@ namespace Client.Controllers
             {
                 Trip = trip,
                 IsTourFollowed = await CheckFollowing(trip.TourID),
-                Recommendations = _recommendationService.GetRecommendations(recommendCandidates, trip)
+                Recommendations = _recommendationService.GetRecommendations(recommendCandidates, trip),
             });
         }
 

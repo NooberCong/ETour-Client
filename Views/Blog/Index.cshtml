@@ -47,7 +47,7 @@
                         <a asp-action="Detail" asp-route-id="@post.ID" class="h5 card-link" style="color: black">@post.Title</a>
                         <p class="small text-muted text-uppercase my-3">
                             by
-                            <a href="#!" class="text-reset"><strong>@post.Author.FullName</strong></a>
+                            <a href="#!" class="text-reset"><strong>@post.Owner.FullName</strong></a>
                             <a href="#!" class="text-reset float-right">@post.LastUpdated.ToCustomDateString()</a>
                         </p>
                         <hr>
