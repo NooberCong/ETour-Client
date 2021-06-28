@@ -148,12 +148,16 @@ namespace Client.Controllers
             booking.PaymentDeadline = DateTime.Now.AddDays(2);
             booking.TicketCount = booking.CustomerInfos.Count;
             booking.PointsApplied = applyAmount;
+            booking.LastUpdated = DateTime.Now;
             booking.SetDeposit(trip.Deposit);
 
-            customer.Consume(applyAmount);
-            customer.Reward(trip.RewardPoints);
+            booking.ChargePoints(customer);
 
             await _customerRepository.UpdateAsync(customer);
+            foreach (var pointLog in booking.PointLogs)
+            {
+                _customerRepository.AddPointLog(pointLog);
+            }
             await _bookingRepository.AddAsync(booking);
             await _unitOfWork.CommitAsync();
 
@@ -266,6 +270,7 @@ namespace Client.Controllers
                 .Include(bk => bk.Owner)
                 .Include(bk => bk.Trip)
                 .ThenInclude(tr => tr.Tour)
+                .Include(bk => bk.Owner)
                 .FirstOrDefaultAsync(bk => bk.ID == id);
 
             Invoice invoice;
@@ -283,9 +288,14 @@ namespace Client.Controllers
             else
             {
                 booking.ChangeStatus(Booking.BookingStatus.Completed);
+                booking.RewardPoints(booking.Owner);
                 invoice = booking.GenerateFinalPaymentInvoice(Invoice.PaymentMethod.Zalo_Pay);
             }
 
+            foreach (var pointLog in booking.PointLogs)
+            {
+                _customerRepository.AddPointLog(pointLog);
+            }
             await _invoiceRepository.AddAsync(invoice);
             await _bookingRepository.UpdateAsync(booking);
             await _unitOfWork.CommitAsync();
@@ -358,10 +368,14 @@ namespace Client.Controllers
 
 
             booking.Cancel(cancelDate);
-            booking.Owner.Reward(booking.Refunded.Value);
+            booking.RefundPoints(booking.Owner);
 
             await _customerRepository.UpdateAsync(booking.Owner);
             await _bookingRepository.UpdateAsync(booking);
+            foreach (var pointLog in booking.PointLogs)
+            {
+                _customerRepository.AddPointLog(pointLog);
+            }
             await _unitOfWork.CommitAsync();
 
             return RedirectToAction("Detail", new { id = booking.ID });
