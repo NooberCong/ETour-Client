@@ -55,7 +55,6 @@ namespace ETourClient
             services.AddScoped<TripRecommendationService>();
             services.AddScoped<BlogRecommendationService>();
             services.AddScoped<QRCodeService>();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
