@@ -57,7 +57,7 @@ namespace Client.Controllers
 
             var applicablePoints = new Booking { Total = trip.GetSalePriceFor(CustomerInfo.CustomerAgeGroup.Adult) }.GetApplicablePoints(customer.Points);
 
-            if (trip == null || !trip.IsOpen)
+            if (trip == null || !trip.CanBook(DateTime.Now))
             {
                 return NotFound();
             }
@@ -87,7 +87,7 @@ namespace Client.Controllers
                             .FirstOrDefaultAsync(tr => tr.ID == booking.TripID);
             var customer = await _customerRepository.FindAsync(UserID);
 
-            if (trip == null)
+            if (trip == null || !trip.CanBook(DateTime.Now))
             {
                 return NotFound();
             }
