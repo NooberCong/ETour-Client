@@ -4,7 +4,8 @@
     ViewData["Title"] = "Question detail";
 
 }
-<style>    .avatar {
+<style>
+    .avatar {
         width: 50px;
         height: 50px;
     }
@@ -16,7 +17,7 @@
     <div class="row message-wrapper rounded shadow mb-4">
         <div class="col-md-4 message-sideleft  mt-2 mb-3">
             <div class="panel ">
-               
+
                 <div class="panel-body no-padding">
                     <div class="list-group no-margin list-message">
                         <a href="#" class="list-group-item">
@@ -28,7 +29,7 @@
                             <span class="@Model._Question.Status.Badge() pull-right">@Model._Question.Status.ToCustomString()</span>
                             <div class="clearfix"></div>
                         </a>
-                        
+
                     </div><!-- /.list-group -->
                 </div><!-- /.panel-body -->
             </div><!-- /.panel -->
@@ -43,14 +44,11 @@
                         </a><br />
                         <div class="media-body ml-3">
                             <h4 class="media-heading">@Model._Question.Owner.Name </h4>
-                          
                         </div>
                     </div>
                 </div><!-- /.panel-heading -->
-                <div class="panel-body m-3">
-                  
-
-                    <p class="lead">
+                <div class="panel-body">
+                    <p class="lead mt-3">
                         @Model._Question.Content
                     </p>
 
@@ -64,7 +62,6 @@
                     <div class="panel">
                         <div class="panel-heading">
                             <div class="media">
-
                                 <div class="media-body">
                                     <h4 class="media-heading"> @q.Author</h4>
                                     <small> Answered: @q.LastUpdated.Day/ @q.LastUpdated.Month/ @q.LastUpdated.Year at  @q.LastUpdated.Hour.@q.LastUpdated.Minute </small>
@@ -73,13 +70,13 @@
                         </div>
                         <div class="panel-body">
                             <br />
-                            <p class="lead m-3">
+                            <p class="lead">
                                 @q.Content
                             </p>
                             <hr>
-
                         </div>
-                    </div>}
+                    </div>
+                }
             }
         </div>
 
@@ -87,19 +84,12 @@
 
     <div class="row">
         <form asp-action="CreateAns" method="post" class="col-12 mt-5">
-            <div class="form-group" hidden>
-                <b> <label asp-for="@Model._Question.ID"></label></b>
-                <input asp-for="@Model._Question.ID" type="text" class="form-control">
-
-            </div>
-            <div class="form-group" hidden>
-                <label asp-for="@Model._Question.Owner.Name"></label>
-                <input asp-for="@Model._Question.Owner.Name" type="text" class="form-control"/>
-            </div>
+            <input asp-for="@Model._Question.ID" type="hidden" class="form-control">
+            <input asp-for="@Model._Question.Owner.Name" type="hidden" class="form-control" />
 
             <div class="form-group">
                 <b><label asp-for="@Model._Answer.Content">Answer</label></b>
-                <input asp-for="@Model._Answer.Content" type="text" rows="5" cols="20" class="form-control" placeholder="Type your answer here">
+                <textarea rows="5" asp-for="@Model._Answer.Content" type="text" rows="5" cols="20" class="form-control" placeholder="Type your answer here"></textarea>
             </div>
 
             <button type="submit" class="btn btn-primary mb-2">Submit</button>

@@ -65,6 +65,17 @@ namespace Client.Controllers
             return RedirectToAction("Index");
         }
 
+        public async Task<IActionResult> Points()
+        {
+            Customer customer = await _customerRepository.FindAsync(UserID);
+            IEnumerable<PointLog> logs = _customerRepository.GetPointsLogs(customer);
+
+            return View(new CustomerPointsModel { 
+                Points = customer.Points,
+                PointLogs = logs
+            });
+        }
+
         [HttpPost]
         public async Task<IActionResult> Review(int bookingID, TourReview tourReview, string returnUrl)
         {

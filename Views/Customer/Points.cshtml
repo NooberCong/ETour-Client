@@ -1,0 +1,33 @@
+﻿@model CustomerPointsModel
+@{
+    ViewData["Title"] = "Pointlog";
+}
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between mb-3">
+        <h3>Point Activities</h3>
+        <p class="bg-light p-2 font-weight-light text-info">Your Points: @Model.Points</p>
+    </div>
+    @if (Model.PointLogs.Count() > 0)
+    {
+        <ul class="list-group">
+            @foreach (var p in Model.PointLogs)
+            {
+                <li class="list-group-item shadow-hover mb-3">
+                    <h4 class="text-@(p.Amount > 0? "success": "danger")">
+                        @if (p.Amount > 0)
+                        {<span>+</span>}@p.Amount Points
+                    </h4>
+                    <p><b> @p.Trigger</b></p>
+                    <p>@p.Description</p>
+                    <p><small>@p.LastUpdated.Date</small></p>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p class="text-muted text-center mt-5">No have no point activity</p>
+    }
+
+</div>
