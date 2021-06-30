@@ -16,6 +16,7 @@ namespace Client.Controllers
     public class BookingController : BaseController
     {
         private readonly IZaloPayService _zaloPayService;
+        private readonly IMomoPaymentService _momoPaymentService;
         private readonly QRCodeService _QRCodeService;
         private readonly ITripRepository _tripRepository;
         private readonly ICustomerRepository _customerRepository;
@@ -24,7 +25,7 @@ namespace Client.Controllers
         private readonly IUnitOfWork _unitOfWork;
         // Display list of the tickets user had added to cart but not yet paid for
         // Return View(bookingList)
-        public BookingController(IUnitOfWork unitOfWork, IBookingRepository bookingrepository, ICustomerRepository customerRepository, ITripRepository tripRepository, IInvoiceRepository invoiceRepository, IZaloPayService zaloPayService, QRCodeService QRCodeService)
+        public BookingController(IUnitOfWork unitOfWork, IBookingRepository bookingrepository, ICustomerRepository customerRepository, ITripRepository tripRepository, IInvoiceRepository invoiceRepository, IZaloPayService zaloPayService, IMomoPaymentService momoPaymentService, QRCodeService QRCodeService)
         {
             _bookingRepository = bookingrepository;
             _customerRepository = customerRepository;
@@ -32,6 +33,7 @@ namespace Client.Controllers
             _unitOfWork = unitOfWork;
             _zaloPayService = zaloPayService;
             _invoiceRepository = invoiceRepository;
+            _momoPaymentService = momoPaymentService;
             _QRCodeService = QRCodeService;
         }
         public IActionResult Index()
@@ -215,7 +217,8 @@ namespace Client.Controllers
                     viewName = "ZaloPay";
                     break;
                 case Invoice.PaymentMethod.Momo:
-                    break;
+                    paymentUrl = await _momoPaymentService.CreateOrderAsync(booking, (long)booking.Deposit, $"Toure: Deposit for tour {booking.Trip.Tour.Title}");
+                    return Redirect(paymentUrl);
                 case Invoice.PaymentMethod.GPay:
                     break;
                 default:
@@ -275,7 +278,7 @@ namespace Client.Controllers
 
             Invoice invoice;
 
-            if (booking == null || booking.Status != Booking.BookingStatus.Awaiting_Deposit && booking.Status != Booking.BookingStatus.Awaiting_Payment)
+            if (booking == null || booking.PaymentDeadline <= DateTime.Now || booking.Status != Booking.BookingStatus.Awaiting_Deposit && booking.Status != Booking.BookingStatus.Awaiting_Payment)
             {
                 return NotFound();
             }
