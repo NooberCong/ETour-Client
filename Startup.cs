@@ -2,6 +2,7 @@ using Client.Authentication;
 using Core.Services;
 using Infrastructure.Extentions;
 using Infrastructure.Hubs;
+using Microsoft.AspNet.SignalR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -53,8 +54,12 @@ namespace ETourClient
             services.AddScoped<ClientCookieAuthenticationEvents>();
             services.AddScoped<TripFilterService>();
 
-            services.AddSignalR();
+            services.AddSignalR(options =>
+            {
+                options.EnableDetailedErrors = true;
 
+            });
+            
             services.AddScoped<BlogFilterService>();
             services.AddScoped<QRCodeService>();
 
