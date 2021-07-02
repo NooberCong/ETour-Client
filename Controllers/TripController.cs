@@ -44,11 +44,13 @@ namespace Client.Controllers
                 .Include(tr => tr.TripDiscounts)
                 .ThenInclude(td => td.Discount)
                 .Include(tr => tr.Bookings)
+
                 .AsEnumerable();
 
             var filteredTrips = _tripFilterService.ApplyFilter(trips, filterParams);
 
             var tours = _tourRepository.Queryable.Where(tour => tour.IsOpen).AsEnumerable();
+
 
             return View(new TripListModel
             {

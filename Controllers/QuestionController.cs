@@ -27,10 +27,13 @@ namespace Client.Controllers
         // Return View(questionList)
         public IActionResult Index()
         {
+
             IEnumerable<Question> Questions = _questionRepository.Queryable.Include(q => q.Owner);
+
             return View(new QuestionListModel
             {
                 Questions = Questions,
+                AuthorID = UserID
             });
         }
         //ok
