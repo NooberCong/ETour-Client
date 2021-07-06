@@ -8,6 +8,52 @@
     #content p {
         width: 100% !important;
     }
+
+    @@media (min-width: 0) {
+        .g-mr-15 {
+            margin-right: 1.07143rem !important;
+        }
+    }
+
+    @@media (min-width: 0) {
+        .g-mt-3 {
+            margin-top: 0.21429rem !important;
+        }
+    }
+
+    .g-height-50 {
+        height: 50px;
+    }
+
+    .g-width-50 {
+        width: 50px !important;
+    }
+
+    @@media (min-width: 0) {
+        .g-pa-30 {
+            padding: 2.14286rem !important;
+        }
+    }
+
+    .g-bg-secondary {
+        background-color: #fafafa !important;
+    }
+
+    .u-shadow-v18 {
+        box-shadow: 0 5px 10px -6px rgba(0, 0, 0, 0.15);
+    }
+
+    .g-color-gray-dark-v4 {
+        color: #777 !important;
+    }
+
+    .g-font-size-12 {
+        font-size: 0.85714rem !important;
+    }
+
+    .media-comment {
+        margin-top: 20px
+    }
 </style>
 
 <div class="container py-5">
@@ -33,48 +79,43 @@
     <section id="content" class="mb-3 overflow-hidden w-100">
         @Html.Raw(Model.Post.Content)
     </section>
-    <!-- Comments section-->
-    <section>
-        <div class="card bg-light">
-            <div class="card-body">
-                <!-- Comment form-->
-                <h4 class="mb-4">Comments<span class="font-weight-normal ml-3">4</span></h4>
-                <!-- Comment with nested comments-->
-                <div class="d-flex mb-4">
-                    <!-- Parent comment-->
-                    <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-                    <div class="ms-3">
-                        <div class="fw-bold">Commenter Name</div>
-                        If you're going to lead a space frontier, it has to be government; it'll never be private enterprise. Because the space frontier is dangerous, and it's expensive, and it has unquantified risks.
-                        <!-- Child comment 1-->
-                        <div class="d-flex mt-4">
-                            <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-                            <div class="ms-3">
-                                <div class="fw-bold">Commenter Name</div>
-                                And under those conditions, you cannot establish a capital-market evaluation of that enterprise. You can't get investors.
+    <div class="container">
+        <h3 class="my-5">Comments</h3>
+        <div class="row mb-0 p-0">
+            @foreach (var comment in Model.Post.Comments)
+            {
+                <div class="col-md-8">
+                    <div class="media g-mb-30 media-comment">
+                        <img class="d-flex g-width-50 g-height-50 rounded-circle g-mt-3 g-mr-15" src="@comment.Owner.ImgUrl" alt="Commentator image">
+                        <div class="media-body u-shadow-v18 g-bg-secondary g-pa-30">
+                            <div class="g-mb-15">
+                                <h5 class="h5 g-color-gray-dark-v1 mb-0">@comment.Owner.Name</h5>
+                                <span class="g-color-gray-dark-v4 g-font-size-12">@comment.LastUpdated.ToCustomDateString()</span>
                             </div>
-                        </div>
-                        <!-- Child comment 2-->
-                        <div class="d-flex mt-4">
-                            <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-                            <div class="ms-3">
-                                <div class="fw-bold">Commenter Name</div>
-                                When you put money directly to a problem, it makes a good headline.
-                            </div>
+                            <p>
+                                @comment.Content
+                            </p>
                         </div>
                     </div>
                 </div>
-                <!-- Single comment-->
-                <div class="d-flex">
-                    <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-                    <div class="ms-3">
-                        <div class="fw-bold">Commenter Name</div>
-                        When I look at the universe and all the ways the universe wants to kill us, I find it hard to reconcile that with statements of beneficence.
-                    </div>
+            }
+            @if (!Model.Post.Comments.Any())
+            {
+                <p class="ml-3 text-muted">No comments yet, be the first to comment!</p>
+            }
+        </div>
+        <form class="col-md-8 p-0 my-3" asp-action="AddComment" method="post">
+            <input type="hidden" asp-for="@Model.Comment.PostID" value="@Model.Post.ID" />
+            <div class="form-group">
+                <label asp-for="Comment.Content" class="h5">Leave a comment</label>
+                <textarea asp-for="Comment.Content" rows="5" id="commentArea" class="form-control"></textarea>
+                <span asp-validation-for="Comment.Content" class="text-danger"></span>
+                <div class="w-100 d-flex justify-content-end mt-3">
+                    <button class="btn btn-primary ml-auto">Submit comment</button>
                 </div>
             </div>
-        </div>
-    </section>
+        </form>
+    </div>
     @if (Model.Recommendations.Any())
     {
         <h3 class="my-5">You may also be interested in</h3>

@@ -337,13 +337,10 @@ namespace Client.Controllers
         {
             IEnumerable<Booking> bookings = _bookingRepository.Queryable
                 .Where(bk => bk.OwnerID == UserID)
+                .Include(bk => bk.Review)
                 .Include(bk => bk.CustomerInfos)
                 .Include(bk => bk.Trip).ThenInclude(t => t.Tour)
                 .AsEnumerable();
-
-            var customer = await _customerRepository.Queryable
-                .Include(cus => cus.Reviews)
-                .FirstOrDefaultAsync(cus => cus.ID == UserID);
 
             return View(new BookingHistoryModel { 
                 Bookings = bookings,

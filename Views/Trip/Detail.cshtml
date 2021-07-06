@@ -362,11 +362,11 @@
                         <div class="bg-white rounded shadow-sm p-4 mb-4 restaurant-detailed-ratings-and-reviews">
                             <a href="#" class="btn btn-outline-primary btn-sm float-right">Top Rated</a>
                             <h5 class="mb-1">All Ratings and Reviews</h5>
-                            @foreach (var review in Model.Trip.Tour.Reviews)
+                            @foreach (var review in Model.Reviews)
                             {
                                 <div class="reviews-members pt-4 pb-4">
                                     <div class="media">
-                                        <a href="#"><img src="@review.Owner.ImgUrl" class="mr-3 rounded-pill"></a>
+                                        <a href="#"><img src="@review.Booking.Owner.ImgUrl" class="mr-3 rounded-pill"></a>
                                         <div class="media-body">
                                             <div class="reviews-members-header">
                                                 <span class="star-rating float-right text-warning">
@@ -375,7 +375,7 @@
                                                         <i class="fas fa-star"></i>
                                                     }
                                                 </span>
-                                                <h6 class="mb-1"><a class="text-black" href="#">@review.Owner.Name</a></h6>
+                                                <h6 class="mb-1"><a class="text-black" href="#">@review.Booking.Owner.Name</a></h6>
                                                 <p class="text-gray">@review.LastUpdated.ToCustomDateString()</p>
                                             </div>
                                             <div class="reviews-members-body">
@@ -390,7 +390,7 @@
                                 <hr>
                             }
                             <a class="text-center w-100 d-block mt-4 font-weight-bold" href="#">See All Reviews</a>
-                            @if (!Model.Trip.Tour.Reviews.Any())
+                            @if (!Model.Reviews.Any())
                             {
                                 <p class="text-muted text-center my-5">This tour has no reviews yet!</p>
 

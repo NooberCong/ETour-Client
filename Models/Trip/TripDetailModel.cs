@@ -7,6 +7,7 @@ namespace Client.Models
     {
         public Trip Trip { get; set; }
         public bool IsTourFollowed { get; set; }
+        public IEnumerable<TourReview> Reviews { get; set; }
         public IEnumerable<Trip> Recommendations { get; set; }
     }
 }
