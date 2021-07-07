@@ -14,18 +14,20 @@ using System.Threading.Tasks;
 
 namespace Client.Controllers
 {
-    public class BlogController : Controller
+    public class BlogController : BaseController
     {
         private static readonly int _pageSize = 10;
         private readonly BlogFilterService _filterService;
         private readonly BlogRecommendationService _recommendationService;
         private readonly IPostRepository<Post, Employee> _postRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public BlogController(IPostRepository<Post, Employee> postRepository, BlogFilterService filterService, BlogRecommendationService recommendationService)
+        public BlogController(IPostRepository<Post, Employee> postRepository, BlogFilterService filterService, BlogRecommendationService recommendationService, IUnitOfWork unitOfWork)
         {
             _postRepository = postRepository;
             _filterService = filterService;
             _recommendationService = recommendationService;
+            _unitOfWork = unitOfWork;
         }
 
         // Display list of blog posts
@@ -52,6 +54,8 @@ namespace Client.Controllers
         {
             var post = await _postRepository.Queryable
                 .Include(p => p.Owner)
+                .Include(p => p.Comments)
+                .ThenInclude(cmt => cmt.Owner)
                 .FirstOrDefaultAsync(p => p.ID == id);
 
             if (post == null)
@@ -67,6 +71,27 @@ namespace Client.Controllers
                 Post = post,
                 Recommendations = _recommendationService.GetRecommendations(recommendCandidates, post)
             });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddComment(Comment comment)
+        {
+            var post = await _postRepository.FindAsync(comment.PostID);
+
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                comment.OwnerID = UserID;
+                comment.LastUpdated = DateTime.Now;
+                await _postRepository.AddComment(comment);
+                await _unitOfWork.CommitAsync();
+            }
+
+            return RedirectToAction(nameof(Detail), new { id = post.ID });
         }
     }
 }

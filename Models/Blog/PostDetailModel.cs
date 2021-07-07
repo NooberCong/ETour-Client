@@ -10,6 +10,7 @@ namespace Client.Models
     public class PostDetailModel
     {
         public Post Post { get; set; }
+        public Comment Comment { get; set; }
         public IEnumerable<IPost<Employee>> Recommendations { get; set; }
     }
 }

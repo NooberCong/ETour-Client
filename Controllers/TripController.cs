@@ -18,14 +18,16 @@ namespace Client.Controllers
 
         private readonly ITripRepository _tripRepository;
         private readonly ITourRepository _tourRepository;
+        private readonly ITourReviewRepository _tourReviewRepository;
         private readonly ICustomerRepository _customerRepository;
         private readonly TripFilterService _tripFilterService;
         private readonly TripRecommendationService _recommendationService;
 
-        public TripController(ITripRepository tripRepository, ITourRepository tourRepository, ICustomerRepository customerRepository, TripFilterService tripFilterService, TripRecommendationService recommendationService)
+        public TripController(ITripRepository tripRepository, ITourRepository tourRepository, ICustomerRepository customerRepository, ITourReviewRepository tourReviewRepository, TripFilterService tripFilterService, TripRecommendationService recommendationService)
         {
             _tripRepository = tripRepository;
             _tourRepository = tourRepository;
+            _tourReviewRepository = tourReviewRepository;
             _customerRepository = customerRepository;
             _tripFilterService = tripFilterService;
             _recommendationService = recommendationService;
@@ -66,8 +68,6 @@ namespace Client.Controllers
         {
             var trip = await _tripRepository.Queryable
                 .Include(tr => tr.Tour)
-                .ThenInclude(t => t.Reviews)
-                .ThenInclude(rev => rev.Owner)
                 .Include(tr => tr.Itineraries)
                 .Include(tr => tr.TripDiscounts)
                 .ThenInclude(tr => tr.Discount)
@@ -91,10 +91,13 @@ namespace Client.Controllers
                 .ThenInclude(td => td.Discount)
                 .Include(tr => tr.Bookings);
 
+            var reviews = _tourReviewRepository.GetReviewsForTour(trip.Tour);
+
             return View(new TripDetailModel
             {
                 Trip = trip,
                 IsTourFollowed = await CheckFollowing(trip.TourID),
+                Reviews = reviews,
                 Recommendations = _recommendationService.GetRecommendations(recommendCandidates, trip),
             });
         }

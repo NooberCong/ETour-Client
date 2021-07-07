@@ -1,6 +1,7 @@
 ﻿using Client.Models;
 using Core.Entities;
 using Core.Interfaces;
+using Infrastructure.InterfaceImpls;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,13 +14,15 @@ namespace Client.Controllers
     {
         private readonly IBookingRepository _bookingRepository;
         private readonly ITourReviewRepository _tourReviewRepository;
+        private readonly IPostRepository<Post, Employee> _postRepository;
         private readonly ICustomerRepository _customerRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CustomerController(IUnitOfWork unitOfWork, ICustomerRepository customerRepository, IBookingRepository bookingRepository, ITourReviewRepository tourReviewRepository)
+        public CustomerController(IUnitOfWork unitOfWork, ICustomerRepository customerRepository, IBookingRepository bookingRepository, ITourReviewRepository tourReviewRepository, IPostRepository<Post, Employee> postRepository)
         {
             _unitOfWork = unitOfWork;
             _bookingRepository = bookingRepository;
+            _postRepository = postRepository;
             _customerRepository = customerRepository;
             _tourReviewRepository = tourReviewRepository;
         }
@@ -79,10 +82,11 @@ namespace Client.Controllers
         [HttpPost]
         public async Task<IActionResult> Review(int bookingID, TourReview tourReview, string returnUrl)
         {
-            returnUrl ??= Url.Action("Index");
+            returnUrl ??= Url.Action(nameof(Index));
 
             var booking = await _bookingRepository.Queryable
                 .Include(bk => bk.Trip)
+                .Include(bk => bk.Review)
                 .FirstOrDefaultAsync(bk => bk.ID == bookingID);
 
             if (booking == null)
@@ -91,20 +95,13 @@ namespace Client.Controllers
             }
 
 
-            var customer = await _customerRepository.Queryable
-                .Include(cus => cus.Bookings)
-                .ThenInclude(bk => bk.Trip)
-                .FirstOrDefaultAsync(cus => cus.ID == UserID);
-
             if (!booking.CanBeReviewed(DateTime.Now))
             {
                 return Forbid();
             }
 
-            tourReview.OwnerID = customer.ID;
-            tourReview.TourID = booking.Trip.TourID;
+            tourReview.BookingID = booking.ID;
             tourReview.LastUpdated = DateTime.Now;
-            booking.Reviewed = true;
 
             await _bookingRepository.UpdateAsync(booking);
             await _tourReviewRepository.AddAsync(tourReview);
