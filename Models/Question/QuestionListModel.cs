@@ -12,5 +12,6 @@ namespace Client.Models
       public Question _Question { get; set; }
       public Customer Customer { get; set; }
        public Answer _Answer { get; set; }
+
     }
 }

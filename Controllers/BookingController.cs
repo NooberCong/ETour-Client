@@ -185,11 +185,13 @@ namespace Client.Controllers
             return booking.Status switch
             {
                 Booking.BookingStatus.Awaiting_Deposit => View("Views/Booking/Deposit.cshtml", booking),
+
                 Booking.BookingStatus.Processing => View("Views/Booking/Processing.cshtml", booking),
                 Booking.BookingStatus.Awaiting_Payment => View("Views/Booking/Payment.cshtml", booking),
                 Booking.BookingStatus.Completed => View("Views/Booking/Completed.cshtml", booking),
                 Booking.BookingStatus.Canceled => View("Views/Booking/Canceled.cshtml", booking),
                 _ => throw new InvalidOperationException(),
+
             };
         }
 
@@ -260,10 +262,12 @@ namespace Client.Controllers
 
             return View(new CustomerInfosModel
             {
+
                 AgeGroups = ageGroups,
                 SalePrices = total,
                 ApplyPoints = applyPoints,
                 ApplyAmount = applicablePoints
+
             });
         }
 
