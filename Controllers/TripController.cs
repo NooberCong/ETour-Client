@@ -46,18 +46,25 @@ namespace Client.Controllers
                 .Include(tr => tr.TripDiscounts)
                 .ThenInclude(td => td.Discount)
                 .Include(tr => tr.Bookings)
-
+                .ThenInclude(bk => bk.Review)
                 .AsEnumerable();
+
+            trips = trips.Select(tr =>
+            {
+                tr.Tour.ReviewSummary = TourReviewSummary.FromReviews(_tourReviewRepository.GetReviewsForTour(tr.Tour));
+                return tr;
+            });
 
             var filteredTrips = _tripFilterService.ApplyFilter(trips, filterParams);
 
             var tours = _tourRepository.Queryable.Where(tour => tour.IsOpen).AsEnumerable();
 
+            var paginatedTrips = PaginatedList<Trip>.Create(filteredTrips.AsQueryable(), pageNumber, _pageSize);
 
             return View(new TripListModel
             {
-                Trips = PaginatedList<Trip>.Create(filteredTrips.AsQueryable(), pageNumber, _pageSize),
-                Tours = tours
+                Trips = paginatedTrips,
+                Tours = tours,
             });
         }
 
@@ -72,7 +79,10 @@ namespace Client.Controllers
                 .Include(tr => tr.TripDiscounts)
                 .ThenInclude(tr => tr.Discount)
                 .Include(tr => tr.Bookings)
+                .ThenInclude(bk => bk.Review)
                 .FirstOrDefaultAsync(tr => tr.ID == id);
+
+            trip.Tour.ReviewSummary = TourReviewSummary.FromReviews(_tourReviewRepository.GetReviewsForTour(trip.Tour));
 
             if (trip == null || !trip.IsOpen)
             {

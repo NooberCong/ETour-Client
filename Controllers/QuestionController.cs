@@ -27,13 +27,12 @@ namespace Client.Controllers
         // Return View(questionList)
         public IActionResult Index()
         {
-
             IEnumerable<Question> Questions = _questionRepository.Queryable.Include(q => q.Owner);
 
             return View(new QuestionListModel
             {
                 Questions = Questions,
-                AuthorID = UserID
+                UserID = UserID
             });
         }
         //ok
@@ -45,41 +44,32 @@ namespace Client.Controllers
         {
             _Question.OwnerID = UserID;
             _Question.LastUpdated = DateTime.Now;
-            
+
             await _questionRepository.AddAsync(_Question);
             await _unitOfWork.CommitAsync();
             return RedirectToAction("Index");
-
-
         }
-        
-        public async Task<IActionResult> Detail (int id)
+
+        public async Task<IActionResult> Detail(int id)
         {
-          Question question = await _questionRepository.Queryable.Include(q=> q.Owner).Include(q=>q.Answers).FirstOrDefaultAsync(q => q.ID == id);
-           
-            return View(
-                new QuestionListModel
+            Question question = await _questionRepository.Queryable.Include(q => q.Owner).Include(q => q.Answers).FirstOrDefaultAsync(q => q.ID == id);
+
+            return View(new QuestionListModel
                 {
                     _Question = question
-                }
-                ); ;
-
+                });
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateAns(Question _Question, Answer _Answer)
         {
-            
             _Answer.LastUpdated = DateTime.Now;
-           
             _Answer.Author = _Question.Owner.Name;
             _Answer.QuestionID = _Question.ID;
             _Answer.AuthoredByCustomer = true;
             await _answerRepository.AddAsync(_Answer);
             await _unitOfWork.CommitAsync();
-            return RedirectToAction("Detail", new {id= _Question.ID });
-
-
+            return RedirectToAction("Detail", new { id = _Question.ID });
         }
 
     }

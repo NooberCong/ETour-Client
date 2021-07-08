@@ -138,34 +138,25 @@
                 <div>
                     <h1 class="fw-bold mb-3 h3">@Model.Trip.Tour.Title</h1>
 
-                    <div class="d-flex text-warning">
-                        <ul class="d-flex mb-3 p-0 mr-3"
-                            style="list-style: none"
-                            data-mdb-toggle="rating"
-                            data-mdb-readonly="true"
-                            data-mdb-value="4">
-                            <li>
-                                <i class="fas fa-star fa-sm ps-0"
-                                   title="Bad"></i>
-                            </li>
-                            <li>
-                                <i class="fas fa-star fa-sm"
-                                   title="Poor"></i>
-                            </li>
-                            <li>
-                                <i class="fas fa-star fa-sm"></i>
-                            </li>
-                            <li>
-                                <i class="fas fa-star fa-sm"
-                                   title="Good"></i>
-                            </li>
-                            <li>
-                                <i class="fas fa-star fa-sm"
-                                   title="Excellent"></i>
-                            </li>
-                        </ul>
-                        <a href=""><strong class="me-2">4/5</strong>(123 reviews)</a>
-                    </div>
+                    @if (Model.Trip.Tour.ReviewSummary.NumberOfReviews > 0)
+                    {
+                        <div class="d-flex text-warning">
+                            <ul class="d-flex mb-3 p-0 mr-3"
+                                style="list-style: none">
+                                @for (int i = 0; i < Convert.ToInt32(Model.Trip.Tour.ReviewSummary.AverageStars); i++)
+                                {
+                                    <li>
+                                        <i class="fas fa-star fa-sm"></i>
+                                    </li>
+                                }
+                            </ul>
+                            <span class="text-dark"><strong>@Model.Trip.Tour.ReviewSummary.AverageStars/5</strong> (@Model.Trip.Tour.ReviewSummary.NumberOfReviews reviews)</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No reviews for this tour yet</p>
+                    }
 
                     <div class="mb-3">
                         <div class="d-flex flex-row align-items-center">

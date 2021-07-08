@@ -1,17 +1,20 @@
 ﻿using Client.Models;
 using Core.Entities;
+using Core.Helpers;
 using Core.Interfaces;
 using Infrastructure.InterfaceImpls;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Client.Controllers
 {
     public class CustomerController : BaseController
     {
+        private static readonly int _pageSize = 10;
         private readonly IBookingRepository _bookingRepository;
         private readonly ITourReviewRepository _tourReviewRepository;
         private readonly IPostRepository<Post, Employee> _postRepository;
@@ -68,14 +71,15 @@ namespace Client.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Points()
+        public async Task<IActionResult> Points(int pageNumber = 1)
         {
             Customer customer = await _customerRepository.FindAsync(UserID);
             IEnumerable<PointLog> logs = _customerRepository.GetPointsLogs(customer);
 
-            return View(new CustomerPointsModel { 
+            return View(new CustomerPointsModel
+            {
                 Points = customer.Points,
-                PointLogs = logs
+                PointLogs = PaginatedList<PointLog>.Create(logs.AsQueryable(), pageNumber, _pageSize)
             });
         }
 

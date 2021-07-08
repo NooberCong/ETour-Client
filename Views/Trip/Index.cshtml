@@ -226,14 +226,17 @@
                     </div>
                     <div class="form-group">
                         <label>Min Ratings</label>
-                        @for (int i = 1; i <= 5; i++)
+                        @for (int i = 0; i <= 5; i++)
                         {
                             <div class="form-check mb-1 p-0">
-                                <input checked="@(Model?.FilterParams?.MinRating == i || i == 1)" id="star-@i" asp-for="FilterParams.MinRating" type="radio" value="@i" />
+                                <input checked="@(Model?.FilterParams?.MinRating == null && i == 0 || Model?.FilterParams?.MinRating == i)" id="star-@i" asp-for="FilterParams.MinRating" type="radio" value="@i" />
                                 <label for="star-@i" class="text-warning form-check-label">
                                     @for (int j = 0; j < i; j++)
                                     {
                                         <i class="fa fa-star"></i>
+                                    }
+                                    @if (i == 0) { 
+                                        <span class="text-dark">All</span>
                                     }
                                 </label>
                             </div>
@@ -251,9 +254,22 @@
                         <div class="col-md-4 m-0 p-0 pr-md-3"><img class="img-fluid img-responsive" src="@trip.Tour.ImageUrls.First()" style="object-fit: cover; height: 100%; width: 100%"></div>
                         <div class="col-md-5 mt-3 mt-md-1 p-md-0">
                             <h5>@trip.Tour.Title</h5>
-                            <div class="d-flex flex-row">
-                                <div class="text-warning mr-2"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></div>4.5 of<span class="font-weight-bold ml-1">310 ratings</span>
-                            </div>
+                            @if (trip.Tour.ReviewSummary.NumberOfReviews > 0)
+                            {
+                                <div class="d-flex flex-row">
+                                    <div class="text-warning mr-2">
+                                        @for (int i = 0; i < Convert.ToInt32(trip.Tour.ReviewSummary.AverageStars); i++)
+                                        {
+                                            <i class="fa fa-star"></i>
+                                        }
+                                    </div>
+                                    <span>rated <b>@trip.Tour.ReviewSummary.AverageStars</b> out of <b>@trip.Tour.ReviewSummary.NumberOfReviews</b> reviews</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <p class="text-muted m-0 p-0">No reviews yet</p>
+                            }
                             <div class="my-1 mr-3">Time frame: <span class="bg-light-primary">@trip.StartTime.ToCustomDateString() - @trip.EndTime.ToCustomDateString()</span></div>
                             <div class="my-1 mr-3">Duration: @trip.GetDuration() days</div>
                             <div class="my-1 mr-3">Open slots: @trip.Vacancies</div>

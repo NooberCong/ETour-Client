@@ -6,8 +6,6 @@
 }
 
 
-
-
 <div class="container py-5">
     <h3 class="mb-5">My Questions</h3>
 
@@ -39,8 +37,8 @@
         </table>
     </div>
     <h3 class="my-5">Type your question here</h3>
+    <input type="hidden" asp-for="UserID" id="userID" />
     <form asp-action="Create" method="post" id="submitForm">
-
         <div class="form-group">
             <b> <label asp-for="@Model._Question.Title"></label></b>
             <input asp-for="@Model._Question.Title" type="text" class="form-control" placeholder="Enter title" id="title">
@@ -54,77 +52,51 @@
             <select asp-for="@Model._Question.Category" class="selectpicker" asp-items="@Html.GetEnumSelectList<Question.QuestionCategory>()" id="category"></select>
         </div>
         <div class="form-group" hidden>
-            <b> <label asp-for="@Model.AuthorID"></label></b>
-            <input asp-for="@Model.AuthorID" type="text" class="form-control" id="authorID">
-        </div>
-        <div class="form-group" hidden>
             <b> <label asp-for="@Model._Question.ID"></label></b>
             <input asp-for="@Model._Question.ID" type="text" class="form-control" id="questionID">
         </div>
-
-        <button  class="btn btn-primary mb-2">Submit</button>
+        <button type="submit" class="btn btn-primary mb-2">Submit</button>
     </form>
 </div>
 
+<partial name="_DataTable" model="@tblId" />
+@section Scripts {
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/lib/moment/moment.min.js"></script>
+    <script>
 
-<script src="https://unpkg.com/@@aspnet/signalr@1.0.2/dist/browser/signalr.js"></script>
-<script src="https://unpkg.com/@@microsoft/signalr@6.0.0-preview.4.21253.5/dist/browser/signalr.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js" integrity="sha256-CutOzxCRucUsn6C6TcEYsauvvYilEniTXldPa6/wu0k=" crossorigin="anonymous"></script>
+        var connection = new signalR.HubConnectionBuilder()
+            .withUrl("https://localhost:44360/qa")
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
 
-<script>
+        connection.start().then(() => console.log("Connect to server success")).catch(err => console.log(`Connect to server failed, error: ${err}`));
 
-    var connection = new signalR.HubConnectionBuilder()
-        .withUrl("https://localhost:44360/qa")
-        .configureLogging(signalR.LogLevel.Information)
-        .build();
+        async function submitQuestion(e) {
+            e.preventDefault();
 
+            let authorId = document.getElementById("userID").value;
+            let title = document.getElementById("title").value;
+            let category = document.getElementById("category").value;
 
-
-    connection.start().then(() => console.log("Connect to server success")).catch(err => console.log(`Connect to server failed, error: ${err}`));
-
-
-    function submitQuestion() {
+            await sendQuestion(authorId, title, category);
+            e.target.submit();
+        }
 
         let questionForm = document.getElementById("submitForm");
+        questionForm.addEventListener('submit', submitQuestion);
 
-        let authorId = document.getElementById("authorID").value;
-        let title = document.getElementById("title").value;
-        let category = document.getElementById("category").value;
+        async function sendQuestion(authorId, title, category) {
 
-    console.log(authorId);
-    console.log(title);
-    console.log(category);
-    debugger;
+            if (title && title.length) {
+                await connection.invoke('sendQuestions', authorId, title, category);
+            } else {
+                console.log("Can't send");
+            }
+        }
 
-
-    sendQuestion(authorId, title, category);
-
-
-}
-
-function sendQuestion(authorId, title, category) {
-
-    if (title && title.length) {
-        connection.invoke('sendQuestions', authorId, title, category);
-
-    } else {
-        console.log("Can't send");
-    }
-
-    console.log(authorId);
-    console.log(title);
-    console.log(category);
-
-}
-
-connection.on("ReceiveQuestion", test);
-
-    function test(name, title, cate, date, priority, status, questionId) { console.log(`Someone asked "${questionId}"`); }
-
-
-</script>
-
-
-
-<partial name="_DataTable" model="@tblId" />
+        connection.on("ReceiveQuestion", test);
+        function test(name, title, cate, date, priority, status, questionId) { console.log(`Someone asked "${questionId}"`); }
+    </script>
+} 
 

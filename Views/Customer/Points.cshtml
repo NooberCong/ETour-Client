@@ -6,7 +6,7 @@
 <div class="container py-5">
     <div class="d-flex justify-content-between mb-3">
         <h3>Point Activities</h3>
-        <p class="bg-light p-2 font-weight-light text-info">Your Points: @Model.Points</p>
+        <p style="font-size: 1.15rem" class="bg-light p-2 font-weight-light text-info">Your Points: @Model.Points</p>
     </div>
     @if (Model.PointLogs.Count() > 0)
     {
@@ -24,6 +24,7 @@
                 </li>
             }
         </ul>
+        <partial name="_Pagination" model="Model.PointLogs.PaginationInfo" />
     }
     else
     {
