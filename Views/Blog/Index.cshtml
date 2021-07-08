@@ -13,7 +13,7 @@
 
         <div class="row p-0 m-0 my-5">
             <div class="d-flex col-md-5 p-0">
-                <input class="form-control w-100" asp-for="FilterParams.Keyword" placeholder="Search keyword, tags..." value="" />
+                <input class="form-control w-100" asp-for="FilterParams.Keyword" placeholder="Search keyword, tags..." />
             </div>
             <div class="d-flex col-8 col-md-5 mt-md-0 mt-3 p-0 pl-md-3">
                 <label>Category:</label>
@@ -58,7 +58,7 @@
                             <i class="fas fa-tag mr-2"></i>
                             @for (int i = 0; i < post.Tags.Count; i++)
                             {
-                                <a href="#!" class="text-reset">@post.Tags[i]</a>
+                                <a asp-action="Index" asp-route-FilterParams.Keyword="@post.Tags[i]" class="text-reset">@post.Tags[i]</a>
                                 @if (i != post.Tags.Count - 1)
                                 {
                                     <span>,&nbsp;</span>
@@ -67,7 +67,7 @@
                         </div>
                         <div class="d-flex align-items-center">
                             <a href="#!" class="text-reset">
-                                <i class="fas fa-comment-alt mr-2"></i>1
+                                <i class="fas fa-comment-alt mr-2"></i>@post.Comments.Count
                             </a>
                         </div>
                     </div>

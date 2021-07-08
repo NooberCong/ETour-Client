@@ -68,7 +68,7 @@
             <i class="fas fa-tag mr-2"></i>
             @for (int i = 0; i < Model.Post.Tags.Count; i++)
             {
-                <a href="#!" class="text-reset">@Model.Post.Tags[i]</a>
+                <a asp-action="Index" asp-route-FilterParams.Keyword="@Model.Post.Tags[i]" class="text-reset">@Model.Post.Tags[i]</a>
                 @if (i != Model.Post.Tags.Count - 1)
                 {
                     <span>,&nbsp;</span>
@@ -104,17 +104,24 @@
                 <p class="ml-3 text-muted">No comments yet, be the first to comment!</p>
             }
         </div>
-        <form class="col-md-8 p-0 my-3" asp-action="AddComment" method="post">
-            <input type="hidden" asp-for="@Model.Comment.PostID" value="@Model.Post.ID" />
-            <div class="form-group">
-                <label asp-for="Comment.Content" class="h5">Leave a comment</label>
-                <textarea asp-for="Comment.Content" rows="5" id="commentArea" class="form-control"></textarea>
-                <span asp-validation-for="Comment.Content" class="text-danger"></span>
-                <div class="w-100 d-flex justify-content-end mt-3">
-                    <button class="btn btn-primary ml-auto">Submit comment</button>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <form class="col-md-8 p-0 my-3" asp-action="AddComment" method="post">
+                <input type="hidden" asp-for="@Model.Comment.PostID" value="@Model.Post.ID" />
+                <div class="form-group">
+                    <label asp-for="Comment.Content" class="h5">Leave a comment</label>
+                    <textarea asp-for="Comment.Content" rows="5" id="commentArea" class="form-control"></textarea>
+                    <span asp-validation-for="Comment.Content" class="text-danger"></span>
+                    <div class="w-100 d-flex justify-content-end mt-3">
+                        <button class="btn btn-primary ml-auto">Submit comment</button>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        }
+        else
+        {
+            <p class="text-muted my-5 h6 text-center"><a asp-action="SignInWithGoogle" asp-controller="Auth" asp-route-returnUrl="@(Context.Request.Path + Context.Request.QueryString)">Sign in</a> to write a comment</p>
+        }
     </div>
     @if (Model.Recommendations.Any())
     {
@@ -146,7 +153,7 @@
                                 <i class="fas fa-tag mr-2"></i>
                                 @for (int i = 0; i < post.Tags.Count; i++)
                                 {
-                                    <a href="#!" class="text-reset">@post.Tags[i]</a>
+                                    <a asp-action="Index" asp-route-FilterParams.Keyword="@post.Tags[i]" class="text-reset">@post.Tags[i]</a>
                                     @if (i != post.Tags.Count - 1)
                                     {
                                         <span>,&nbsp;</span>
@@ -155,7 +162,7 @@
                             </div>
                             <div class="d-flex align-items-center">
                                 <a href="#!" class="text-reset">
-                                    <i class="fas fa-comment-alt mr-2"></i>1
+                                    <i class="fas fa-comment-alt mr-2"></i>@post.Comments.Count
                                 </a>
                             </div>
                         </div>

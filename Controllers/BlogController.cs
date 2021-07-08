@@ -5,6 +5,7 @@ using Core.Interfaces;
 using Core.Services;
 using Core.Value_Objects;
 using Infrastructure.InterfaceImpls;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -35,7 +36,9 @@ namespace Client.Controllers
         // Returns View(postList)
         public IActionResult Index(BlogFilterParams filterParams, int pageNumber = 1)
         {
-            IEnumerable<IPost<Employee>> posts = _postRepository.Queryable.Include(p => p.Owner)
+            IEnumerable<IPost<Employee>> posts = _postRepository.Queryable
+                .Include(p => p.Owner)
+                .Include(p => p.Comments)
                .Select(p => (IPost<Employee>)p);
 
             var filteredPosts = _filterService.ApplyFilter(posts, filterParams);
@@ -63,7 +66,9 @@ namespace Client.Controllers
                 return NotFound();
             }
 
-            IEnumerable<IPost<Employee>> recommendCandidates = _postRepository.Queryable.Include(p => p.Owner)
+            IEnumerable<IPost<Employee>> recommendCandidates = _postRepository.Queryable
+                .Include(p => p.Owner)
+                .Include(p => p.Comments)
                .Select(p => (IPost<Employee>)p);
 
             return View(new PostDetailModel
@@ -74,6 +79,7 @@ namespace Client.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> AddComment(Comment comment)
         {
             var post = await _postRepository.FindAsync(comment.PostID);
