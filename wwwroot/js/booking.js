@@ -169,6 +169,7 @@ function showCancelForm(input, bookingID) {
                 duration: 2000,
                 pos: "top-right"
             });
+
             $(loadingElement).replaceWith(cloneElement);
         }
     });

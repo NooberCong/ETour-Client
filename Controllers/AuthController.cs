@@ -74,9 +74,13 @@ namespace Client.Controllers
                 };
 
                 await _customerRepository.AddAsync(customer);
-                await _unitOfWork.CommitAsync();
+            } else
+            {
+                customer.LastSignIn = DateTime.Now;
+                await _customerRepository.UpdateAsync(customer);
             }
 
+            await _unitOfWork.CommitAsync();
             await HttpContext.SignOutAsync(ExternalAuthenticationDefaults.AuthenticationScheme);
 
             // Customer is banned
