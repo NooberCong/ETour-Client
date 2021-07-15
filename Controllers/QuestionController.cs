@@ -1,6 +1,8 @@
 ﻿using Client.Models;
 using Core.Entities;
 using Core.Interfaces;
+using Infrastructure.Hubs;
+using Infrastructure.InfrasUtils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -32,7 +34,8 @@ namespace Client.Controllers
             return View(new QuestionListModel
             {
                 Questions = Questions,
-                UserID = UserID
+                UserID = UserID,
+                QAHubUrl = $"https://{HostHelper.CompanyHostUrl()}{QAHub.PATH}"
             });
         }
         //ok
@@ -40,13 +43,19 @@ namespace Client.Controllers
         // Display details of a specific question, including it's anwers
         // Return View(question)
         [HttpPost]
-        public async Task<IActionResult> Create(Question _Question)
+        public async Task<IActionResult> Create(Question question)
         {
-            _Question.OwnerID = UserID;
-            _Question.LastUpdated = DateTime.Now;
+            if (ModelState.IsValid)
+            {
+                question.OwnerID = UserID;
+                question.LastUpdated = DateTime.Now;
+                question.Status = Question.QuestionStatus.Pending;
+                question.Priority = Question.QuestionPriority.Low;
 
-            await _questionRepository.AddAsync(_Question);
-            await _unitOfWork.CommitAsync();
+                await _questionRepository.AddAsync(question);
+                await _unitOfWork.CommitAsync();
+            }
+
             return RedirectToAction("Index");
         }
 
@@ -56,20 +65,40 @@ namespace Client.Controllers
 
             return View(new QuestionListModel
                 {
-                    _Question = question
+                    Question = question
                 });
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAns(Question _Question, Answer _Answer)
+        public async Task<IActionResult> CreateAns(Answer answer)
         {
-            _Answer.LastUpdated = DateTime.Now;
-            _Answer.Author = _Question.Owner.Name;
-            _Answer.QuestionID = _Question.ID;
-            _Answer.AuthoredByCustomer = true;
-            await _answerRepository.AddAsync(_Answer);
-            await _unitOfWork.CommitAsync();
-            return RedirectToAction("Detail", new { id = _Question.ID });
+            var question = await _questionRepository.Queryable
+                .Include(q => q.Owner)
+                .FirstOrDefaultAsync(q => q.ID == answer.QuestionID);
+
+            if (question == null)
+            {
+                return NotFound();
+            }
+
+            // Can only be answered by the same user who asked
+            if (question.OwnerID != UserID)
+            {
+                return Forbid();
+            }
+
+            if (ModelState.IsValid)
+            {
+                answer.LastUpdated = DateTime.Now;
+                answer.Author = question.Owner.Name;
+                answer.QuestionID = question.ID;
+                answer.AuthoredByCustomer = true;
+
+                await _answerRepository.AddAsync(answer);
+                await _unitOfWork.CommitAsync();
+            }
+
+            return RedirectToAction("Detail", new { id = question.ID });
         }
 
     }

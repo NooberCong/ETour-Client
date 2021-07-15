@@ -5,6 +5,8 @@
     var tblId = "questionTbl";
 }
 
+<input type="hidden" id="hubUrl" value="@Model.QAHubUrl" />
+<input type="hidden" asp-for="UserID" id="userID" />
 
 <div class="container py-5">
     <h3 class="mb-5">My Questions</h3>
@@ -37,50 +39,56 @@
         </table>
     </div>
     <h3 class="my-5">Type your question here</h3>
-    <input type="hidden" asp-for="UserID" id="userID" />
     <form asp-action="Create" method="post" id="submitForm">
+        <input type="hidden" asp-for="@Model.Question.ID" value="0" />
         <div class="form-group">
-            <b> <label asp-for="@Model._Question.Title"></label></b>
-            <input asp-for="@Model._Question.Title" type="text" class="form-control" placeholder="Enter title" id="title">
+            <b> <label asp-for="@Model.Question.Title"></label></b>
+            <input asp-for="@Model.Question.Title" type="text" class="form-control" placeholder="Enter title" id="title">
+            <span class="text-danger" asp-validation-for="@Model.Question.Title"></span>
         </div>
         <div class="form-group">
-            <b><label asp-for="@Model._Question.Content"></label></b>
-            <textarea asp-for="@Model._Question.Content" type="text" rows="5" cols="20" class="form-control" placeholder="Type the question here" id="areaText"></textarea>
+            <b><label asp-for="@Model.Question.Content"></label></b>
+            <textarea asp-for="@Model.Question.Content" type="text" rows="5" cols="20" class="form-control" placeholder="Type the question here" id="areaText"></textarea>
+            <span class="text-danger" asp-validation-for="@Model.Question.Content"></span>
         </div>
         <div class="form-group">
-            <b> <label asp-for="@Model._Question.Category"></label></b>
-            <select asp-for="@Model._Question.Category" class="selectpicker" asp-items="@Html.GetEnumSelectList<Question.QuestionCategory>()" id="category"></select>
-        </div>
-        <div class="form-group" hidden>
-            <b> <label asp-for="@Model._Question.ID"></label></b>
-            <input asp-for="@Model._Question.ID" type="text" class="form-control" id="questionID">
+            <b> <label asp-for="@Model.Question.Category"></label></b>
+            <select asp-for="@Model.Question.Title" class="selectpicker" asp-items="@Html.GetEnumSelectList<Question.QuestionCategory>()" id="category"></select>
         </div>
         <button type="submit" class="btn btn-primary mb-2">Submit</button>
     </form>
 </div>
 
-<partial name="_DataTable" model="@tblId" />
 @section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_DataTable" model="@tblId" />
     <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
     <script src="~/lib/moment/moment.min.js"></script>
+
     <script>
 
         var connection = new signalR.HubConnectionBuilder()
-            .withUrl("https://localhost:44360/qa")
+            .withUrl($("#hubUrl").val())
             .configureLogging(signalR.LogLevel.Information)
             .build();
 
         connection.start().then(() => console.log("Connect to server success")).catch(err => console.log(`Connect to server failed, error: ${err}`));
 
         async function submitQuestion(e) {
+            console.log("Hello world");
             e.preventDefault();
-
-            let authorId = document.getElementById("userID").value;
-            let title = document.getElementById("title").value;
-            let category = document.getElementById("category").value;
-
-            await sendQuestion(authorId, title, category);
-            e.target.submit();
+            $(e.target).validate();
+            if ($(e.target).valid()) {
+                let authorId = document.getElementById("userID").value;
+                let title = document.getElementById("title").value;
+                let category = document.getElementById("category").value;
+                try {
+                    await sendQuestion(authorId, title, category);
+                } catch (err) {
+                    console.log(err);
+                }
+                e.target.submit();
+            }
         }
 
         let questionForm = document.getElementById("submitForm");
@@ -94,9 +102,5 @@
                 console.log("Can't send");
             }
         }
-
-        connection.on("ReceiveQuestion", test);
-        function test(name, title, cate, date, priority, status, questionId) { console.log(`Someone asked "${questionId}"`); }
     </script>
-} 
-
+}
