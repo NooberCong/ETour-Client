@@ -83,7 +83,7 @@
 </div>
 <!-- bank transfer info -->
 <div id="qrcode" class="tab-pane fade pt-3" role="tabpanel">
-    <form asp-action="GenerateDepositQRCode" asp-route-id="@Model.ID" method="post">
+    <form asp-action="GeneratePaymentQRCode" asp-route-id="@Model.ID" method="post">
         <h5 class="mb-3">Select payment gateway</h5>
         <div class="form-group">
             <input checked id="zalopay" type="radio" name="method" value="@((int)Invoice.PaymentMethod.Zalo_Pay)" />

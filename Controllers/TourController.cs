@@ -26,19 +26,24 @@ namespace Client.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        public IActionResult Index(int pageNumber = 1)
+        public async Task<IActionResult> Index(int pageNumber = 1)
         {
 
             IEnumerable<Tour> tours = _tourRepository.Queryable.Where(Tour => Tour.IsOpen).AsEnumerable();
+            var user = await _customerRepository.Queryable.Include(cus => cus.TourFollowings).FirstOrDefaultAsync(cus => cus.ID == UserID);
+            ISet<int> followingIDs = tours.Select(t => t.ID).Where(id => user.TourFollowings.Any(tf => tf.TourID == id)).ToHashSet();
+
             return View(new TourListModel
             {
-                Tours = PaginatedList<Tour>.Create(tours.AsQueryable(), pageNumber, _pageSize)
-            });
+                Tours = PaginatedList<Tour>.Create(tours.AsQueryable(), pageNumber, _pageSize),
+                FollowingTourIDs = followingIDs
+            }) ;
         }
 
         [Authorize]
-        public async Task<IActionResult> ToggleFollow(int id)
+        public async Task<IActionResult> ToggleFollow(int id, string returnUrl)
         {
+            returnUrl ??= Url.Action(nameof(Index));
             var tour = await _tourRepository.FindAsync(id);
 
             if (tour == null)
@@ -61,7 +66,7 @@ namespace Client.Controllers
 
             await _unitOfWork.CommitAsync();
 
-            return RedirectToAction("Detail", "Trip", new { id = id });
+            return LocalRedirect(returnUrl);
         }
     }
 }

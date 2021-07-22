@@ -10,5 +10,6 @@ namespace Client.Models
     public class TourListModel
     {
         public PaginatedList<Tour> Tours { get; set; }
+        public ISet<int> FollowingTourIDs { get; set; }
     }
 }

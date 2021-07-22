@@ -196,7 +196,7 @@ namespace Client.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GenerateDepositQRCode(int id, Invoice.PaymentMethod method)
+        public async Task<IActionResult> GeneratePaymentQRCode(int id, Invoice.PaymentMethod method)
         {
             var booking = await _bookingRepository.Queryable
                             .Include(bk => bk.Trip)
@@ -211,15 +211,16 @@ namespace Client.Controllers
 
             string paymentUrl = "";
             string viewName = "";
+            long amount = (long)(booking.Status == Booking.BookingStatus.Awaiting_Deposit ? booking.Deposit : booking.GetFinalPayment());
 
             switch (method)
             {
                 case Invoice.PaymentMethod.Zalo_Pay:
-                    paymentUrl = await _zaloPayService.CreateOrderAsync(booking, (long)booking.Deposit, $"Toure: Deposit for tour {booking.Trip.Tour.Title}");
+                    paymentUrl = await _zaloPayService.CreateOrderAsync(booking, amount, $"Toure: Deposit for tour {booking.Trip.Tour.Title}");
                     viewName = "ZaloPay";
                     break;
                 case Invoice.PaymentMethod.Momo:
-                    paymentUrl = await _momoPaymentService.CreateOrderAsync(booking, (long)booking.Deposit, $"Toure: Deposit for tour {booking.Trip.Tour.Title}");
+                    paymentUrl = await _momoPaymentService.CreateOrderAsync(booking, amount, $"Toure: Deposit for tour {booking.Trip.Tour.Title}");
                     return Redirect(paymentUrl);
                 case Invoice.PaymentMethod.GPay:
                     break;
@@ -231,7 +232,7 @@ namespace Client.Controllers
             return View(viewName, new QRPaymentModel
             {
                 QRImageSource = _QRCodeService.GenerateBase64(paymentUrl),
-                TotalAmount = booking.Deposit.Value,
+                TotalAmount = amount,
                 BookingID = booking.ID
             });
         }        
@@ -337,7 +338,7 @@ namespace Client.Controllers
             return View(booking.GetBookingCancelInfo(DateTime.Now));
         }
 
-        public async Task<IActionResult> History()
+        public IActionResult History()
         {
             IEnumerable<Booking> bookings = _bookingRepository.Queryable
                 .Where(bk => bk.OwnerID == UserID)

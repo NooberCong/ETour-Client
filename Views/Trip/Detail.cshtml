@@ -224,6 +224,7 @@
                             <a asp-controller="Tour"
                                asp-action="ToggleFollow"
                                asp-route-id="@Model.Trip.Tour.ID"
+                               asp-route-returnUrl="@(Context.Request.Path + Context.Request.QueryString)"
                                class="btn btn-danger btn-floating ml-2"
                                data-mdb-toggle="tooltip"
                                title="Follow this tour">
