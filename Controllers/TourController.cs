@@ -31,7 +31,7 @@ namespace Client.Controllers
 
             IEnumerable<Tour> tours = _tourRepository.Queryable.Where(Tour => Tour.IsOpen).AsEnumerable();
             var user = await _customerRepository.Queryable.Include(cus => cus.TourFollowings).FirstOrDefaultAsync(cus => cus.ID == UserID);
-            ISet<int> followingIDs = tours.Select(t => t.ID).Where(id => user.TourFollowings.Any(tf => tf.TourID == id)).ToHashSet();
+            ISet<int> followingIDs = tours.Select(t => t.ID).Where(id => user != null && user.TourFollowings.Any(tf => tf.TourID == id)).ToHashSet();
 
             return View(new TourListModel
             {

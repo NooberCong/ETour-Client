@@ -89,11 +89,6 @@ namespace Client.Controllers
                 return NotFound();
             }
 
-            var customer = await _customerRepository.Queryable
-                .Include(cus => cus.Bookings)
-                .ThenInclude(bk => bk.Trip)
-                .FirstOrDefaultAsync(cus => cus.ID == UserID);
-
             var recommendCandidates = _tripRepository.Queryable
                 .Where(tr => tr.IsOpen)
                 .Include(tr => tr.Tour)

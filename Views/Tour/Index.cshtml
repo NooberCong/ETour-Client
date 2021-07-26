@@ -141,22 +141,25 @@
                         </div>
                         <br>
                         <a asp-controller="Trip" asp-action="Index" asp-route-FilterParams.TourID="@tour.ID" class="btn btn-outline-primary">View trips</a>
-                        <a asp-action="ToggleFollow"
-                           asp-route-id="@tour.ID"
-                           asp-route-returnUrl="@(Context.Request.Path + Context.Request.QueryString)"
-                           class="btn btn-outline-danger btn-floating ml-2"
-                           data-mdb-toggle="tooltip"
-                           title="Follow this tour">
-                            @if (Model.FollowingTourIDs.Contains(tour.ID))
-                            {
-                                <span>Following</span>
-                            }
-                            else
-                            {
-                                <span>Follow</span>
-                            }
-                            <i class="fas fa-heart"></i>
-                        </a>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <a asp-action="ToggleFollow"
+                               asp-route-id="@tour.ID"
+                               asp-route-returnUrl="@(Context.Request.Path + Context.Request.QueryString)"
+                               class="btn btn-outline-danger btn-floating ml-2"
+                               data-mdb-toggle="tooltip"
+                               title="Follow this tour">
+                                @if (Model.FollowingTourIDs.Contains(tour.ID))
+                                {
+                                    <span>Following</span>
+                                }
+                                else
+                                {
+                                    <span>Follow</span>
+                                }
+                                <i class="fas fa-heart"></i>
+                            </a>
+                        }
                     </div>
                 </div>
             </div>
