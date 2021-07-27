@@ -74,7 +74,8 @@ namespace Client.Controllers
         public async Task<IActionResult> Points(int pageNumber = 1)
         {
             Customer customer = await _customerRepository.FindAsync(UserID);
-            IEnumerable<PointLog> logs = _customerRepository.GetPointsLogs(customer);
+            IEnumerable<PointLog> logs = _customerRepository.GetPointsLogs(customer)
+                .OrderByDescending(pl => pl.LastUpdated);
 
             return View(new CustomerPointsModel
             {
